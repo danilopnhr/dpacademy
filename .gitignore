@@ -1,0 +1,27 @@
+# credenciais
+kaggle.json
+.env
+*.pem
+*.pfx
+
+# credenciais da fonte (vivem só nos Files dos lakehouses)
+_secrets/
+*_api_key
+
+# python
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# dados locais
+data/
+*.csv
+!backlog/*.csv
+
+# editor e sistema
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

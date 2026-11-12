@@ -1,0 +1,43 @@
+ID,Work Item Type,Title 1,Title 2
+,Epic,Fundação,
+,Issue,,Criar o repositório público dpacademy no GitHub e enviar main e dev
+,Issue,,Ativar secret scanning e push protection no repositório
+,Issue,,Criar os workspaces ws-dev-dpacademy e ws-prd-dpacademy na capacidade Trial
+,Issue,,Conectar ws-dev-dpacademy à branch dev (pasta workspace/) com token fine-grained do GitHub
+,Issue,,Documentar o padrão de nomenclatura em docs/padrao-nomenclatura.md
+,Issue,,Criar o validador de nomes ci/validate_names.py com testes
+,Epic,CI/CD,
+,Issue,,Registrar a service principal sp-dpacademy-cicd e liberar as APIs do Fabric para ela
+,Issue,,Criar os secrets do repositório e o Environment ws-prd-dpacademy (só main)
+,Issue,,Criar o workflow pr-validation (nomes; testes; segredos conhecidos; gitleaks)
+,Issue,,Configurar o ruleset de main e o template de PR
+,Issue,,Criar o workflow deploy-prd com fabric-cicd (parameter.yml; órfãos; agendamentos)
+,Issue,,Validar bloqueios do PR e a primeira publicação em produção
+,Epic,NBA - Bronze,
+,Issue,,Regenerar o plano e as tarefas da ingestão balldontlie (feature 001)
+,Issue,,Criar o lakehouse bronze_balldontlie
+,Issue,,Criar o notebook nb-util-010-bronze-balldontlie-cliente (rate limit; retentativa; paginação)
+,Issue,,Criar o notebook nb-full-020-bronze-balldontlie-cadastros (nba_teams e nba_players)
+,Issue,,Criar o notebook nb-incr-030-bronze-balldontlie-jogos (nba_games; histórico e diário)
+,Issue,,Registrar execuções em ctl_ingestion_runs (liga e ambiente)
+,Issue,,Criar o pipeline pl-010-bronze-balldontlie-nba e agendá-lo em produção
+,Issue,,Carregar o histórico da NBA (1946-47 a 2025-26) em produção até 2026-11-15
+,Epic,NBA - Silver,
+,Issue,,Criar o lakehouse silver_balldontlie
+,Issue,,Tipar e deduplicar nba_times e nba_jogadores (nb-full-010-silver-balldontlie-cadastros)
+,Issue,,Tipar e carregar nba_jogos com merge (nb-incr-020-silver-balldontlie-jogos)
+,Issue,,Criar checagens de qualidade (chave; nulos; contagem por execução)
+,Epic,NBA - Gold,
+,Issue,,Criar o lakehouse gold_nba
+,Issue,,Criar dim_data dim_temporada dim_time e dim_jogador (nb-full-010-gold-nba-dimensoes)
+,Issue,,Criar fat_jogo (nb-incr-020-gold-nba-fatos)
+,Issue,,Criar agg_desempenho_temporada
+,Issue,,Criar checagens de integridade referencial entre fatos e dimensões
+,Issue,,Otimizar tabelas gold para Direct Lake (V-Order e OPTIMIZE)
+,Epic,NBA - Consumo,
+,Issue,,Criar o modelo semântico sm-nba em Direct Lake com relacionamentos
+,Issue,,Criar medidas DAX (vitórias; aproveitamento; pontos por jogo; saldo)
+,Issue,,Criar o relatório rpt-nba-temporadas
+,Issue,,Criar o pipeline pl-010-orq-nba-diario encadeando bronze silver e gold
+,Epic,NFL,
+,Epic,UCL,
