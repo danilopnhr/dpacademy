@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Lakehouse",
+    "displayName": "bronze_camara",
+    "description": "Bronze da API de Dados Abertos da Câmara dos Deputados (case gastos)"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "14d845b5-56b1-a6fe-41c3-5faedd959c99"
+  }
+}
