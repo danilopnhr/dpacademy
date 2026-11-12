@@ -18,9 +18,8 @@ from pathlib import Path
 SEQ = r"(?!000)\d{2}0"
 NOME = r"[a-z0-9]+"
 
-# Ligas configuradas na ingestão; uma liga nova entra aqui no mesmo PR que a configura.
-LIGAS = {"nba"}
-PREFIXO_CONTROLE = "ctl"
+# Bronze e Silver: nome da entidade da fonte, sem prefixo, ou ctl_<assunto> para controle
+# (constituição v3.0.0, Princípio IV). Basta estar em snake_case sem acentos.
 
 # tipo do Fabric -> (regra legível, expressão). Grupos nomeados alimentam a checagem de sequencial.
 ITEM_RULES: dict[str, tuple[str, re.Pattern[str]]] = {
@@ -52,7 +51,7 @@ ITEM_RULES: dict[str, tuple[str, re.Pattern[str]]] = {
     "Report": ("rpt-<case>-<assunto>", re.compile(rf"^rpt-{NOME}-{NOME}$")),
 }
 
-_TABELA = re.compile(r"^[a-z0-9]+_[a-z0-9_]+$")
+_TABELA = re.compile(r"^[a-z][a-z0-9]*(_[a-z0-9]+)*$")
 _TABELA_GOLD = re.compile(r"^(?:dim|fat|agg)_[a-z0-9_]+$")
 
 
@@ -133,13 +132,8 @@ def validate_items(root: Path) -> list[Violacao]:
 def validate_table_name(lakehouse: str, table: str) -> str | None:
     """Devolve None se a tabela segue o padrão do seu lakehouse, ou o motivo da divergência."""
     if lakehouse.startswith(("bronze_", "silver_")):
-        prefixo = table.split("_", 1)[0]
-        if not _TABELA.match(table) or prefixo not in LIGAS | {PREFIXO_CONTROLE}:
-            ligas = ", ".join(sorted(LIGAS))
-            return (
-                f"tabela de {lakehouse} precisa começar com a liga ({ligas}) "
-                f"ou com {PREFIXO_CONTROLE}_ e estar em snake_case"
-            )
+        if not _TABELA.match(table):
+            return f"tabela de {lakehouse} precisa estar em snake_case, sem acentos"
         return None
     if lakehouse.startswith("gold_"):
         if not _TABELA_GOLD.match(table):
