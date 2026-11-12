@@ -5,6 +5,7 @@ Os clientes HTTP vivem em notebooks do Fabric. A Git integration grava cada note
 para testar o Python puro sem o Fabric (research R7 da feature 003).
 """
 
+import os
 import types
 from pathlib import Path
 
@@ -27,7 +28,10 @@ def _codigo_executavel(texto: str) -> str:
 
 
 def carregar_notebook_por_nome(nome: str) -> types.ModuleType:
-    caminho = RAIZ / "workspace" / f"{nome}.Notebook" / "notebook-content.py"
+    # DPACADEMY_NOTEBOOKS_DIR permite testar um rascunho antes de publicá-lo no Fabric,
+    # sem editar workspace/ à mão (Princípio III). No CI a variável não existe.
+    base = Path(os.environ.get("DPACADEMY_NOTEBOOKS_DIR", RAIZ / "workspace"))
+    caminho = base / f"{nome}.Notebook" / "notebook-content.py"
     if not caminho.exists():
         raise FileNotFoundError(
             f"{caminho} não existe. Crie o notebook {nome} no ws-dev-dpacademy, faça o commit "
