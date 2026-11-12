@@ -1,0 +1,4 @@
+{
+  "dev": { "workspace_name": "ws-dev-dpacademy", "workspace_id": "559ab4d8-8abd-4b75-9bdc-fd68895d93bf" },
+  "prd": { "workspace_name": "ws-prd-dpacademy", "workspace_id": "d35338c7-86ad-4567-812b-1e400ec6a5a7" }
+}
