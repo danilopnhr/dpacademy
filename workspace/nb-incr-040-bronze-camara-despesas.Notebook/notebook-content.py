@@ -117,17 +117,22 @@ def fila_deputados(leg):
 
 
 def coletar_mes(ano, mes, ids):
-    dados, total = [], 0
+    # A fonte publica algumas despesas sem codDocumento (visto em 09/2026). A Bronze grava tudo e
+    # avisa; a chave composta para deduplicar esses casos é definida na Silver (data-model.md).
+    dados, total, sem_codigo = [], 0, 0
     for i in ids:
         caminho = f"/deputados/{i}/despesas"
         regs = list(cliente.paginar(caminho, {"ano": ano, "mes": mes}))
-        exigir_chave(regs, "codDocumento", "despesas")
+        sem_codigo += sum(1 for r in regs if r.get("codDocumento") in (None, ""))
         total += cliente.ultimo_total or 0
         recorte = {"ano": ano, "mes": mes, "deputado": i}
         dados.extend(linha(r, caminho, recorte) for r in regs)
     if len(dados) != total:
         raise RuntimeError(f"coletadas {len(dados)} despesas, mas a fonte informou {total}")
-    return {"dados": dados, "total_esperado": total, "aviso": f"{len(ids)} deputado(s) consultado(s)"}
+    aviso = f"{len(ids)} deputado(s) consultado(s)"
+    if sem_codigo:
+        aviso += f"; {sem_codigo} despesa(s) sem codDocumento"
+    return {"dados": dados, "total_esperado": total, "aviso": aviso}
 
 
 resultados = []
