@@ -3,23 +3,30 @@
 Case de engenharia de dados de ponta a ponta no Microsoft Fabric, da ingestão à camada Gold, com
 versionamento no GitHub e CI/CD com GitHub Actions.
 
-## Fonte de dados
+## Fontes de dados
 
-[API balldontlie](https://www.balldontlie.io/), plano gratuito. O primeiro case é a **NBA**,
-com times, jogadores e jogos desde a temporada 1946-47. A ingestão é genérica por fonte: outras
-ligas da mesma API (NFL, UCL) entram por configuração, como novos cases.
+Duas APIs públicas e gratuitas do governo brasileiro:
+
+| Fonte | O que vem | Volume (2019–2026) | Acesso |
+|---|---|---|---|
+| [Dados Abertos da Câmara dos Deputados](https://dadosabertos.camara.leg.br/swagger/api.html) | deputados, partidos, legislaturas e despesas da cota parlamentar | 1,4 milhão de despesas, 929 deputados | sem chave; arquivo anual para o histórico e API para a carga diária |
+| [Portal da Transparência](https://api.portaldatransparencia.gov.br/swagger-ui/index.html) | emendas parlamentares e cadastro dos fornecedores (sanções e vínculos com o governo federal) | 55 mil emendas, cerca de 68 mil CNPJs | chave gratuita via gov.br, guardada fora do Git ([ADR-003](docs/adr-003-segredo-api-em-lakehouse-files.md)) |
+
+O primeiro case é **`gastos`**: quanto cada deputado gasta da cota parlamentar, com quais
+fornecedores e quanto destina em emendas. As fontes só se cruzam na Gold.
 
 ## Arquitetura
 
 | Camada | Responsabilidade | Itens no Fabric |
 |---|---|---|
-| Ingestão e Bronze | Resposta da API em Delta, sem transformação, com colunas de auditoria | `bronze_balldontlie`; notebooks `nb-util-010-bronze-balldontlie-cliente`, `nb-full-020-bronze-balldontlie-cadastros` e `nb-incr-030-bronze-balldontlie-jogos`; pipeline `pl-010-bronze-balldontlie-nba` |
-| Silver | Tipagem, limpeza, deduplicação e carga incremental (`MERGE`) | `silver_balldontlie` |
-| Gold | Modelo dimensional (star schema) do case | `gold_nba` |
-| Consumo | Modelo semântico Direct Lake e relatório | `sm-nba` e `rpt-nba-temporadas` |
+| Ingestão e Bronze | Resposta da fonte em Delta (JSON em `payload`), sem transformação, com colunas de auditoria e registro de cada lote em `ctl_ingestion_runs` | `bronze_camara`: `nb-util-010-bronze-camara-cliente`, `nb-util-020-bronze-camara-gravacao`, `nb-full-030-bronze-camara-cadastros`, `nb-incr-040-bronze-camara-despesas`, pipeline `pl-010-bronze-camara-gastos`. `bronze_transparencia`: `nb-util-010-bronze-transparencia-cliente`, `nb-util-020-bronze-transparencia-gravacao`, `nb-incr-030-bronze-transparencia-emendas`, `nb-incr-040-bronze-transparencia-fornecedores`, pipeline `pl-010-bronze-transparencia-gastos` |
+| Silver | Tipagem, limpeza, deduplicação e carga incremental (`MERGE`) | `silver_camara`, `silver_transparencia` (próxima feature) |
+| Gold | Modelo dimensional (star schema) do case | `gold_gastos` |
+| Consumo | Modelo semântico Direct Lake e relatório | `sm-gastos` e `rpt-gastos-parlamentares` |
 
-Bronze e Silver são compartilhadas entre os cases da mesma fonte. Cada case tem a sua Gold, o seu
-modelo semântico e os seus relatórios.
+Bronze e Silver são organizadas por fonte e compartilhadas entre os cases. Cada case tem a sua
+Gold, o seu modelo semântico e os seus relatórios. A especificação da ingestão está em
+[specs/003-gastos-bronze-ingestion](specs/003-gastos-bronze-ingestion/spec.md).
 
 ## Ambientes e branches
 
