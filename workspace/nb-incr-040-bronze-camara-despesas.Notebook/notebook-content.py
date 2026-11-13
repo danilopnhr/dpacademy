@@ -76,7 +76,9 @@ if modo not in ("api", "arquivo"):
     raise ValueError(f"origem inválida: {origem!r}; use 'api' ou 'arquivo'")
 
 run_id = str(uuid.uuid4())
-cliente = ClienteCamara()
+# No modo api são ~2.600 chamadas por execução: ritmo mais folgado que o mínimo, por cautela com o
+# bloqueio temporário observado em 2026-11-12 depois de ~950 chamadas seguidas (research R8).
+cliente = ClienteCamara(intervalo=0.4 if modo == "api" else INTERVALO_MINIMO_S)
 garantir_tabelas()
 
 
@@ -108,6 +110,26 @@ def coletar_arquivo(ano):
     return {"dados": dados, "total_esperado": total, "coletados": total, "aviso": aviso}
 
 
+def fila_deputados(leg):
+    regs = list(cliente.paginar("/deputados", {"idLegislatura": leg}))
+    exigir_chave(regs, "id", "deputados (fila)")
+    return sorted({r["id"] for r in regs})
+
+
+def coletar_mes(ano, mes, ids):
+    dados, total = [], 0
+    for i in ids:
+        caminho = f"/deputados/{i}/despesas"
+        regs = list(cliente.paginar(caminho, {"ano": ano, "mes": mes}))
+        exigir_chave(regs, "codDocumento", "despesas")
+        total += cliente.ultimo_total or 0
+        recorte = {"ano": ano, "mes": mes, "deputado": i}
+        dados.extend(linha(r, caminho, recorte) for r in regs)
+    if len(dados) != total:
+        raise RuntimeError(f"coletadas {len(dados)} despesas, mas a fonte informou {total}")
+    return {"dados": dados, "total_esperado": total, "aviso": f"{len(ids)} deputado(s) consultado(s)"}
+
+
 resultados = []
 if modo == "arquivo":
     lista_anos = [int(a) for a in (anos or "").split(",") if a.strip()]
@@ -117,7 +139,12 @@ if modo == "arquivo":
         resultados.append(executar_lote(run_id, "despesas", "arquivo", {"ano": ano}, "despesas",
                                         lambda ano=ano: coletar_arquivo(ano), cliente))
 else:
-    raise NotImplementedError("origem=api entra na T019 da feature 003")
+    lista_meses = ler_meses(meses) if (meses or "").strip() else meses_padrao()
+    leg = int(legislatura or "57")
+    ids = fila_deputados(leg)
+    for ano, mes in lista_meses:
+        resultados.append(executar_lote(run_id, "despesas", "api", {"ano": ano, "mes": mes, "legislatura": leg},
+                                        "despesas", lambda ano=ano, mes=mes: coletar_mes(ano, mes, ids), cliente))
 
 encerrar(run_id, resultados)
 
