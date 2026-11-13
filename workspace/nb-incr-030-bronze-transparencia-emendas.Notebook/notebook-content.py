@@ -69,8 +69,12 @@ else:
     lista_anos = [ano_atual - 1, ano_atual]
 
 run_id = str(uuid.uuid4())
-cliente = ClienteTransparencia()
 garantir_tabelas()
+try:
+    cliente = ClienteTransparencia()
+    erro_chave = None
+except ErroChave as erro:
+    cliente, erro_chave = None, f"ErroChave: {erro}"
 
 
 def coletar_ano(ano):
@@ -80,11 +84,14 @@ def coletar_ano(ano):
     return {"dados": dados, "aviso": f"{cliente.paginas_lidas} página(s) lida(s)"}
 
 
-resultados = [
-    executar_lote(run_id, "emendas", "api", {"ano": ano}, "emendas", lambda ano=ano: coletar_ano(ano),
-                  cliente, segredos=cliente.segredos())
-    for ano in lista_anos
-]
+if cliente is None:
+    resultados = [lote_falho(run_id, "emendas", "api", {"ano": ano}, erro_chave) for ano in lista_anos]
+else:
+    resultados = [
+        executar_lote(run_id, "emendas", "api", {"ano": ano}, "emendas", lambda ano=ano: coletar_ano(ano),
+                      cliente, segredos=cliente.segredos())
+        for ano in lista_anos
+    ]
 encerrar(run_id, resultados)
 
 # METADATA ********************

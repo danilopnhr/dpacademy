@@ -207,6 +207,17 @@ def executar_lote(run_id, recurso, origem, recorte, tabela, coletar, cliente, se
     return resultado
 
 
+def lote_falho(run_id, recurso, origem, recorte, mensagem):
+    """Registra um lote que falhou antes de qualquer coleta (ex.: chave ausente), para que toda
+    execução apareça em ctl_ingestion_runs (SC-007)."""
+    batch_id, status = iniciar_lote(run_id, recurso, origem, recorte)
+    if status == "skipped":
+        return {"batch_id": batch_id, "recurso": recurso, "recorte": recorte, "status": "skipped", "registros": 0}
+    finalizar_lote(batch_id, "failed", mensagem=sanitizar(mensagem))
+    return {"batch_id": batch_id, "recurso": recurso, "recorte": recorte, "status": "failed", "registros": 0,
+            "erro": sanitizar(mensagem)}
+
+
 def exigir_chave(registros, chave, recurso):
     """Falha o lote se algum registro da API não trouxer a chave natural (data-model.md)."""
     faltando = sum(1 for r in registros if r.get(chave) in (None, ""))
