@@ -59,12 +59,22 @@ running ──► succeeded
   `_resultado = 'nao_encontrado'`, em que `payload` pode ser nulo.
 - Todo registro tem `_ingested_at`, `_source_endpoint`, `_batch_id`, `_origem` e `_recorte`.
 - A chave natural da entidade existe no `payload`; um registro da API sem a chave aborta o lote
-  como `failed` (sinal de mudança de contrato da fonte). Linhas do arquivo anual sem
-  `ideDocumento` são aceitas e contadas num aviso.
+  como `failed` (sinal de mudança de contrato da fonte). Exceção, as despesas: linhas do arquivo
+  sem `ideDocumento` e registros da API sem `codDocumento` são gravados e contados num aviso em
+  `message`, porque a própria fonte os publica assim (visto na API em 09/2026). A Silver deduplica
+  esses casos por chave composta (deputado, data, fornecedor, número e valor do documento).
 - Unicidade, nulos e integridade referencial não são verificados na Bronze; começam na Silver
   (Princípio V).
 
 ## Versões e deduplicação
+
+**Pendência para a feature de Silver (achado de 2026-11-13):** a API e o arquivo anual não
+publicam o mesmo conjunto de despesas. Em 09/2026, a API traz 7.249 registros e soma −R$ 6,7 mi de
+`valorLiquido`; o arquivo traz 6.483 e soma +R$ 7,7 mi. Em 10/2026, 7.049 contra 6.827. A API tem
+registros a mais e muitos com `valorLiquido` negativo, mesmo quando o documento é positivo. Cada
+origem bate com o próprio total, então não é falha de ingestão. A regra de "versão mais recente
+vence entre as origens" (abaixo) precisa ser revista antes da Silver: definir qual origem é a
+oficial por período, ou como conciliar as duas.
 
 A Bronze é append-only: recarregar uma janela grava uma nova versão de cada registro com outro
 `_batch_id`. A Silver escolhe, por chave natural, a versão de maior `_ingested_at`; para

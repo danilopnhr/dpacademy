@@ -121,3 +121,18 @@ coluna `message` de `ctl_ingestion_runs`.
   Na operação diária, rodar de novo um lote `failed` antes de tratá-lo como perda.
 - **Republicação**: a Câmara republicou os arquivos de 2019 e 2020 entre 12 e 13/11 (research R2).
 
+### 2026-11-13: US2 (despesas pela API e pipeline), `ws-dev-dpacademy`
+
+- **Janela padrão** (§4): 3 lotes (09, 10 e 11/2026), cada um com `records_collected =
+  expected_total` (7.249, 7.049 e 874); 648 deputados por mês, cerca de 5 min por mês, nenhuma
+  retentativa HTTP. A recuperação de um mês específico (`meses=2026-09`) também funcionou.
+- **Registro sem `codDocumento`**: em 09/2026, uma passagem aérea de missão oficial ("Recibos/Outros",
+  sem lote, sem link de nota). Na primeira execução o lote falhou pela regra de chave obrigatória;
+  a regra mudou para gravar e avisar (data-model.md), e o mês foi recarregado.
+- **Pipeline**: a primeira execução falhou ao abrir a sessão da 2ª atividade
+  (`TooManyRequestsForCapacity`: o Trial ainda liberava a sessão da 1ª). Por isso há uma
+  retentativa de 5 min em cada atividade.
+- **API × arquivo**: as duas origens divergem em contagem e no sinal do valor líquido (pendência
+  registrada em data-model.md para a Silver).
+
+- **Execução verde**: com a regra corrigida e uma retentativa por atividade, o pipeline rodou à mão de ponta a ponta com sucesso em 21,8 min (cadastros + 3 meses pela API).

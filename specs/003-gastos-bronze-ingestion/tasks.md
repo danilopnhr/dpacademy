@@ -98,7 +98,7 @@ validados pelo quickstart no Fabric.
 - [X] T019 [US2] Implementar no `nb-incr-040-bronze-camara-despesas` o modo `origem=api` (parâmetros `meses`, `legislatura`; `meses` vazio → `meses_padrao`): um lote por mês; fila = ids de `/deputados?idLegislatura=<legislatura>`; para cada deputado, `paginar('/deputados/{id}/despesas', {ano, mes})`; `payload` = objeto da API, `_origem='api'`, `_source_endpoint='/deputados/{id}/despesas'`, `_recorte={"ano","mes","deputado"}`; `expected_total` = soma dos `X-Total-Count`; registro sem `codDocumento` faz o lote falhar; commit pelo Fabric
 - [X] T020 [US2] Criar o pipeline `pl-010-bronze-camara-gastos` em `ws-dev-dpacademy`: atividade `nb-full-030-bronze-camara-cadastros` → `nb-incr-040-bronze-camara-despesas` (padrões) com dependência "Completed"; atividade Fail final quando qualquer uma das duas falhar, para o pipeline terminar com falha (contracts/notebook-parameters.md); sem agenda em dev; commit pelo Fabric
 - [X] T021 [P] [US2] Acrescentar a `ci/schedules.json` a entrada `{"item": "pl-010-bronze-camara-gastos", "type": "DataPipeline", "job_type": "Pipeline", "enabled": true, "times": ["05:00"], "time_zone": "E. South America Standard Time"}`
-- [ ] T022 [US2] Validar o §4 do `quickstart.md` em dev: padrões (3 lotes) e `meses=<mês passado>`; conferir `records_collected = expected_total` por lote; rodar o pipeline à mão uma vez
+- [X] T022 [US2] Validar o §4 do `quickstart.md` em dev: padrões (3 lotes) e `meses=<mês passado>`; conferir `records_collected = expected_total` por lote; rodar o pipeline à mão uma vez
 
 **Checkpoint**: US1 e US2 operando; a Câmara fica completa sem depender do Portal
 
