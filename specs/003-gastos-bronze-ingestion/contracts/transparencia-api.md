@@ -20,9 +20,22 @@ Se a fonte mudar, este é o arquivo a revisar primeiro.
 | `GET /emendas` | `ano` (opcional no OpenAPI, sempre enviado), `pagina` | todas as emendas do ano, todos os autores | `emendas` |
 | `GET /pessoa-juridica` | `cnpj` (obrigatório, 14 dígitos) | cadastro de cada fornecedor da fila (research R10) | `pessoa_juridica` |
 
-Pendências a confirmar com a chave (quickstart §5): tamanho da página de `/emendas` e a forma
-como `/pessoa-juridica` responde a CNPJ inexistente. O cliente trata como "não encontrado":
-HTTP 404, corpo vazio, objeto sem `cnpj` ou com todos os campos nulos.
+Confirmado com a chave em 2026-11-13 (quickstart §5.1):
+
+- `/emendas` devolve **15 registros por página**. Campos: `ano`, `autor`, `codigoEmenda`, `funcao`,
+  `localidadeDoGasto`, `nomeAutor`, `numeroEmenda`, `subfuncao`, `tipoEmenda`, `valorEmpenhado`,
+  `valorLiquidado`, `valorPago`, `valorRestoCancelado`, `valorRestoInscrito`, `valorRestoPago`.
+  2024 tem mais de 2.250 emendas (150 páginas cheias).
+- `/pessoa-juridica` com CNPJ inexistente devolve **HTTP 200 com corpo vazio**. Com CNPJ existente,
+  devolve `cnpj`, `razaoSocial`, `nomeFantasia` e indicadores de relação com o governo federal:
+  `sancionadoCEIS`, `sancionadoCNEP`, `sancionadoCEPIM`, `sancionadoCEAF`, `possuiContratacao`,
+  `participanteLicitacao`, `convenios`, `favorecidoDespesas`, `favorecidoTransferencias`,
+  `emitiuNFe`, `beneficiadoRenunciaFiscal`, `habilitadoRenunciaFiscal`,
+  `isentoImuneRenunciaFiscal`. **Não traz** atividade, porte nem município.
+- 150 chamadas seguidas a 0,7 s, de dia: nenhum 429, cerca de 70 chamadas/min efetivas.
+
+O cliente trata como "não encontrado": HTTP 404, corpo vazio, objeto sem `cnpj` ou com todos os
+campos nulos.
 
 ## Erros tratados
 

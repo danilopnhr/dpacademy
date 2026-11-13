@@ -97,8 +97,8 @@ A ingestão identifica os fornecedores pessoa jurídica que aparecem nas despesa
 ainda não têm cadastro na Bronze, e busca o cadastro de cada um no Portal da Transparência. O
 engenheiro pode limitar quantos fornecedores cada execução processa.
 
-**Why this priority**: enriquece a dimensão de fornecedor (atividade, porte, localização), mas
-depende das despesas (P1) e da chave (P3).
+**Why this priority**: enriquece a dimensão de fornecedor (razão social e se ele tem sanção,
+contrato ou convênio com o governo federal), mas depende das despesas (P1) e da chave (P3).
 
 **Independent Test**: com as despesas de um mês carregadas, rodar a carga de fornecedores e
 conferir que todo CNPJ distinto daquele mês tem cadastro na Bronze ou um registro de "não
@@ -225,8 +225,10 @@ verificar que as duas aparecem no registro com status e motivo corretos.
 - **Emenda parlamentar** (Portal): recurso do orçamento indicado por um parlamentar ou bancada;
   ano, autor, tipo, função, localidade, valores empenhado, liquidado e pago. Relaciona-se com um
   Deputado pelo nome do autor nas camadas seguintes.
-- **Fornecedor** (Portal): pessoa jurídica; CNPJ, razão social, nome fantasia, atividade
-  principal, porte, município e UF, ou a marca de "não encontrado".
+- **Fornecedor** (Portal): pessoa jurídica; CNPJ, razão social, nome fantasia e indicadores de
+  relação com o governo federal (sanções CEIS, CNEP, CEPIM e CEAF, contratação, licitação,
+  convênios, renúncia fiscal), ou a marca de "não encontrado". O Portal não informa atividade,
+  porte nem município (confirmado em 2026-11-13).
 - **Execução**: uma rodada da ingestão; fonte, recurso, recorte, horários, contagens, status e
   motivo de falha. Todo registro da Bronze aponta para uma Execução.
 
