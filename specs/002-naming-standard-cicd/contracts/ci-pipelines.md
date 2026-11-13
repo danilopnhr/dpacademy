@@ -10,14 +10,14 @@ Dois workflows em `.github/workflows/`, no repositório público `dpacademy` (re
 | Job | `pr-validation` (é o nome do status check obrigatório do ruleset) |
 | Executor | `ubuntu-latest` |
 | Permissões | `contents: read` |
-| Secrets | repository secret `BDL_NBA_API_KEY` (só para a busca por valor) |
+| Secrets | repository secret `TRANSPARENCIA_API_KEY` (só para a busca por valor) |
 | Checkout | `fetch-depth: 0` (histórico completo, para a busca de segredos) |
 
 Etapas, todas obrigatórias; qualquer falha deixa o check vermelho e bloqueia o merge:
 
 1. `python ci/validate_names.py workspace/` (contrato em [naming-rules.md](./naming-rules.md)).
 2. `python -m pytest tests/unit -q`.
-3. Busca do valor de `BDL_NBA_API_KEY` em todo o histórico. Em caso de ocorrência, falha com
+3. Busca do valor de `TRANSPARENCIA_API_KEY` em todo o histórico. Em caso de ocorrência, falha com
    `::error::segredo conhecido encontrado em <commit>:<arquivo>`, sem imprimir o valor. Se o
    secret não estiver definido (como em PRs vindos de forks), a etapa também falha.
 4. `gitleaks detect` sobre o histórico completo, com versão fixa do binário.

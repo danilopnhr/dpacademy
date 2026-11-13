@@ -1,0 +1,62 @@
+{
+  "properties": {
+    "description": "Portal da Transparência: emendas e cadastro de fornecedores (feature 003). Agenda só em produção, 01:00 (limite maior de madrugada). Uma retentativa por atividade cobre a liberação de capacidade do Trial.",
+    "activities": [
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "dbecdc48-fe45-8025-4c43-4a8775ec03a3",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.08:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 300,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "emendas",
+        "dependsOn": []
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "d03a0d5f-427e-991e-4909-a9081d63d99e",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.08:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 300,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "fornecedores",
+        "dependsOn": [
+          {
+            "activity": "emendas",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Fail",
+        "typeProperties": {
+          "message": "nb-incr-030-bronze-transparencia-emendas falhou; veja ctl_ingestion_runs em bronze_transparencia",
+          "errorCode": "500"
+        },
+        "name": "falha_emendas",
+        "dependsOn": [
+          {
+            "activity": "emendas",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

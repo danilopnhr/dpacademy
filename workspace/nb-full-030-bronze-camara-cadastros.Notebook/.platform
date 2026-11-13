@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "nb-full-030-bronze-camara-cadastros"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "7ea2f361-28f5-a393-4edb-5ca86eeff0f4"
+  }
+}

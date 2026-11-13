@@ -3,20 +3,10 @@
     "allow": [
       "WebFetch(domain:docs.datasource.expert)",
       "WebSearch",
-      "WebFetch(domain:ucl.balldontlie.io)",
-      "WebFetch(domain:www.balldontlie.io)",
-      "WebFetch(domain:docs.balldontlie.io)",
-      "WebFetch(domain:nfl.balldontlie.io)",
-      "WebFetch(domain:mlb.balldontlie.io)",
-      "WebFetch(domain:nhl.balldontlie.io)",
-      "WebFetch(domain:epl.balldontlie.io)",
-      "WebFetch(domain:f1.balldontlie.io)",
-      "WebFetch(domain:fifa.balldontlie.io)",
-      "WebFetch(domain:atp.balldontlie.io)",
-      "WebFetch(domain:mls.balldontlie.io)",
-      "WebFetch(domain:euroleague.balldontlie.io)",
-      "WebFetch(domain:mma.balldontlie.io)",
-      "WebFetch(domain:cs.balldontlie.io)"
+      "WebFetch(domain:dadosabertos.camara.leg.br)",
+      "WebFetch(domain:www.camara.leg.br)",
+      "WebFetch(domain:api.portaldatransparencia.gov.br)",
+      "WebFetch(domain:portaldatransparencia.gov.br)"
     ]
   }
 }
