@@ -116,11 +116,11 @@ validados pelo quickstart no Fabric.
 
 ### Implementation for User Story 3
 
-- [ ] T024 [US3] Criar o notebook `nb-util-010-bronze-transparencia-cliente` (Python puro), conforme `contracts/transparencia-api.md`: classe `ClienteTransparencia(caminho_chave, relogio=...)` com `paginar(caminho, params)`, `pessoa_juridica(cnpj)`, ritmo por faixa de horário, retentativas, contadores e sanitização de mensagens; commit pelo Fabric e rodar T023 até passar
-- [ ] T025 [US3] Criar o notebook `nb-util-020-bronze-transparencia-gravacao` com o mesmo contrato do T013, mais as colunas `_cnpj STRING` e `_resultado STRING` na tabela `pessoa_juridica` (`payload` pode ser nulo quando `_resultado = 'nao_encontrado'`), conforme `contracts/bronze-tables.md`; commit pelo Fabric
+- [X] T024 [US3] Criar o notebook `nb-util-010-bronze-transparencia-cliente` (Python puro), conforme `contracts/transparencia-api.md`: classe `ClienteTransparencia(caminho_chave, relogio=...)` com `paginar(caminho, params)`, `pessoa_juridica(cnpj)`, ritmo por faixa de horário, retentativas, contadores e sanitização de mensagens; commit pelo Fabric e rodar T023 até passar
+- [X] T025 [US3] Criar o notebook `nb-util-020-bronze-transparencia-gravacao` com o mesmo contrato do T013, mais as colunas `_cnpj STRING` e `_resultado STRING` na tabela `pessoa_juridica` (`payload` pode ser nulo quando `_resultado = 'nao_encontrado'`), conforme `contracts/bronze-tables.md`; commit pelo Fabric
 - [X] T026 [US3] Executar o §5.1 do `quickstart.md` em dev (sem imprimir a chave): tamanho da página de `/emendas`, resposta a CNPJ inexistente e ausência de 429 em 200 chamadas a 0,7 s; registrar os achados em `specs/003-gastos-bronze-ingestion/contracts/transparencia-api.md` e ajustar o cliente (T024) se algo divergir
-- [ ] T027 [US3] Criar o notebook `nb-incr-030-bronze-transparencia-emendas` (parâmetro `anos`; vazio → ano corrente e o anterior): um lote por ano com `paginar('/emendas', {ano})`; registro sem `codigoEmenda` faz o lote falhar; `_origem='api'`, `_recorte={"ano":AAAA}`; chave lida de `/lakehouse/default/Files/_secrets/transparencia_api_key`; commit pelo Fabric
-- [ ] T028 [US3] Validar os §5.2 e §5.3 do `quickstart.md` em dev; depois carregar `anos=2019,2020,2021,2022,2023,2025,2026` e conferir cada lote `succeeded` com `records_written = records_collected` (SC-002); anotar o volume por ano no fim do `quickstart.md`
+- [X] T027 [US3] Criar o notebook `nb-incr-030-bronze-transparencia-emendas` (parâmetro `anos`; vazio → ano corrente e o anterior): um lote por ano com `paginar('/emendas', {ano})`; registro sem `codigoEmenda` faz o lote falhar; `_origem='api'`, `_recorte={"ano":AAAA}`; chave lida de `/lakehouse/default/Files/_secrets/transparencia_api_key`; commit pelo Fabric
+- [X] T028 [US3] Validar os §5.2 e §5.3 do `quickstart.md` em dev; depois carregar `anos=2019,2020,2021,2022,2023,2025,2026` e conferir cada lote `succeeded` com `records_written = records_collected` (SC-002); anotar o volume por ano no fim do `quickstart.md`
 
 **Checkpoint**: emendas na Bronze; chave validada fora do código
 
@@ -136,9 +136,9 @@ validados pelo quickstart no Fabric.
 
 ### Implementation for User Story 4
 
-- [ ] T029 [US4] Criar o notebook `nb-incr-040-bronze-transparencia-fornecedores` (parâmetros `limite`=15000, `tamanho_bloco`=500): fila conforme research R10, com os dígitos de `get_json_object(payload,'$.txtCNPJCPF')` ou `'$.cnpjCpfFornecedor'` de `bronze_camara.despesas` com exatamente 14 dígitos, distintos, menos os `_cnpj` já presentes em `bronze_transparencia.pessoa_juridica`, em ordem crescente, até `limite`; um lote por bloco com `pessoa_juridica(cnpj)` para cada CNPJ, gravando `_cnpj`, `_resultado` e `payload`; `_source_endpoint='/pessoa-juridica'`, `_recorte={"cnpjs": n, "primeiro": "...", "ultimo": "..."}`; registrar no topo do notebook, em comentário, o desvio do Princípio I justificado no Complexity Tracking do `plan.md`; commit pelo Fabric
-- [ ] T030 [US4] Criar o pipeline `pl-010-bronze-transparencia-gastos`: `nb-incr-030-bronze-transparencia-emendas` → `nb-incr-040-bronze-transparencia-fornecedores` (padrões) com dependência "Completed" e atividade Fail final como em T020; sem agenda em dev; commit pelo Fabric
-- [ ] T031 [P] [US4] Acrescentar a `ci/schedules.json` a entrada `{"item": "pl-010-bronze-transparencia-gastos", "type": "DataPipeline", "job_type": "Pipeline", "enabled": true, "times": ["01:00"], "time_zone": "E. South America Standard Time"}`
+- [X] T029 [US4] Criar o notebook `nb-incr-040-bronze-transparencia-fornecedores` (parâmetros `limite`=15000, `tamanho_bloco`=500): fila conforme research R10, com os dígitos de `get_json_object(payload,'$.txtCNPJCPF')` ou `'$.cnpjCpfFornecedor'` de `bronze_camara.despesas` com exatamente 14 dígitos, distintos, menos os `_cnpj` já presentes em `bronze_transparencia.pessoa_juridica`, em ordem crescente, até `limite`; um lote por bloco com `pessoa_juridica(cnpj)` para cada CNPJ, gravando `_cnpj`, `_resultado` e `payload`; `_source_endpoint='/pessoa-juridica'`, `_recorte={"cnpjs": n, "primeiro": "...", "ultimo": "..."}`; registrar no topo do notebook, em comentário, o desvio do Princípio I justificado no Complexity Tracking do `plan.md`; commit pelo Fabric
+- [X] T030 [US4] Criar o pipeline `pl-010-bronze-transparencia-gastos`: `nb-incr-030-bronze-transparencia-emendas` → `nb-incr-040-bronze-transparencia-fornecedores` (padrões) com dependência "Completed" e atividade Fail final como em T020; sem agenda em dev; commit pelo Fabric
+- [X] T031 [P] [US4] Acrescentar a `ci/schedules.json` a entrada `{"item": "pl-010-bronze-transparencia-gastos", "type": "DataPipeline", "job_type": "Pipeline", "enabled": true, "times": ["01:00"], "time_zone": "E. South America Standard Time"}`
 - [ ] T032 [US4] Validar os §6.1 a §6.3 do `quickstart.md` em dev; em seguida, disparar a carga completa à mão depois da meia-noite (limite de madrugada) e repetir na noite seguinte até a fila ficar abaixo de 5% dos CNPJs distintos (SC-004, prazo 2026-11-30)
 
 **Checkpoint**: fornecedores enriquecidos; todas as tabelas da Bronze do case preenchidas
@@ -151,7 +151,7 @@ validados pelo quickstart no Fabric.
 
 **Independent Test**: uma execução com sucesso e uma com chave inválida aparecem com status e motivo corretos (quickstart §7)
 
-- [ ] T033 [US5] Ao final de cada notebook de carga (`nb-full-030-bronze-camara-cadastros`, `nb-incr-040-bronze-camara-despesas`, `nb-incr-030-bronze-transparencia-emendas`, `nb-incr-040-bronze-transparencia-fornecedores`), exibir com `display` as linhas de `ctl_ingestion_runs` do `run_id` atual (recurso, recorte, status, contagens, `message`), sem nenhum dado da chave; commit pelo Fabric
+- [X] T033 [US5] Ao final de cada notebook de carga (`nb-full-030-bronze-camara-cadastros`, `nb-incr-040-bronze-camara-despesas`, `nb-incr-030-bronze-transparencia-emendas`, `nb-incr-040-bronze-transparencia-fornecedores`), exibir com `display` as linhas de `ctl_ingestion_runs` do `run_id` atual (recurso, recorte, status, contagens, `message`), sem nenhum dado da chave; commit pelo Fabric
 - [ ] T034 [US5] Validar o §7 do `quickstart.md` em dev: duas execuções seguidas de `nb-full-030-bronze-camara-cadastros` (a segunda com lotes `skipped`); uma linha `running` antiga forçada à mão (mais de 6 h) virando `failed` com `stale`; todas as execuções das fases anteriores presentes com status correto (SC-007)
 
 **Checkpoint**: todas as histórias validadas em dev

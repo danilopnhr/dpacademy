@@ -136,3 +136,20 @@ coluna `message` de `ctl_ingestion_runs`.
   registrada em data-model.md para a Silver).
 
 - **Execução verde**: com a regra corrigida e uma retentativa por atividade, o pipeline rodou à mão de ponta a ponta com sucesso em 21,8 min (cadastros + 3 meses pela API).
+
+### 2026-11-13: US3 (emendas do Portal), `ws-dev-dpacademy`
+
+- **Confirmações com a chave** (§5.1): 15 emendas por página; CNPJ inexistente devolve HTTP 200
+  com corpo vazio; `/pessoa-juridica` traz sanções e vínculos com o governo federal, mas não
+  atividade, porte nem município; 150 chamadas a 0,7 s sem nenhum 429 (contracts/transparencia-api.md).
+- **Emendas** (§5.2, SC-002): 8 anos, todos `succeeded` com coletado = gravado e nenhuma
+  retentativa. 2019: 8.456; 2020: 8.539; 2021: 6.595; 2022: 6.108; 2023: 6.110; 2024: 6.990;
+  2025: 6.310; 2026: 5.936. Total de 55.044, de 4,7 a 6,8 min por ano no ritmo de dia.
+- **Chave natural**: o mesmo `codigoEmenda` aparece em mais de uma linha, dividido por tipo de
+  transferência e localidade (4 casos em 2024). A chave é `codigoEmenda` + `tipoEmenda` +
+  `localidadeDoGasto` (data-model.md).
+- **Chave inválida** (§5.3): com o arquivo da chave renomeado temporariamente, o lote terminou
+  `failed` em cerca de 1 min, com `message` = "ErroChave: chave da API ausente ou inválida", sem
+  coletar nada. O arquivo foi restaurado (32 bytes). Na primeira tentativa a execução não
+  aparecia em `ctl_ingestion_runs`, porque a falha vinha antes do primeiro lote; corrigido com
+  `lote_falho` (SC-007).

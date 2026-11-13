@@ -28,7 +28,7 @@ Relações (resolvidas na Silver):
 
 | Entidade | Tabela | Chave natural (no `payload`) | Origem | Volume |
 |---|---|---|---|---|
-| Emenda parlamentar | `emendas` | `codigoEmenda` | API `/emendas?ano=` | a medir (quickstart §5) |
+| Emenda parlamentar | `emendas` | `codigoEmenda` + `tipoEmenda` + `localidadeDoGasto` (o mesmo código aparece dividido por tipo de transferência e localidade) | API `/emendas?ano=` | 6.990 em 2024 |
 | Pessoa jurídica (fornecedor) | `pessoa_juridica` | `_cnpj` (o `cnpj` do payload vem formatado) | API `/pessoa-juridica?cnpj=` | ~68 mil |
 
 Relações (resolvidas na Silver ou na Gold):
