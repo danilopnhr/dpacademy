@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "nb-incr-030-bronze-transparencia-emendas"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "dbecdc48-fe45-8025-4c43-4a8775ec03a3"
+  }
+}
