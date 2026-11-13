@@ -44,6 +44,13 @@ implementada), ajustada para duas fontes.
 | 2026 (até nov) | 123.968 | 154,6 mi | 21.404 |
 | **Total** | **1.273.061** | | **68.042 distintos no período** |
 
+**Republicação em 2026-11-13**: a Câmara republicou os arquivos de 2019 (199.383 → 289.832
+despesas, R$ 158,1 → 210,9 mi) e de 2020 (128.178 → 167.144, R$ 149,7 → 173,3 mi) entre
+2026-11-12 e 2026-11-13 (arquivos com data de 2026-11-13 03:32). Os demais anos não mudaram. Com
+isso, o histórico passa a 1.402.476 despesas e 68.043 CNPJs distintos. A Bronze, carregada em
+2026-11-13, bate exatamente com os arquivos republicados. Os totais de SC-001 são conferidos
+contra o arquivo do dia da carga, nunca contra esta tabela.
+
 - Os CSVs descompactados somam ~460 MB (de 46 a 72 MB por ano); separador `;`, UTF-8 com BOM,
   32 colunas (`txNomeParlamentar`, `ideCadastro`, `sgPartido`, `txtDescricao`, `txtFornecedor`,
   `txtCNPJCPF`, `datEmissao`, `vlrDocumento`, `vlrGlosa`, `vlrLiquido`, `numMes`, `numAno`,

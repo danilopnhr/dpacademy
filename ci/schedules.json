@@ -1,1 +1,10 @@
-[]
+[
+  {
+    "item": "pl-010-bronze-camara-gastos",
+    "type": "DataPipeline",
+    "job_type": "Pipeline",
+    "enabled": true,
+    "times": ["05:00"],
+    "time_zone": "E. South America Standard Time"
+  }
+]

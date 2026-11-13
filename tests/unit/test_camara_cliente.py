@@ -159,3 +159,36 @@ def test_baixar_cotas_404_devolve_none(mod, tmp_path):
 )
 def test_normalizar_cabecalho(mod, bruto, esperado):
     assert mod.normalizar_cabecalho(bruto) == esperado
+
+
+# --- US2: janela da carga recorrente (T017) ---
+
+from datetime import date  # noqa: E402
+
+
+@pytest.mark.parametrize(
+    "hoje,esperado",
+    [
+        (date(2026, 11, 12), [(2026, 9), (2026, 10), (2026, 11)]),
+        (date(2026, 1, 15), [(2025, 11), (2025, 12), (2026, 1)]),
+        (date(2026, 2, 28), [(2025, 12), (2026, 1), (2026, 2)]),
+    ],
+)
+def test_meses_padrao_corrente_e_dois_anteriores(mod, hoje, esperado):
+    assert mod.meses_padrao(hoje) == esperado
+
+
+def test_meses_padrao_sem_data_usa_hoje_em_sao_paulo(mod):
+    meses = mod.meses_padrao()
+    assert len(meses) == 3 and meses == sorted(meses)
+
+
+def test_ler_meses(mod):
+    assert mod.ler_meses("2026-08, 2026-09") == [(2026, 8), (2026, 9)]
+    assert mod.ler_meses("2026-09,2026-08,2026-09") == [(2026, 8), (2026, 9)]
+
+
+@pytest.mark.parametrize("texto", ["2026-13", "2026/08", "08-2026", "abc"])
+def test_ler_meses_invalido(mod, texto):
+    with pytest.raises(ValueError):
+        mod.ler_meses(texto)

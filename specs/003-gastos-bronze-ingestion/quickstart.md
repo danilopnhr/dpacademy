@@ -101,3 +101,23 @@ git grep -n -F "<valor da chave>" $(git rev-list --all)
 
 Esperado: nenhum resultado. Conferir também a saída das células dos notebooks executados e a
 coluna `message` de `ctl_ingestion_runs`.
+
+## Registro da validação
+
+### 2026-11-13: US1 (cadastros e histórico de despesas), `ws-dev-dpacademy`
+
+- **Cadastros** (§2): `legislaturas` 57, `partidos` 38 distintos (62 registros somando as
+  legislaturas 56 e 57) e `deputados` 929; 949 requisições, nenhuma retentativa; 5,7 min.
+- **Despesas pelo arquivo** (§3): os 8 anos conferem exatamente com o arquivo do dia, em contagem e
+  em valor líquido. 2019: 289.832; 2020: 167.144; 2021: 155.274; 2022: 148.193; 2023: 173.515;
+  2024: 173.961 (R$ 211.437.069,03); 2025: 170.589; 2026: 123.968. São 1.402.476 despesas e
+  68.043 CNPJs distintos. Cada ano leva de 12 a 25 s quando a fonte responde; cadastros e
+  histórico somam menos de 10 min de execução útil (SC-003).
+- **Recarga** (cenário 2 da US1): 2024 carregado duas vezes, com dois `_batch_id`, e a versão
+  anterior preservada.
+- **Instabilidade da fonte**: `www.camara.leg.br` ficou inacessível a partir do Fabric por cerca
+  de 75 min (2026-11-13, das 00:54 às 02:11 UTC). Os lotes de 2019 e 2020 terminaram `failed` após
+  6 tentativas, sem dados parciais, e foram recarregados depois só com `anos=2019,2020` (FR-008).
+  Na operação diária, rodar de novo um lote `failed` antes de tratá-lo como perda.
+- **Republicação**: a Câmara republicou os arquivos de 2019 e 2020 entre 12 e 13/11 (research R2).
+
