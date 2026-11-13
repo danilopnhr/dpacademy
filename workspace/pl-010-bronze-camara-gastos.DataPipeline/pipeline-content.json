@@ -1,0 +1,62 @@
+{
+  "properties": {
+    "description": "Câmara: cadastros e despesas recorrentes (feature 003). Agenda só em produção (ci/schedules.json).",
+    "activities": [
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "7ea2f361-28f5-a393-4edb-5ca86eeff0f4",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.02:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "cadastros",
+        "dependsOn": []
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "affd58c9-eaef-83da-4576-038f7b3ee658",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.02:00:00",
+          "retry": 0,
+          "retryIntervalInSeconds": 30,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "despesas",
+        "dependsOn": [
+          {
+            "activity": "cadastros",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Fail",
+        "typeProperties": {
+          "message": "nb-full-030-bronze-camara-cadastros falhou; veja ctl_ingestion_runs em bronze_camara",
+          "errorCode": "500"
+        },
+        "name": "falha_cadastros",
+        "dependsOn": [
+          {
+            "activity": "cadastros",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

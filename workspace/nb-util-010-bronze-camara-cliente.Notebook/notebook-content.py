@@ -12,17 +12,18 @@
 # MARKDOWN ********************
 
 # # nb-util-010-bronze-camara-cliente
-# # Cliente HTTP da API de Dados Abertos da Câmara dos Deputados, em Python puro (sem Spark e sem
-# `notebookutils`), para ser testado localmente com `pytest`.
-# # - Contrato: `specs/003-gastos-bronze-ingestion/contracts/camara-api.md`
-# - Decisões: research R1, R7 e R8 da feature 003
+# Cliente HTTP da API de Dados Abertos da Câmara dos Deputados, em Python puro (sem Spark e sem `notebookutils`), testado localmente com `pytest`.
+# - Contrato: `specs/003-gastos-bronze-ingestion/contracts/camara-api.md`
+# - Decisões: research R1, R7, R8 e R11 da feature 003
 # - Uso: `%run nb-util-010-bronze-camara-cliente` nos notebooks de carga da Câmara
 
 # CELL ********************
 
+import re
 import time
-from datetime import date
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 import requests
 
@@ -31,6 +32,16 @@ URL_COTAS = "https://www.camara.leg.br/cotas/Ano-{ano}.csv.zip"
 ESPERAS_RETENTATIVA = (15, 30, 60, 120, 240)
 INTERVALO_MINIMO_S = 0.25
 ITENS_POR_PAGINA = 100
+
+
+def fuso_sao_paulo():
+    """America/Sao_Paulo; sem base de fusos (ex.: Windows sem tzdata), UTC-3 fixo (sem horário de verão desde 2019)."""
+    try:
+        return ZoneInfo("America/Sao_Paulo")
+    except Exception:
+        return timezone(timedelta(hours=-3))
+
+
 CABECALHOS = {"Accept": "application/json", "User-Agent": "dpacademy-ingestao/1.0"}
 
 
@@ -127,6 +138,28 @@ class ClienteCamara:
         caminho = destino / f"Ano-{ano}.csv.zip"
         caminho.write_bytes(resposta.content)
         return caminho
+
+
+def meses_padrao(hoje=None):
+    """Mês corrente e os dois anteriores, em ordem, no fuso America/Sao_Paulo (research R11)."""
+    hoje = hoje or datetime.now(fuso_sao_paulo()).date()
+    meses = []
+    ano, mes = hoje.year, hoje.month
+    for _ in range(3):
+        meses.append((ano, mes))
+        ano, mes = (ano - 1, 12) if mes == 1 else (ano, mes - 1)
+    return sorted(meses)
+
+
+def ler_meses(texto):
+    """'2026-08,2026-09' -> [(2026, 8), (2026, 9)], sem repetições e em ordem."""
+    meses = set()
+    for parte in (p.strip() for p in texto.split(",") if p.strip()):
+        m = re.fullmatch(r"(\d{4})-(\d{2})", parte)
+        if not m or not 1 <= int(m.group(2)) <= 12:
+            raise ValueError(f"mês inválido: {parte!r}; use AAAA-MM")
+        meses.add((int(m.group(1)), int(m.group(2))))
+    return sorted(meses)
 
 
 def normalizar_cabecalho(nome):
