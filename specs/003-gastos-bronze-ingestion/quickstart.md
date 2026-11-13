@@ -153,3 +153,12 @@ coluna `message` de `ctl_ingestion_runs`.
   coletar nada. O arquivo foi restaurado (32 bytes). Na primeira tentativa a execução não
   aparecia em `ctl_ingestion_runs`, porque a falha vinha antes do primeiro lote; corrigido com
   `lote_falho` (SC-007).
+
+### 2026-11-13: US4 (fornecedores), `ws-dev-dpacademy`
+
+- **Teste curto** (§6.1–6.2): `limite=1000` gerou 2 lotes de 500; 700 `encontrado` e 300
+  `nao_encontrado`; 2 fornecedores com sanção no CEIS.
+- **1ª rodada da carga completa** (`limite=15000`, de dia): 30 lotes de 500, todos `succeeded`,
+  15.000 requisições a 0,7 s, nenhuma retentativa, 184 min. Acumulado: 32 lotes, 16.000 linhas e
+  16.000 `_cnpj` distintos (nenhum repetido, §6.3); 10.606 `encontrado` (66%) e 5.394
+  `nao_encontrado`. Restam cerca de 52 mil CNPJs na fila.
