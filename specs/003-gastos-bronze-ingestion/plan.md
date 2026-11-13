@@ -26,7 +26,7 @@ só têm agenda em produção.
 
 ## Technical Context
 
-**Language/Version**: Python 3.11 (Fabric Runtime 1.3, PySpark 3.5)
+**Language/Version**: Python 3.11; Spark 4.1 no runtime padrão do workspace (verificado em 2026-11-12; o plano original supunha Runtime 1.3 com Spark 3.5)
 
 **Primary Dependencies**: `requests`, `zipfile` e `csv` (já no runtime ou na biblioteca padrão),
 `notebookutils` e Delta Lake (nativos do Fabric); localmente, `pytest`

@@ -109,6 +109,10 @@ implementada), ajustada para duas fontes.
   (um arquivo anual, ~200 mil linhas, ~72 MB) cabe no driver e é lido com `spark.read.csv`.
 - **Alternatives considered**: Python notebook sem Spark (mais leve, mas desvia da stack);
   Copy activity com conector REST (não resolve a chave com segurança nem o ritmo por horário).
+- **Achado na implementação (2026-11-12)**: o runtime padrão do workspace roda Spark 4.1, e nele
+  os parâmetros nomeados de `spark.sql(..., args=...)` não chegam ao SQL
+  (`UNBOUND_SQL_PARAMETER`). A gravação usa a API do Delta (`DeltaTable.update`) e filtros de
+  DataFrame no lugar de SQL parametrizado.
 
 ## R7. Organização do código e testes
 
