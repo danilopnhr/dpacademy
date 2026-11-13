@@ -1,6 +1,6 @@
 {
   "properties": {
-    "description": "Câmara: cadastros e despesas recorrentes (feature 003). Agenda só em produção (ci/schedules.json). Retentativa nas atividades cobre a liberação lenta de capacidade do Trial; os notebooks são idempotentes.",
+    "description": "Câmara: cadastros e despesas recorrentes (feature 003). Agenda só em produção (ci/schedules.json). Uma retentativa por atividade cobre a liberação lenta de capacidade do Trial; os notebooks são idempotentes.",
     "activities": [
       {
         "type": "TridentNotebook",
@@ -10,7 +10,7 @@
         },
         "policy": {
           "timeout": "0.02:00:00",
-          "retry": 2,
+          "retry": 1,
           "retryIntervalInSeconds": 300,
           "secureInput": false,
           "secureOutput": false
@@ -26,7 +26,7 @@
         },
         "policy": {
           "timeout": "0.02:00:00",
-          "retry": 2,
+          "retry": 1,
           "retryIntervalInSeconds": 300,
           "secureInput": false,
           "secureOutput": false
