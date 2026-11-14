@@ -152,7 +152,7 @@ validados pelo quickstart no Fabric.
 **Independent Test**: uma execução com sucesso e uma com chave inválida aparecem com status e motivo corretos (quickstart §7)
 
 - [X] T033 [US5] Ao final de cada notebook de carga (`nb-full-030-bronze-camara-cadastros`, `nb-incr-040-bronze-camara-despesas`, `nb-incr-030-bronze-transparencia-emendas`, `nb-incr-040-bronze-transparencia-fornecedores`), exibir com `display` as linhas de `ctl_ingestion_runs` do `run_id` atual (recurso, recorte, status, contagens, `message`), sem nenhum dado da chave; commit pelo Fabric
-- [ ] T034 [US5] Validar o §7 do `quickstart.md` em dev: duas execuções seguidas de `nb-full-030-bronze-camara-cadastros` (a segunda com lotes `skipped`); uma linha `running` antiga forçada à mão (mais de 6 h) virando `failed` com `stale`; todas as execuções das fases anteriores presentes com status correto (SC-007)
+- [X] T034 [US5] Validar o §7 do `quickstart.md` em dev: duas execuções seguidas de `nb-full-030-bronze-camara-cadastros` (a segunda com lotes `skipped`); uma linha `running` antiga forçada à mão (mais de 6 h) virando `failed` com `stale`; todas as execuções das fases anteriores presentes com status correto (SC-007)
 
 **Checkpoint**: todas as histórias validadas em dev
 

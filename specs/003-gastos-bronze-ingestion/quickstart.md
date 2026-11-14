@@ -177,3 +177,19 @@ coluna `message` de `ctl_ingestion_runs`.
   porque havia uma sessão Spark de conferência aberta ao mesmo tempo (falha de plataforma, sem
   lote). No Trial, não abrir sessões enquanto uma carga roda; em produção o agendamento das
   01:00 resolve o encadeamento.
+
+### 2026-11-14: US5 (registro e concorrência), `ws-dev-dpacademy`
+
+- **Método**: o Trial não comporta duas sessões Spark ao mesmo tempo, então a concorrência foi
+  simulada com duas linhas `running` inseridas à mão em `bronze_camara.ctl_ingestion_runs`
+  (`run_id = teste-t034`): `partidos` recém-iniciado e `legislaturas` iniciado 7 h antes. Em
+  seguida, `nb-full-030-bronze-camara-cadastros` com `recursos=partidos,legislaturas`.
+- **Lote em andamento** (§7): `partidos` terminou `skipped`, com "outro lote do mesmo recurso em
+  andamento" e zero registros.
+- **Lote travado**: a linha antiga de `legislaturas` virou `failed` com `message` = `stale`, e o
+  novo lote rodou `succeeded` com 57 registros. A linha de teste de `partidos` foi encerrada à
+  mão depois ("linha de teste T034 encerrada à mão").
+- **Registro completo** (SC-007): nenhuma linha `running` sobrou nas duas fontes. Os `failed`
+  são todos os casos registrados acima: 3 anos de despesas no apagão de `www.camara.leg.br`, 2
+  tentativas de 09/2026 antes da regra do `codDocumento` e o teste de chave inválida de emendas.
+  Câmara: 30 `succeeded`, 7 `failed`, 1 `skipped`. Portal: 146 `succeeded`, 1 `failed`.
