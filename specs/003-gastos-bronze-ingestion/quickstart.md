@@ -162,3 +162,18 @@ coluna `message` de `ctl_ingestion_runs`.
   15.000 requisições a 0,7 s, nenhuma retentativa, 184 min. Acumulado: 32 lotes, 16.000 linhas e
   16.000 `_cnpj` distintos (nenhum repetido, §6.3); 10.606 `encontrado` (66%) e 5.394
   `nao_encontrado`. Restam cerca de 52 mil CNPJs na fila.
+- **Carga completa concluída** (2026-11-14): mais 3 rodadas (15.000, 15.000 e 22.057). No total,
+  137 lotes `succeeded`, 68.057 requisições sem nenhuma retentativa nem 429, 68.057 linhas e
+  68.057 `_cnpj` distintos (§6.3). A fila zerou: a última rodada pediu 25.000 e só havia 22.057
+  pendentes. São 68.057 e não 68.043 porque os meses carregados pela API trouxeram CNPJs novos.
+  33.967 `encontrado` e 34.090 `nao_encontrado`.
+- **Taxa de não encontrados por faixa de CNPJ**: fica em ~30% nas raízes abaixo de 20 milhões e
+  acima de 68 milhões, e entre 55% e 75% nas raízes de 20 a 64 milhões (empresas abertas a partir
+  de ~2014, muitas MEI). A taxa acompanha a faixa, não o horário: nos mesmos lotes, ritmo e
+  respostas não mudaram. Leitura para a Silver: `/pessoa-juridica` cobre melhor quem tem relação
+  com o governo federal; ausência não é erro.
+- **Operação**: a 2ª rodada terminou às 23:22, e o encadeamento local parou porque o PC suspendeu;
+  a madrugada ficou ociosa. Uma rodada disparada às 08:06 falhou com `TooManyRequestsForCapacity`
+  porque havia uma sessão Spark de conferência aberta ao mesmo tempo (falha de plataforma, sem
+  lote). No Trial, não abrir sessões enquanto uma carga roda; em produção o agendamento das
+  01:00 resolve o encadeamento.
