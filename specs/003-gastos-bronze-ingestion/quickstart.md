@@ -193,3 +193,30 @@ coluna `message` de `ctl_ingestion_runs`.
   são todos os casos registrados acima: 3 anos de despesas no apagão de `www.camara.leg.br`, 2
   tentativas de 09/2026 antes da regra do `codDocumento` e o teste de chave inválida de emendas.
   Câmara: 30 `succeeded`, 7 `failed`, 1 `skipped`. Portal: 146 `succeeded`, 1 `failed`.
+
+### 2026-11-16: primeira publicação e carga histórica, `ws-prd-dpacademy` (T042)
+
+- **Publicação**: PR #4 (`dev` → `main`). O `deploy-prd` ficou verde em ~1 min, com 2 lakehouses,
+  8 notebooks e 2 pipelines. Os notebooks de carga apontam para os lakehouses de produção, sem
+  nenhum ID de dev no conteúdo, e os pipelines chamam os notebooks de produção. As agendas ficaram
+  ativas só em prd (Câmara às 05:00, Portal à 01:00); em dev não há nenhuma. A chave do Portal foi
+  enviada à mão para `bronze_transparencia/Files/_secrets/` de prd (32 bytes, igual à de dev).
+- **Carga histórica** (manual, uma vez, todas as linhas com `environment = 'prd'`):
+  - cadastros: 57 legislaturas, 38 partidos e 929 deputados, em 6,5 min;
+  - despesas pelo arquivo, 2019 a 2026: 1.685.598 linhas em 3,3 min;
+  - emendas, 2019 a 2026: 55.044, igual a dev.
+- **Nova republicação da Câmara**: os arquivos de 2021 a 2026 foram republicados em 2026-11-16 às
+  07:23 UTC, depois da carga de dev, com cerca de 35% mais linhas. Em 2024, o arquivo passou de
+  173.961 linhas e R$ 211,4 mi para 232.926 linhas e R$ 250.384.236,66, conferido no arquivo
+  baixado; a Bronze de prd bate exatamente. O esquema continua com as mesmas 32 colunas. Agora
+  aparecem linhas sem `ideDocumento`, marcadas como despesas de liderança (1 em 2025, 5 em 2026).
+  A Bronze de dev ficou com a versão anterior de 2021 a 2026. Para a Silver: recarregar dev
+  antes de comparar ambientes, e tratar a republicação como rotina (data-model.md).
+- **Falha transitória do Portal**: o lote de emendas de 2024 terminou `failed` com HTTP 400
+  `{"Erro na API":"Erro ao executar a consulta"}` depois de ~1 min lendo páginas. Os outros 7 anos
+  passaram. A repetição só de `anos=2024` deu `succeeded` com 6.990 registros. O cliente trata
+  400 como falha definitiva e não tenta de novo; essa resposta específica parece instável no
+  servidor (pendência abaixo).
+- **Pendência**: avaliar se o cliente do Portal deve tentar de novo um 400 com "Erro ao executar
+  a consulta".
+- **A conferir**: a primeira execução agendada de cada pipeline (01:00 e 05:00 de 2026-11-17).

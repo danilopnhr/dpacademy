@@ -205,3 +205,10 @@ contra o arquivo do dia da carga, nunca contra esta tabela.
   - **API da Câmara**: comparar o coletado com o `X-Total-Count` de cada consulta.
   - **Emendas** (SC-002): paginar até a lista vazia e conferir que o coletado é igual ao gravado.
   - **Fornecedores**: tamanho da fila antes e depois.
+
+## Achado de 2026-11-16: republicação de 2021 a 2026
+
+A Câmara republicou os arquivos anuais de 2021 a 2026 em 2026-11-16 (`last-modified` 07:23 UTC), com
+cerca de 35% mais linhas (2024: de 173.961 para 232.926). Com a de 2019/2020 em 2026-11-13, isso
+confirma que a republicação é recorrente: a carga por arquivo grava a versão do dia, e a Silver precisa
+escolher a versão mais recente por ano (`_batch_id` mais novo), sem somar versões.
