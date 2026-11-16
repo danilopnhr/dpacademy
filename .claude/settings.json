@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:docs.datasource.expert)",
+      "WebSearch",
+      "WebFetch(domain:dadosabertos.camara.leg.br)",
+      "WebFetch(domain:www.camara.leg.br)",
+      "WebFetch(domain:api.portaldatransparencia.gov.br)",
+      "WebFetch(domain:portaldatransparencia.gov.br)"
+    ]
+  }
+}

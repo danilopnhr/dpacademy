@@ -1,0 +1,20 @@
+# Troca de IDs de dev pelos de produção no conteúdo dos itens (formato do fabric-cicd).
+# Contrato: specs/002-naming-standard-cicd/contracts/deploy-config.md
+# find_value é sempre o GUID de dev; replace_value de prd é sempre dinâmico. Nenhum GUID de prd aqui.
+# Um notebook com lakehouse padrão novo exige uma entrada nova no mesmo PR.
+
+find_replace:
+  # Workspace nos metadados dos notebooks e nas atividades de pipeline
+  - find_value: "559ab4d8-8abd-4b75-9bdc-fd68895d93bf" # ws-dev-dpacademy
+    replace_value:
+      prd: "$workspace.$id"
+
+  # Lakehouse padrão dos notebooks da Bronze da Câmara
+  - find_value: "dd959c99-5fae-41c3-a6fe-56b114d845b5" # bronze_camara em dev
+    replace_value:
+      prd: "$items.Lakehouse.bronze_camara.$id"
+
+  # Lakehouse padrão dos notebooks da Bronze do Portal da Transparência
+  - find_value: "14751a47-c567-4109-a7ba-191dd4855d7a" # bronze_transparencia em dev
+    replace_value:
+      prd: "$items.Lakehouse.bronze_transparencia.$id"

@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "DataPipeline",
+    "displayName": "pl-010-bronze-camara-gastos",
+    "description": "Câmara: cadastros e despesas recorrentes (feature 003)"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "3838b336-d161-ac9e-4b36-b1d5e452f893"
+  }
+}

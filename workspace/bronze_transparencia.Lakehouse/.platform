@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Lakehouse",
+    "displayName": "bronze_transparencia",
+    "description": "Bronze da API do Portal da Transparência (case gastos)"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "d4855d7a-191d-a7ba-4109-c56714751a47"
+  }
+}

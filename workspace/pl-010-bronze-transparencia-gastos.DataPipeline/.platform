@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "DataPipeline",
+    "displayName": "pl-010-bronze-transparencia-gastos",
+    "description": "Portal da Transparência: emendas e fornecedores (feature 003)"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "8e9653bd-b784-b8da-4710-1e0ff955ab03"
+  }
+}

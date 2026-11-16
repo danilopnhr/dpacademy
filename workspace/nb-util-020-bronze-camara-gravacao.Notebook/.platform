@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "nb-util-020-bronze-camara-gravacao"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "972b98e3-ee36-9612-4b5b-f900d4dddcbf"
+  }
+}

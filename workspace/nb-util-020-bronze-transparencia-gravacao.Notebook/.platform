@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "nb-util-020-bronze-transparencia-gravacao"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "8f20d54a-d7b9-997c-44e2-13b98913d89a"
+  }
+}
