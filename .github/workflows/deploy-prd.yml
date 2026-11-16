@@ -1,0 +1,41 @@
+# Publicação de main em ws-prd-dpacademy (contrato: specs/002-naming-standard-cicd/contracts/ci-pipelines.md).
+# Uma publicação por vez: o grupo de concorrência enfileira, e só o commit mais recente espera na fila.
+name: deploy-prd
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "workspace/**"
+      - "ci/**"
+      - ".github/workflows/deploy-prd.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-prd
+  cancel-in-progress: false
+
+jobs:
+  publicar-prd:
+    name: Publicar em ws-prd-dpacademy
+    runs-on: ubuntu-latest
+    # Os secrets da SP ficam só neste Environment, liberado apenas para main.
+    environment: ws-prd-dpacademy
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependências
+        run: python -m pip install -r ci/requirements.txt
+
+      - name: Publicar, agendar e conferir tabelas
+        env:
+          FABRIC_TENANT_ID: ${{ vars.FABRIC_TENANT_ID }}
+          SP_CLIENT_ID: ${{ vars.SP_CLIENT_ID }}
+          SP_CLIENT_SECRET: ${{ secrets.SP_CLIENT_SECRET }}
+        run: python ci/deploy.py --environment prd
