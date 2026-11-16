@@ -96,9 +96,9 @@ Preencher conforme as tarefas de setup forem concluídas. Nada aqui é segredo.
 | Repositório GitHub | https://github.com/danilopnhr/dpacademy (público, só squash merge, branch apagada após merge; criado em 2026-11-12) |
 | Secret scanning e push protection | ativos desde 2026-11-12 |
 | Token fine-grained do Fabric (só a **expiração**) | 2027-02-10 (90 dias, criado em 2026-11-12; conta `github-dpacademy` no Fabric) |
-| App ID da `sp-dpacademy-cicd` | _a preencher (T013)_ |
+| App ID da `sp-dpacademy-cicd` | `977abc3e-325d-4c5b-a338-32facbd78aa3` (locatário único; object ID da SP `a7583e3f-de80-4d07-9c33-0f257f980760`) |
 | Grupo `sg-dpacademy-cicd` | _a preencher (T013)_ |
-| **Expiração do client secret** | _a preencher (T013)_ |
+| **Expiração do client secret** | **2028-11-15** (24 meses, criado em 2026-11-15; descrição `github-deploy-prd`; guardado só no secret `SP_CLIENT_SECRET` do Environment `ws-prd-dpacademy`) |
 | Configurações de tenant do Fabric ativadas | _a preencher (T014)_ |
 | Ruleset de `main` | _a preencher (T027)_ |
 
