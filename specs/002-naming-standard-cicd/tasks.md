@@ -69,11 +69,11 @@ exceção ao Princípio VII: Complexity Tracking do [plan.md](./plan.md).
 
 **⚠️ CRITICAL**: o `deploy-prd` (US2) não funciona sem esta fase. US1 pode começar em paralelo.
 
-- [ ] T013 Registrar o aplicativo `sp-dpacademy-cicd` no Entra ID, criar um client secret (anotar só a **data de expiração**, nunca o valor) e criar o grupo de segurança `sg-dpacademy-cicd` contendo a SP; registrar IDs não secretos e expiração em `docs/adr-002-cicd-fabric-cicd.md`
-- [ ] T014 No portal de administração do Fabric, ativar as configurações de tenant que permitem a service principals usar as APIs públicas do Fabric, restritas ao grupo `sg-dpacademy-cicd` (research R2); registrar as configurações ativadas em `docs/adr-002-cicd-fabric-cicd.md`
-- [ ] T015 Adicionar `sp-dpacademy-cicd` como **Admin** apenas no `ws-prd-dpacademy` (nenhum papel em `ws-dev-dpacademy`), conforme a tabela "Ambiente" de [data-model.md](./data-model.md)
-- [ ] T016 Criar no repositório (Settings → Secrets and variables → Actions) o **repository secret** `BDL_NBA_API_KEY`, usado só pela busca de segredos do `pr-validation` (research R5)
-- [ ] T017 Criar o **Environment** `ws-prd-dpacademy` no GitHub (Settings → Environments) com **Deployment branches** restrito a `main`, as **variáveis** `FABRIC_TENANT_ID` e `SP_CLIENT_ID` e o **secret** `SP_CLIENT_SECRET` ([contracts/ci-pipelines.md](./contracts/ci-pipelines.md))
+- [X] T013 Registrar o aplicativo `sp-dpacademy-cicd` no Entra ID, criar um client secret (anotar só a **data de expiração**, nunca o valor) e criar o grupo de segurança `sg-dpacademy-cicd` contendo a SP; registrar IDs não secretos e expiração em `docs/adr-002-cicd-fabric-cicd.md`
+- [X] T014 No portal de administração do Fabric, ativar as configurações de tenant que permitem a service principals usar as APIs públicas do Fabric, restritas ao grupo `sg-dpacademy-cicd` (research R2); registrar as configurações ativadas em `docs/adr-002-cicd-fabric-cicd.md`
+- [X] T015 Adicionar `sp-dpacademy-cicd` como **Admin** apenas no `ws-prd-dpacademy` (nenhum papel em `ws-dev-dpacademy`), conforme a tabela "Ambiente" de [data-model.md](./data-model.md)
+- [X] T016 Criar no repositório (Settings → Secrets and variables → Actions) o **repository secret** `BDL_NBA_API_KEY`, usado só pela busca de segredos do `pr-validation` (research R5) — **substituída pela feature 003** (T004): o secret do repositório é `TRANSPARENCIA_API_KEY`
+- [X] T017 Criar o **Environment** `ws-prd-dpacademy` no GitHub (Settings → Environments) com **Deployment branches** restrito a `main`, as **variáveis** `FABRIC_TENANT_ID` e `SP_CLIENT_ID` e o **secret** `SP_CLIENT_SECRET` ([contracts/ci-pipelines.md](./contracts/ci-pipelines.md))
 - [X] T018 [P] Criar `ci/environments.json` exatamente no formato de [contracts/deploy-config.md](./contracts/deploy-config.md), com `workspace_name` e `workspace_id` de `dev` e `prd` (IDs obtidos na URL do workspace)
 
 **Checkpoint**: identidade, segredos e ambientes prontos.
