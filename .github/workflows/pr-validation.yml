@@ -35,13 +35,13 @@ jobs:
 
       - name: "3. Segredos conhecidos no histórico"
         env:
-          BDL_NBA_API_KEY: ${{ secrets.BDL_NBA_API_KEY }}
+          TRANSPARENCIA_API_KEY: ${{ secrets.TRANSPARENCIA_API_KEY }}
         run: |
           set -uo pipefail
           git fetch --no-tags origin '+refs/heads/*:refs/remotes/origin/*'
           found=0
           revs=$(git rev-list --all)
-          for var in BDL_NBA_API_KEY; do
+          for var in TRANSPARENCIA_API_KEY; do
             value="${!var:-}"
             if [ -z "$value" ]; then
               echo "::error::$var não está definida nos secrets do repositório"

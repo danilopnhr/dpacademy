@@ -22,7 +22,7 @@ Troca os IDs de dev pelos de produção no conteúdo dos itens:
 | O que é trocado | Valor em dev (literal) | Valor em prd |
 |---|---|---|
 | Workspace nos metadados dos notebooks e nas atividades de pipeline | GUID do `ws-dev-dpacademy` | `$workspace.$id` |
-| Lakehouse padrão dos notebooks da Bronze | GUID do `bronze_balldontlie` de dev | `$items.Lakehouse.bronze_balldontlie.$id` |
+| Lakehouse padrão dos notebooks da Bronze | GUID de `bronze_camara` e de `bronze_transparencia` em dev | `$items.Lakehouse.bronze_camara.$id`, `$items.Lakehouse.bronze_transparencia.$id` |
 | Lakehouse padrão das features seguintes | GUID de cada lakehouse em dev | `$items.Lakehouse.<nome>.$id` |
 
 Regra: toda entrada usa `find_value` com o GUID de dev e `replace_value` com `prd` resolvido
@@ -34,7 +34,7 @@ diferente exige uma entrada nova no mesmo PR.
 ```json
 [
   {
-    "item": "pl-010-bronze-balldontlie-nba",
+    "item": "pl-010-bronze-camara-gastos",
     "type": "DataPipeline",
     "job_type": "Pipeline",
     "enabled": true,

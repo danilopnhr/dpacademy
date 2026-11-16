@@ -42,7 +42,8 @@ permite. A plataforma passou a ser o GitHub, com repositório público.
   do ruleset de `main`. Ele roda:
   - o validador de nomes;
   - os testes;
-  - a busca pelo valor exato da chave da balldontlie em todo o histórico;
+  - a busca pelo valor exato da chave do Portal da Transparência (secret `TRANSPARENCIA_API_KEY`)
+    em todo o histórico;
   - o `gitleaks`.
 - **Aprovação:** o GitHub não deixa o autor aprovar o próprio PR. Num projeto de um engenheiro só,
   o ruleset exige PR e status check verde, com zero aprovações. A "aprovação" é a conclusão do
@@ -80,8 +81,9 @@ permite. A plataforma passou a ser o GitHub, com repositório público.
   1. abrir o último run verde do `deploy-prd` e usar **"Re-run all jobs"**, que publica de novo
      aquele mesmo commit;
   2. ou reverter o commit em `main` por PR, o que dispara uma nova publicação.
-- O segredo da fonte em produção (`Files/_secrets/balldontlie_nba_api_key`) é enviado uma vez, à
-  mão. Arquivos e tabelas são dados, não itens, e não passam pelo Git nem pelo `fabric-cicd`.
+- O segredo da fonte em produção (`bronze_transparencia/Files/_secrets/transparencia_api_key`,
+  [ADR-003](adr-003-segredo-api-em-lakehouse-files.md)) é enviado uma vez, à mão. Arquivos e
+  tabelas são dados, não itens, e não passam pelo Git nem pelo `fabric-cicd`.
 - **Melhoria futura:** trocar o client secret por login OIDC com credencial federada no
   `sp-dpacademy-cicd`. Assim, não há secret a renovar.
 
