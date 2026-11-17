@@ -193,3 +193,43 @@ coluna `message` de `ctl_ingestion_runs`.
   são todos os casos registrados acima: 3 anos de despesas no apagão de `www.camara.leg.br`, 2
   tentativas de 09/2026 antes da regra do `codDocumento` e o teste de chave inválida de emendas.
   Câmara: 30 `succeeded`, 7 `failed`, 1 `skipped`. Portal: 146 `succeeded`, 1 `failed`.
+
+### 2026-11-16: primeira publicação e carga histórica, `ws-prd-dpacademy` (T042)
+
+- **Publicação**: PR #4 (`dev` → `main`). O `deploy-prd` ficou verde em ~1 min, com 2 lakehouses,
+  8 notebooks e 2 pipelines. Os notebooks de carga apontam para os lakehouses de produção, sem
+  nenhum ID de dev no conteúdo, e os pipelines chamam os notebooks de produção. As agendas ficaram
+  ativas só em prd (Câmara às 05:00, Portal à 01:00); em dev não há nenhuma. A chave do Portal foi
+  enviada à mão para `bronze_transparencia/Files/_secrets/` de prd (32 bytes, igual à de dev).
+- **Carga histórica** (manual, uma vez, todas as linhas com `environment = 'prd'`):
+  - cadastros: 57 legislaturas, 38 partidos e 929 deputados, em 6,5 min;
+  - despesas pelo arquivo, 2019 a 2026: 1.685.598 linhas em 3,3 min;
+  - emendas, 2019 a 2026: 55.044, igual a dev.
+- **Nova republicação da Câmara**: os arquivos de 2021 a 2026 foram republicados em 2026-11-16 às
+  07:23 UTC, depois da carga de dev, com cerca de 35% mais linhas. Em 2024, o arquivo passou de
+  173.961 linhas e R$ 211,4 mi para 232.926 linhas e R$ 250.384.236,66, conferido no arquivo
+  baixado; a Bronze de prd bate exatamente. O esquema continua com as mesmas 32 colunas. Agora
+  aparecem linhas sem `ideDocumento`, marcadas como despesas de liderança (1 em 2025, 5 em 2026).
+  A Bronze de dev ficou com a versão anterior de 2021 a 2026. Para a Silver: recarregar dev
+  antes de comparar ambientes, e tratar a republicação como rotina (data-model.md).
+- **Falha transitória do Portal**: o lote de emendas de 2024 terminou `failed` com HTTP 400
+  `{"Erro na API":"Erro ao executar a consulta"}` depois de ~1 min lendo páginas. Os outros 7 anos
+  passaram. A repetição só de `anos=2024` deu `succeeded` com 6.990 registros. O cliente trata
+  400 como falha definitiva e não tenta de novo; essa resposta específica parece instável no
+  servidor (pendência abaixo).
+- **Pendência**: avaliar se o cliente do Portal deve tentar de novo um 400 com "Erro ao executar
+  a consulta".
+- **Primeira execução agendada** (2026-11-17, conferida no histórico de jobs e em
+  `ctl_ingestion_runs`): os dois pipelines rodaram por agenda e terminaram `Completed`, todos os
+  lotes com `environment = 'prd'`, `succeeded` e `records_written = records_collected`. Em dev não
+  houve nenhuma execução nova.
+  - Portal (01:00 a 02:20): emendas de 2025 e 2026, com 12.246 registros em 819 páginas; 30 lotes
+    de `pessoa_juridica` com 15.000 CNPJs distintos (9.964 `encontrado`, 5.036
+    `nao_encontrado`), 15.000 requisições, nenhuma retentativa. A fila de produção começou do zero,
+    então a fila de ~68 mil CNPJs leva cerca de 5 noites.
+  - Câmara (05:00 a 05:30): cadastros (57 legislaturas, 38 partidos, 929 deputados) e despesas pela
+    API de 09, 10 e 11/2026, com 16.518 registros (7.370, 7.792 e 1.356), cada mês com
+    `records_collected = expected_total`; 7 retentativas HTTP em 1.952 requisições; 1 despesa sem
+    `codDocumento` em 09/2026, registrada no aviso.
+  - Total em prd: Câmara com 17 lotes `succeeded`; Portal com 40 `succeeded` e 1 `failed` (o lote
+    de emendas de 2024 da carga histórica, já recarregado).

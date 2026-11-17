@@ -100,7 +100,7 @@ Preencher conforme as tarefas de setup forem concluídas. Nada aqui é segredo.
 | Grupo `sg-dpacademy-cicd` | `772e206c-2584-4a05-8b82-92189227a361` (segurança, associação atribuída; único membro: `sp-dpacademy-cicd`) |
 | **Expiração do client secret** | **2028-11-15** (24 meses, criado em 2026-11-15; descrição `github-deploy-prd`; guardado só no secret `SP_CLIENT_SECRET` do Environment `ws-prd-dpacademy`) |
 | Configurações de tenant do Fabric ativadas | `ServicePrincipalAccessPermissionAPIs` ("Service principals can call Fabric public APIs"), só para `sg-dpacademy-cicd`, em 2026-11-16. Continuam desabilitadas: `ServicePrincipalAccessGlobalAPIs` (criar workspaces, conexões e deployment pipelines) e as APIs de administração por SP |
-| Ruleset de `main` | _a preencher (T027)_ |
+| Ruleset de `main` | `main-protegida` (id 27380259), ativo desde 2026-11-16: bypass vazio, PR obrigatório com 0 aprovações, status check `pr-validation` com branch atualizada, exclusão e force push bloqueados; repositório só aceita squash |
 
 ## Renovar credenciais
 
