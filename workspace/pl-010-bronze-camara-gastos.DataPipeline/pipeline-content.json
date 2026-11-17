@@ -1,6 +1,6 @@
 {
   "properties": {
-    "description": "Câmara: cadastros e despesas recorrentes (feature 003). Agenda só em produção (ci/schedules.json). Uma retentativa por atividade cobre a liberação lenta de capacidade do Trial; os notebooks são idempotentes.",
+    "description": "Câmara: cadastros e despesas pelo arquivo anual, só os anos alterados (features 003 e 004). Sem agenda: a rotina diária é o pl-010-orq-gastos-diario. Uma retentativa por atividade cobre a liberação lenta de capacidade do Trial; os notebooks são idempotentes.",
     "activities": [
       {
         "type": "TridentNotebook",
@@ -22,7 +22,13 @@
         "type": "TridentNotebook",
         "typeProperties": {
           "notebookId": "affd58c9-eaef-83da-4576-038f7b3ee658",
-          "workspaceId": "00000000-0000-0000-0000-000000000000"
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "origem": {
+              "value": "arquivo",
+              "type": "string"
+            }
+          }
         },
         "policy": {
           "timeout": "0.02:00:00",

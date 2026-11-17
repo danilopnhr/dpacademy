@@ -90,6 +90,10 @@ def garantir_tabelas(tabelas=TABELAS_DADOS, extras=None):
         spark.sql(f"CREATE TABLE IF NOT EXISTS {t} ({colunas}) USING DELTA")
     ddl_ctl = ", ".join(f"{c.name} {c.dataType.simpleString().upper()}" for c in ESQUEMA_CTL.fields)
     spark.sql(f"CREATE TABLE IF NOT EXISTS ctl_ingestion_runs ({ddl_ctl}) USING DELTA")
+    # source_hash: SHA-256 do CSV nos lotes de arquivo (research R2 da feature 004). Fica fora do
+    # ESQUEMA_CTL: as linhas novas entram sem ela (nula) e o hash é gravado no finalizar_lote.
+    if "source_hash" not in spark.table("ctl_ingestion_runs").columns:
+        spark.sql("ALTER TABLE ctl_ingestion_runs ADD COLUMNS (source_hash STRING)")
 
 
 def _agora():
@@ -131,10 +135,12 @@ def iniciar_lote(run_id, recurso, origem, recorte):
 
 
 def finalizar_lote(batch_id, status, coletados=0, gravados=0, requisicoes=0, retentativas=0,
-                   total_esperado=None, mensagem=None):
+                   total_esperado=None, mensagem=None, source_hash=None):
+    extras = {"source_hash": F.lit(source_hash).cast("string")} if source_hash else {}
     _ctl().update(
         condition=F.col("batch_id") == batch_id,
         set={
+            **extras,
             "status": F.lit(status),
             "ended_at": F.lit(_agora()),
             "records_collected": F.lit(int(coletados)).cast("bigint"),
@@ -145,6 +151,18 @@ def finalizar_lote(batch_id, status, coletados=0, gravados=0, requisicoes=0, ret
             "message": F.lit(mensagem).cast("string"),
         },
     )
+
+
+def ultimo_hash(recurso, recorte):
+    """source_hash do último lote succeeded do recurso com esse recorte, ou None."""
+    recorte_json = json.dumps(recorte, ensure_ascii=False, sort_keys=True)
+    r = (
+        spark.table("ctl_ingestion_runs")
+        .filter((F.col("recurso") == recurso) & (F.col("recorte") == recorte_json)
+                & (F.col("status") == "succeeded") & F.col("source_hash").isNotNull())
+        .orderBy(F.col("started_at").desc()).select("source_hash").first()
+    )
+    return r[0] if r else None
 
 
 def linha(payload, endpoint, recorte):
@@ -182,13 +200,21 @@ def executar_lote(run_id, recurso, origem, recorte, tabela, coletar, cliente, se
     req0, ret0 = cliente.requests_made, cliente.retries
     try:
         saida = coletar()
+        if saida.get("pular"):
+            # Fonte sem mudança desde o último lote succeeded (ex.: arquivo anual com o mesmo hash).
+            finalizar_lote(batch_id, "skipped", 0, 0, cliente.requests_made - req0, cliente.retries - ret0,
+                           saida.get("total_esperado"), sanitizar(saida.get("aviso"), segredos) or None,
+                           saida.get("source_hash"))
+            resultado.update(status="skipped")
+            return resultado
         dados = saida["dados"]
         gravados = gravar_lote(tabela, dados, batch_id, origem, colunas_extras)
         coletados = saida.get("coletados", gravados)
         if coletados != gravados:
             raise RuntimeError(f"coletados ({coletados}) diferente de gravados ({gravados})")
         finalizar_lote(batch_id, "succeeded", coletados, gravados, cliente.requests_made - req0,
-                       cliente.retries - ret0, saida.get("total_esperado"), sanitizar(saida.get("aviso"), segredos) or None)
+                       cliente.retries - ret0, saida.get("total_esperado"), sanitizar(saida.get("aviso"), segredos) or None,
+                       saida.get("source_hash"))
         resultado.update(status="succeeded", registros=gravados)
     except Exception as erro:
         finalizar_lote(batch_id, "failed", 0, 0, cliente.requests_made - req0, cliente.retries - ret0,
