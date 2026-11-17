@@ -18,3 +18,13 @@ find_replace:
   - find_value: "14751a47-c567-4109-a7ba-191dd4855d7a" # bronze_transparencia em dev
     replace_value:
       prd: "$items.Lakehouse.bronze_transparencia.$id"
+
+  # Lakehouse padrão dos notebooks da Silver da Câmara (feature 004)
+  - find_value: "f416c847-1a37-4fc8-8a78-4d85a7c439f4" # silver_camara em dev
+    replace_value:
+      prd: "$items.Lakehouse.silver_camara.$id"
+
+  # Lakehouse padrão dos notebooks da Silver do Portal da Transparência (feature 004)
+  - find_value: "ec55a601-16e2-4af1-a923-5d0430d1c576" # silver_transparencia em dev
+    replace_value:
+      prd: "$items.Lakehouse.silver_transparencia.$id"
