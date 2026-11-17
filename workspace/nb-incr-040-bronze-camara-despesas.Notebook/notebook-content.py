@@ -24,16 +24,19 @@
 
 # # nb-incr-040-bronze-camara-despesas
 # Despesas da cota parlamentar para a `bronze_camara.despesas`, em dois modos que gravam na mesma tabela:
-# - `origem=arquivo`: um lote por ano, a partir do arquivo anual publicado pela Câmara (histórico).
-# - `origem=api`: um lote por mês, consultando cada deputado (carga recorrente).
+# - `origem=arquivo`: um lote por ano, a partir do arquivo anual publicado pela Câmara. Com `anos` vazio,
+#   verifica de 2019 até o ano corrente e só grava os anos cujo CSV mudou (hash; feature 004, research R2).
+#   `forcar=true` grava mesmo sem mudança. É o modo da rotina diária e a origem oficial da Silver.
+# - `origem=api`: um lote por mês, consultando cada deputado. Só por disparo manual (feature 004, research R1).
 # - Parâmetros: `specs/003-gastos-bronze-ingestion/contracts/notebook-parameters.md`
 
 # PARAMETERS CELL ********************
 
-origem = "api"
+origem = "arquivo"
 anos = ""
 meses = ""
 legislatura = "57"
+forcar = "false"
 
 # METADATA ********************
 
@@ -71,7 +74,8 @@ import zipfile
 LANDING_LOCAL = "/lakehouse/default/Files/_landing/cotas"
 LANDING_SPARK = "Files/_landing/cotas"
 
-modo = (origem or "api").strip().lower()
+modo = (origem or "arquivo").strip().lower()
+forcar_gravacao = str(forcar).strip().lower() in ("true", "1", "sim")
 if modo not in ("api", "arquivo"):
     raise ValueError(f"origem inválida: {origem!r}; use 'api' ou 'arquivo'")
 
@@ -90,6 +94,9 @@ def coletar_arquivo(ano):
     with zipfile.ZipFile(zip_path) as z:
         nome_csv = next(n for n in z.namelist() if n.lower().endswith(".csv"))
         z.extract(nome_csv, LANDING_LOCAL)
+    hash_atual = hash_csv(f"{LANDING_LOCAL}/{nome_csv}")
+    if not forcar_gravacao and hash_atual == ultimo_hash("despesas", {"ano": ano}):
+        return {"pular": True, "aviso": "arquivo sem mudança", "source_hash": hash_atual}
     df = (
         spark.read.option("header", True).option("sep", ";").option("encoding", "UTF-8")
         .option("multiLine", True).option("quote", '"').option("escape", '"')
@@ -107,7 +114,7 @@ def coletar_arquivo(ano):
         .withColumn("_recorte", F.lit(json.dumps({"ano": ano}, sort_keys=True)))
     )
     aviso = f"{sem_documento} linha(s) sem ideDocumento (despesas de liderança)" if sem_documento else None
-    return {"dados": dados, "total_esperado": total, "coletados": total, "aviso": aviso}
+    return {"dados": dados, "total_esperado": total, "coletados": total, "aviso": aviso, "source_hash": hash_atual}
 
 
 def fila_deputados(leg):
@@ -137,9 +144,7 @@ def coletar_mes(ano, mes, ids):
 
 resultados = []
 if modo == "arquivo":
-    lista_anos = [int(a) for a in (anos or "").split(",") if a.strip()]
-    if not lista_anos:
-        raise ValueError("o parâmetro anos é obrigatório com origem=arquivo (ex.: 2019,2020)")
+    lista_anos = [int(a) for a in (anos or "").split(",") if a.strip()] or anos_padrao()
     for ano in lista_anos:
         resultados.append(executar_lote(run_id, "despesas", "arquivo", {"ano": ano}, "despesas",
                                         lambda ano=ano: coletar_arquivo(ano), cliente))

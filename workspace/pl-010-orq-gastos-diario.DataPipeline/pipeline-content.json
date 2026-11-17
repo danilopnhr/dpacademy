@@ -1,0 +1,343 @@
+{
+  "properties": {
+    "description": "Rotina diária do case gastos (feature 004): Bronze da Câmara, Bronze do Portal e Silver das duas fontes, em sequência (uma sessão Spark por vez no Trial). Agenda só em produção (ci/schedules.json, 04:00). Uma retentativa por atividade; os notebooks são idempotentes.",
+    "activities": [
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "7ea2f361-28f5-a393-4edb-5ca86eeff0f4",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.02:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 300,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "camara_cadastros",
+        "dependsOn": []
+      },
+      {
+        "type": "Fail",
+        "typeProperties": {
+          "message": "nb-full-030-bronze-camara-cadastros falhou; veja ctl_ingestion_runs (Bronze) ou ctl_quality_checks (Silver)",
+          "errorCode": "500"
+        },
+        "name": "falha_camara_cadastros",
+        "dependsOn": [
+          {
+            "activity": "camara_cadastros",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "affd58c9-eaef-83da-4576-038f7b3ee658",
+          "workspaceId": "00000000-0000-0000-0000-000000000000",
+          "parameters": {
+            "origem": {
+              "value": "arquivo",
+              "type": "string"
+            }
+          }
+        },
+        "policy": {
+          "timeout": "0.02:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 300,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "camara_despesas",
+        "dependsOn": [
+          {
+            "activity": "camara_cadastros",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Fail",
+        "typeProperties": {
+          "message": "nb-incr-040-bronze-camara-despesas falhou; veja ctl_ingestion_runs (Bronze) ou ctl_quality_checks (Silver)",
+          "errorCode": "500"
+        },
+        "name": "falha_camara_despesas",
+        "dependsOn": [
+          {
+            "activity": "camara_despesas",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "dbecdc48-fe45-8025-4c43-4a8775ec03a3",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.02:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 300,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "transparencia_emendas",
+        "dependsOn": [
+          {
+            "activity": "camara_despesas",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Fail",
+        "typeProperties": {
+          "message": "nb-incr-030-bronze-transparencia-emendas falhou; veja ctl_ingestion_runs (Bronze) ou ctl_quality_checks (Silver)",
+          "errorCode": "500"
+        },
+        "name": "falha_transparencia_emendas",
+        "dependsOn": [
+          {
+            "activity": "transparencia_emendas",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "d03a0d5f-427e-991e-4909-a9081d63d99e",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.02:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 300,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "transparencia_fornecedores",
+        "dependsOn": [
+          {
+            "activity": "transparencia_emendas",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Fail",
+        "typeProperties": {
+          "message": "nb-incr-040-bronze-transparencia-fornecedores falhou; veja ctl_ingestion_runs (Bronze) ou ctl_quality_checks (Silver)",
+          "errorCode": "500"
+        },
+        "name": "falha_transparencia_fornecedores",
+        "dependsOn": [
+          {
+            "activity": "transparencia_fornecedores",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "195879e2-7dd0-a839-4202-4305e62a0f32",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.02:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 300,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "silver_camara_cadastros",
+        "dependsOn": [
+          {
+            "activity": "camara_cadastros",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "camara_despesas",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "transparencia_fornecedores",
+            "dependencyConditions": [
+              "Completed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Fail",
+        "typeProperties": {
+          "message": "nb-full-020-silver-camara-cadastros falhou; veja ctl_ingestion_runs (Bronze) ou ctl_quality_checks (Silver)",
+          "errorCode": "500"
+        },
+        "name": "falha_silver_camara_cadastros",
+        "dependsOn": [
+          {
+            "activity": "silver_camara_cadastros",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "2b6121e0-7097-a211-44e8-04565acf30ce",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.02:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 300,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "silver_camara_despesas",
+        "dependsOn": [
+          {
+            "activity": "silver_camara_cadastros",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Fail",
+        "typeProperties": {
+          "message": "nb-incr-030-silver-camara-despesas falhou; veja ctl_ingestion_runs (Bronze) ou ctl_quality_checks (Silver)",
+          "errorCode": "500"
+        },
+        "name": "falha_silver_camara_despesas",
+        "dependsOn": [
+          {
+            "activity": "silver_camara_despesas",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "1bc52229-84e6-88e7-401c-0d1dc8b181ef",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.02:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 300,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "silver_transparencia_emendas",
+        "dependsOn": [
+          {
+            "activity": "transparencia_emendas",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "transparencia_fornecedores",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "silver_camara_despesas",
+            "dependencyConditions": [
+              "Completed",
+              "Skipped"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Fail",
+        "typeProperties": {
+          "message": "nb-incr-020-silver-transparencia-emendas falhou; veja ctl_ingestion_runs (Bronze) ou ctl_quality_checks (Silver)",
+          "errorCode": "500"
+        },
+        "name": "falha_silver_transparencia_emendas",
+        "dependsOn": [
+          {
+            "activity": "silver_transparencia_emendas",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "ad7d69fa-6fcc-b6ac-4b6c-a8bc781f2a12",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.02:00:00",
+          "retry": 1,
+          "retryIntervalInSeconds": 300,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "silver_transparencia_fornecedores",
+        "dependsOn": [
+          {
+            "activity": "silver_transparencia_emendas",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Fail",
+        "typeProperties": {
+          "message": "nb-incr-030-silver-transparencia-fornecedores falhou; veja ctl_ingestion_runs (Bronze) ou ctl_quality_checks (Silver)",
+          "errorCode": "500"
+        },
+        "name": "falha_silver_transparencia_fornecedores",
+        "dependsOn": [
+          {
+            "activity": "silver_transparencia_fornecedores",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}
