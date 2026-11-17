@@ -40,7 +40,10 @@ porque é a Gold que o Direct Lake lê.
 | Relatório | `rpt-<case>-<assunto>` | `rpt-gastos-parlamentares` |
 
 Na Silver e na Gold, os notebooks usam a fonte ou o case como escopo:
-`nb-incr-020-silver-camara-despesas`, `nb-full-010-gold-gastos-dimensoes`.
+`nb-incr-030-silver-camara-despesas`, `nb-full-010-gold-gastos-dimensoes`. O `<assunto>` é uma
+palavra só (o validador recusa hífen nele): `nb-incr-030-silver-transparencia-fornecedores`, e não
+`...-pessoa-juridica`. Bibliotecas compartilhadas por uma fonte usam `util` e o assunto `comum`
+(`nb-util-010-silver-camara-comum`).
 
 ### Modo da carga
 
@@ -63,8 +66,8 @@ Na Silver e na Gold, os notebooks usam a fonte ou o case como escopo:
 | Camada | Padrão | Exemplo |
 |---|---|---|
 | Bronze | `<entidade>` (nome da entidade na fonte, sem prefixo) | `despesas`, `deputados`, `emendas`, `pessoa_juridica` |
-| Silver | `<entidade>` (entidade limpa, em português) | `despesas`, `deputados`, `fornecedores` |
-| Controle da fonte (Bronze ou Silver) | `ctl_<assunto>`, com endpoint e recorte em colunas | `ctl_ingestion_runs` |
+| Silver | `<entidade>` (entidade limpa, mesmo nome da Bronze) | `despesas`, `deputados`, `pessoa_juridica` |
+| Controle da fonte (Bronze ou Silver) | `ctl_<assunto>`, com endpoint e recorte em colunas | `ctl_ingestion_runs` (Bronze), `ctl_quality_checks` (Silver) |
 | Gold: dimensão | `dim_<entidade>` | `dim_data`, `dim_deputado`, `dim_partido`, `dim_fornecedor` |
 | Gold: fato | `fat_<processo>` | `fat_despesa`, `fat_emenda` |
 | Gold: agregada | `agg_<assunto>` | `agg_gasto_mensal` |

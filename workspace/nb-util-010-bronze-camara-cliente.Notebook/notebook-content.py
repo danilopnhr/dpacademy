@@ -166,6 +166,33 @@ def normalizar_cabecalho(nome):
     """Nome de coluna do CSV da cota sem BOM, aspas e espaços."""
     return nome.lstrip("﻿").strip().strip('"').strip()
 
+
+PRIMEIRO_ANO_COTAS = 2019
+TAMANHO_BLOCO_HASH = 1024 * 1024
+
+
+def hash_csv(caminho):
+    """SHA-256 (hex) do CSV descompactado, lido em blocos (research R2 da feature 004).
+
+    O hash é do CSV, e não do zip: a Câmara regera os zips todo dia e os metadados internos mudam
+    mesmo quando o conteúdo é o mesmo.
+    """
+    import hashlib
+
+    h = hashlib.sha256()
+    with open(caminho, "rb") as f:
+        for bloco in iter(lambda: f.read(TAMANHO_BLOCO_HASH), b""):
+            h.update(bloco)
+    return h.hexdigest()
+
+
+def anos_padrao(hoje=None, agora=None):
+    """Anos dos arquivos verificados pela rotina diária: de 2019 até o ano corrente em São Paulo."""
+    if hoje is None:
+        agora = agora or datetime.now(timezone.utc)
+        hoje = agora.astimezone(fuso_sao_paulo()).date()
+    return list(range(PRIMEIRO_ANO_COTAS, hoje.year + 1))
+
 # METADATA ********************
 
 # META {

@@ -68,6 +68,11 @@ running ──► succeeded
 
 ## Versões e deduplicação
 
+> **Resolvido na feature 004 (2026-11-17)**: a Silver de despesas usa só o arquivo anual, com chave
+> pelo hash da linha e cada ano como foto completa
+> ([ADR-004](../../docs/adr-004-silver-despesas-arquivo-e-chave-hash.md)). O texto abaixo fica como
+> registro histórico.
+
 **Pendência para a feature de Silver (achado de 2026-11-13):** a API e o arquivo anual não
 publicam o mesmo conjunto de despesas. Em 09/2026, a API traz 7.249 registros e soma −R$ 6,7 mi de
 `valorLiquido`; o arquivo traz 6.483 e soma +R$ 7,7 mi. Em 10/2026, 7.049 contra 6.827. A API tem

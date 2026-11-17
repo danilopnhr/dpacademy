@@ -20,7 +20,8 @@ fornecedores e quanto destina em emendas. As fontes só se cruzam na Gold.
 | Camada | Responsabilidade | Itens no Fabric |
 |---|---|---|
 | Ingestão e Bronze | Resposta da fonte em Delta (JSON em `payload`), sem transformação, com colunas de auditoria e registro de cada lote em `ctl_ingestion_runs` | `bronze_camara`: `nb-util-010-bronze-camara-cliente`, `nb-util-020-bronze-camara-gravacao`, `nb-full-030-bronze-camara-cadastros`, `nb-incr-040-bronze-camara-despesas`, pipeline `pl-010-bronze-camara-gastos`. `bronze_transparencia`: `nb-util-010-bronze-transparencia-cliente`, `nb-util-020-bronze-transparencia-gravacao`, `nb-incr-030-bronze-transparencia-emendas`, `nb-incr-040-bronze-transparencia-fornecedores`, pipeline `pl-010-bronze-transparencia-gastos` |
-| Silver | Tipagem, limpeza, deduplicação e carga incremental (`MERGE`) | `silver_camara`, `silver_transparencia` (próxima feature) |
+| Silver | Tipagem, nomes em português, deduplicação por chave e carga incremental (`MERGE`), com verificações de qualidade registradas em `ctl_quality_checks`; despesas só pelo arquivo anual ([ADR-004](docs/adr-004-silver-despesas-arquivo-e-chave-hash.md)) | `silver_camara` (`legislaturas`, `partidos`, `deputados`, `despesas`): `nb-util-010-silver-camara-comum`, `nb-full-020-silver-camara-cadastros`, `nb-incr-030-silver-camara-despesas`. `silver_transparencia` (`emendas`, `pessoa_juridica`): `nb-util-010-silver-transparencia-comum`, `nb-incr-020-silver-transparencia-emendas`, `nb-incr-030-silver-transparencia-fornecedores` |
+| Orquestração | Rotina diária às 04:00, só em produção: Bronze da Câmara, Bronze do Portal e Silver das duas fontes, em sequência | `pl-010-orq-gastos-diario` (os pipelines por fonte ficam sem agenda, para disparo manual) |
 | Gold | Modelo dimensional (star schema) do case | `gold_gastos` |
 | Consumo | Modelo semântico Direct Lake e relatório | `sm-gastos` e `rpt-gastos-parlamentares` |
 

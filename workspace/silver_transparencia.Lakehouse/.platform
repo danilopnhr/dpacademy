@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Lakehouse",
+    "displayName": "silver_transparencia",
+    "description": "Silver da fonte (feature 004)"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "30d1c576-5d04-a923-4af1-16e2ec55a601"
+  }
+}
