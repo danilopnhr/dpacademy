@@ -101,6 +101,7 @@ Preencher conforme as tarefas de setup forem concluídas. Nada aqui é segredo.
 | **Expiração do client secret** | **2028-11-15** (24 meses, criado em 2026-11-15; descrição `github-deploy-prd`; guardado só no secret `SP_CLIENT_SECRET` do Environment `ws-prd-dpacademy`) |
 | Configurações de tenant do Fabric ativadas | `ServicePrincipalAccessPermissionAPIs` ("Service principals can call Fabric public APIs"), só para `sg-dpacademy-cicd`, em 2026-11-16. Continuam desabilitadas: `ServicePrincipalAccessGlobalAPIs` (criar workspaces, conexões e deployment pipelines) e as APIs de administração por SP |
 | Ruleset de `main` | `main-protegida` (id 27380259), ativo desde 2026-11-16: bypass vazio, PR obrigatório com 0 aprovações, status check `pr-validation` com branch atualizada, exclusão e force push bloqueados; repositório só aceita squash |
+| Ruleset de `dev` | `dev-protegida` (id 27456867), ativo desde 2026-11-17: bypass vazio, exclusão e force push bloqueados. Motivo: com a exclusão automática de branches ligada no repositório, o merge do PR #4 (`dev` → `main`) apagou a `dev` e quebrou a Git integration do `ws-dev-dpacademy`; a `dev` foi recriada a partir da `main` e o ws-dev, atualizado. Branches de feature continuam sendo apagadas no merge |
 
 ## Renovar credenciais
 

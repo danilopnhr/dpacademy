@@ -99,6 +99,10 @@ fonte quebraria a regra); número da linha no arquivo (muda quando a Câmara reo
   6.064 linhas (lideranças); o arquivo também tem a coluna `cpf` do deputado.
 - Portal: valores em texto `1.200.000,00`; `ano` numérico.
 - Deputados: `ultimoStatus` aninhado; tem `cpf`.
+- Fornecedores: 89 dos 33.967 CNPJs encontrados em dev vêm com `razaoSocial` e `nomeFantasia`
+  vazios, mas com os indicadores preenchidos (achado pela verificação de obrigatórias na primeira
+  carga, 2026-11-17). Razão social fica opcional; a Gold pode usar o nome do fornecedor das
+  despesas.
 
 **Decisão**: valores `DECIMAL(15,2)`, convertidos por fonte (arquivo: texto com ponto; Portal:
 remove `.` e troca `,` por `.`); texto vazio vira nulo; conversão que falha vira nulo e é pega pela

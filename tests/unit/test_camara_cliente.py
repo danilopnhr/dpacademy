@@ -192,3 +192,50 @@ def test_ler_meses(mod):
 def test_ler_meses_invalido(mod, texto):
     with pytest.raises(ValueError):
         mod.ler_meses(texto)
+
+
+# --- 004 US4: detecção de mudança nos arquivos anuais (T013) ---
+
+from datetime import datetime, timezone  # noqa: E402
+
+
+def test_hash_csv_mesmo_conteudo_mesmo_hash(mod, tmp_path):
+    a, b = tmp_path / "a.csv", tmp_path / "b.csv"
+    a.write_bytes(b"numAno;vlrLiquido\n2026;1467\n")
+    b.write_bytes(b"numAno;vlrLiquido\n2026;1467\n")
+    assert mod.hash_csv(a) == mod.hash_csv(b)
+    assert len(mod.hash_csv(a)) == 64
+
+
+def test_hash_csv_um_byte_diferente_muda_o_hash(mod, tmp_path):
+    a, b = tmp_path / "a.csv", tmp_path / "b.csv"
+    a.write_bytes(b"numAno;vlrLiquido\n2026;1467\n")
+    b.write_bytes(b"numAno;vlrLiquido\n2026;1468\n")
+    assert mod.hash_csv(a) != mod.hash_csv(b)
+
+
+def test_hash_csv_arquivo_maior_que_o_bloco(mod, tmp_path):
+    import hashlib
+
+    conteudo = b"x" * (3 * 1024 * 1024 + 7)
+    c = tmp_path / "grande.csv"
+    c.write_bytes(conteudo)
+    assert mod.hash_csv(c) == hashlib.sha256(conteudo).hexdigest()
+
+
+@pytest.mark.parametrize(
+    "hoje,esperado",
+    [
+        (date(2026, 11, 17), list(range(2019, 2027))),
+        (date(2019, 3, 1), [2019]),
+        (date(2027, 1, 1), list(range(2019, 2028))),
+    ],
+)
+def test_anos_padrao_de_2019_ate_o_ano_corrente(mod, hoje, esperado):
+    assert mod.anos_padrao(hoje) == esperado
+
+
+def test_anos_padrao_usa_o_fuso_de_sao_paulo_na_virada_do_ano(mod):
+    # 2027-01-01 01:00 UTC ainda é 2026-12-31 em São Paulo
+    agora_utc = datetime(2027, 1, 1, 1, 0, tzinfo=timezone.utc)
+    assert mod.anos_padrao(agora=agora_utc) == list(range(2019, 2027))

@@ -91,4 +91,26 @@ uma falha provocada na Bronze do Portal impedindo a Silver do Portal.
 
 ## Registro da validação
 
-(preenchido durante a implementação)
+### 2026-11-17: `ws-dev-dpacademy`
+
+- **§1 Detecção de mudança**: primeira carga com `anos` vazio gravou os 8 anos com `source_hash`
+  (3,9 min); a segunda terminou com os 8 lotes `skipped`, `arquivo sem mudança`, zero registros
+  (2,4 min); `anos=2026`, `forcar=true` gravou 1 lote `succeeded` (1,4 min).
+- **§2 Despesas**: primeira carga de 2019 a 2026 em 16,8 min (um `MERGE` por ano). Contagem e soma
+  do valor líquido iguais às do último lote da Bronze em todos os anos (ex.: 2024 com 232.926
+  linhas e R$ 250.384.236,66; total 1.686.374); uma `chave_despesa` por linha; nenhuma coluna de
+  CPF. Reexecução sem lote novo: nenhum ano processado e nenhuma versão Delta nova (1,4 min). Com
+  o lote forçado de 2026, só 2026 foi processado e a linhagem passou para o lote novo; 2025 não
+  mudou.
+- **§3 Cadastros**: 57 legislaturas, 38 partidos e 929 deputados, sem CPF (2,3 min); reexecução
+  sem mudança.
+- **§4 Portal**: emendas iguais à Bronze em todos os anos (55.044; 2019: 8.456 … 2026: 5.936), uma
+  `chave_emenda` por linha (2,8 min). Fornecedores: a primeira execução falhou na verificação de
+  obrigatórias porque 89 CNPJs encontrados vêm com razão social vazia na fonte (a regra
+  "razão social obrigatória quando encontrado" foi retirada; research R5). Depois: 68.057 CNPJs,
+  33.967 encontrados (89 sem nome) e 34.090 não encontrados; reexecução incremental sem mudança.
+- **§5 Qualidade**: `emendas` com `anos=2026` e `duplicar_para_teste=true` falhou com
+  `unicidade` `failed` (2 linhas, chave de exemplo em `detalhe`), e a tabela ficou na mesma versão
+  Delta, com 55.044 linhas. Todas as outras verificações `passed`, com uma `contagem` por execução.
+  Achado: com `anos` vazio e sem lote novo, o teste não exercita nada (nenhum ano entra no laço);
+  é preciso informar o ano.

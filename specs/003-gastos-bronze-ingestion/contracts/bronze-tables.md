@@ -59,3 +59,8 @@ justifica).
 | `environment` | STRING | `dev` ou `prd`, extraído do nome do workspace `ws-<ambiente>-dpacademy` em tempo de execução (research R9 da feature 002) |
 
 Gravação: `INSERT` com `running` antes da primeira requisição; `MERGE` por `batch_id` no fim.
+
+> **Atualização (feature 004, 2026-11-17)**: `bronze_camara.ctl_ingestion_runs` ganhou a coluna
+> `source_hash STRING` (SHA-256 do CSV nos lotes de arquivo) e um lote de arquivo sem mudança
+> termina `skipped` com `arquivo sem mudança`. Ver
+> [specs/004-gastos-silver/contracts/silver-tables.md](../../004-gastos-silver/contracts/silver-tables.md).

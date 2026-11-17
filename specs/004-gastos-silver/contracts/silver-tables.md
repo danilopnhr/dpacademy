@@ -127,7 +127,8 @@ Só `_origem = 'arquivo'`. Nomes de origem como no cabeçalho do CSV normalizado
 | `isento_imune_renuncia_fiscal` | BOOLEAN | `isentoImuneRenunciaFiscal` |
 | `habilitado_renuncia_fiscal` | BOOLEAN | `habilitadoRenunciaFiscal` |
 
-Nos não encontrados, só `cnpj`, `encontrado` e a linhagem são preenchidos.
+Nos não encontrados, só `cnpj`, `encontrado` e a linhagem são preenchidos. Alguns encontrados vêm
+com `razao_social` e `nome_fantasia` vazios na fonte (research R5); ficam nulos.
 
 ## `ctl_quality_checks` (mesmo esquema nos dois lakehouses Silver)
 

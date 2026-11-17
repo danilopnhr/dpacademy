@@ -35,7 +35,7 @@ Relações, verificadas só na Gold:
 | Tabela | Chave | Versão | Obrigatórias |
 |---|---|---|---|
 | `emendas` | `chave_emenda` (SHA-256 do `payload`) | por ano, último lote `succeeded` | `chave_emenda`, `ano`, `tipo_emenda`, `autor`, `valor_empenhado`, `valor_liquidado`, `valor_pago` |
-| `pessoa_juridica` | `cnpj` | por CNPJ, resultado mais recente | `cnpj`, `encontrado`; `razao_social` quando `encontrado` |
+| `pessoa_juridica` | `cnpj` | por CNPJ, resultado mais recente | `cnpj` (14 dígitos), `encontrado` |
 
 Relações (Gold): `emendas.nome_autor` → deputado pelo nome normalizado; `pessoa_juridica.cnpj` ←
 despesas.
