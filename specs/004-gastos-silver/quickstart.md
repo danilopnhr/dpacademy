@@ -114,3 +114,9 @@ uma falha provocada na Bronze do Portal impedindo a Silver do Portal.
   Delta, com 55.044 linhas. Todas as outras verificações `passed`, com uma `contagem` por execução.
   Achado: com `anos` vazio e sem lote novo, o teste não exercita nada (nenhum ano entra no laço);
   é preciso informar o ano.
+- **§6 Orquestrador**: `pl-010-orq-gastos-diario` disparado à mão, `Completed` em 46,9 min, na
+  ordem do contrato (Bronze da Câmara 15:35–15:44, Bronze do Portal 15:44–16:03, Silver da Câmara
+  16:03–16:18, Silver do Portal 16:18–16:21 UTC). Três atividades falharam na primeira tentativa,
+  em ~20 s, com `TooManyRequestsForCapacity` (sessão da atividade anterior ainda não liberada) e
+  passaram na retentativa de 5 min. Ajuste: duas retentativas com 180 s de intervalo. Sem as
+  esperas, a rotina leva ~32 min com a fila de fornecedores vazia.

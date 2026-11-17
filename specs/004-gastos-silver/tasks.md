@@ -111,9 +111,9 @@ lote de arquivo da Bronze; zero chave repetida; sem CPF.
 - [X] T016 [US4] No `nb-incr-040-bronze-camara-despesas`: parâmetro `forcar` (padrão `false`); `origem=arquivo` com `anos` vazio usa `anos_padrao`; por ano, calcula `hash_csv` do CSV extraído e, se igual a `ultimo_hash` e sem `forcar`, termina o lote `skipped` com `message = 'arquivo sem mudança'` e zero registros; senão grava e salva o hash; `origem=api` sem mudança; commit pela Git integration
 - [X] T017 [US4] Rodar quickstart §1 em dev (primeira carga com hash, segunda `skipped`, `forcar=true`); registrar no quickstart
 - [X] T018 [US4] No `pl-010-bronze-camara-gastos`, passar `origem=arquivo` à atividade de despesas; commit pela Git integration
-- [X] T019 [US4] Criar `pl-010-orq-gastos-diario` em `ws-dev-dpacademy` conforme `contracts/notebooks-e-orquestracao.md`: oito atividades de notebook (timeout 2 h, uma retentativa após 300 s), Bronze da Câmara → Bronze do Portal com `Completed`, Silver de cada fonte só com `Succeeded` da Bronze da fonte e depois da última Bronze, Silver em sequência, atividade Fail no fim se qualquer atividade falhar; sem agenda em dev; commit pela Git integration
+- [X] T019 [US4] Criar `pl-010-orq-gastos-diario` em `ws-dev-dpacademy` conforme `contracts/notebooks-e-orquestracao.md`: oito atividades de notebook (timeout 2 h, duas retentativas com 180 s de intervalo), Bronze da Câmara → Bronze do Portal com `Completed`, Silver de cada fonte só com `Succeeded` da Bronze da fonte e depois da última Bronze, Silver em sequência, atividade Fail no fim se qualquer atividade falhar; sem agenda em dev; commit pela Git integration
 - [X] T020 [US4] Em `ci/schedules.json`, trocar as duas entradas por `pl-010-orq-gastos-diario`, `DataPipeline`, `Pipeline`, `enabled: true`, `times: ["04:00"]`, `time_zone` `E. South America Standard Time` (research R3)
-- [ ] T021 [US4] Disparar `pl-010-orq-gastos-diario` em dev (quickstart §6, com `limite` pequeno nos fornecedores se precisar) e conferir a ordem e as dependências; registrar no quickstart
+- [X] T021 [US4] Disparar `pl-010-orq-gastos-diario` em dev (quickstart §6, com `limite` pequeno nos fornecedores se precisar) e conferir a ordem e as dependências; registrar no quickstart
 
 ---
 

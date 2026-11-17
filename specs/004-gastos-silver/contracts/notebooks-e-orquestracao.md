@@ -49,7 +49,9 @@ com exceção depois de registrar o resultado.
 
 ## `pl-010-orq-gastos-diario`
 
-Atividades de notebook, cada uma com timeout de 2 h e uma retentativa após 300 s:
+Atividades de notebook, cada uma com timeout de 2 h e duas retentativas com 180 s de intervalo (o Trial
+demora a liberar a sessão da atividade anterior e recusa a seguinte com `TooManyRequestsForCapacity`;
+visto em 3 das 8 atividades no teste em dev de 2026-11-17):
 
 ```text
 camara_cadastros (nb-full-030-bronze-camara-cadastros)

@@ -131,7 +131,8 @@ preserva a linhagem das linhas que não mudaram); sobrescrever a tabela inteira 
 ## R7. Orquestração no Fabric
 
 **Decisão**: o `pl-010-orq-gastos-diario` chama os notebooks diretamente (atividades de notebook),
-com uma retentativa de 5 min em cada uma, como os pipelines da 003, e uma atividade Fail no fim
+com duas retentativas de 3 min em cada uma (no teste em dev, 3 das 8 atividades falharam na primeira
+tentativa com `TooManyRequestsForCapacity` e passaram na retentativa), e uma atividade Fail no fim
 quando qualquer etapa falhar. Os pipelines por fonte continuam existindo para disparo manual, sem
 agenda; no da Câmara, a atividade de despesas passa a usar `origem=arquivo`.
 **Alternativas rejeitadas**: chamar os pipelines por fonte com a atividade Invoke Pipeline (exige
