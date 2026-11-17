@@ -1,6 +1,6 @@
 {
   "properties": {
-    "description": "Rotina diária do case gastos (feature 004): Bronze da Câmara, Bronze do Portal e Silver das duas fontes, em sequência (uma sessão Spark por vez no Trial). Agenda só em produção (ci/schedules.json, 04:00). Uma retentativa por atividade; os notebooks são idempotentes.",
+    "description": "Rotina diária do case gastos (feature 004): Bronze da Câmara, Bronze do Portal e Silver das duas fontes, em sequência (uma sessão Spark por vez no Trial). Agenda só em produção (ci/schedules.json, 04:00). Duas retentativas de 3 min por atividade cobrem a liberação lenta de sessão do Trial (TooManyRequestsForCapacity, visto no teste em dev de 2026-11-17); os notebooks são idempotentes.",
     "activities": [
       {
         "type": "TridentNotebook",
@@ -10,8 +10,8 @@
         },
         "policy": {
           "timeout": "0.02:00:00",
-          "retry": 1,
-          "retryIntervalInSeconds": 300,
+          "retry": 2,
+          "retryIntervalInSeconds": 180,
           "secureInput": false,
           "secureOutput": false
         },
@@ -48,8 +48,8 @@
         },
         "policy": {
           "timeout": "0.02:00:00",
-          "retry": 1,
-          "retryIntervalInSeconds": 300,
+          "retry": 2,
+          "retryIntervalInSeconds": 180,
           "secureInput": false,
           "secureOutput": false
         },
@@ -87,8 +87,8 @@
         },
         "policy": {
           "timeout": "0.02:00:00",
-          "retry": 1,
-          "retryIntervalInSeconds": 300,
+          "retry": 2,
+          "retryIntervalInSeconds": 180,
           "secureInput": false,
           "secureOutput": false
         },
@@ -126,8 +126,8 @@
         },
         "policy": {
           "timeout": "0.02:00:00",
-          "retry": 1,
-          "retryIntervalInSeconds": 300,
+          "retry": 2,
+          "retryIntervalInSeconds": 180,
           "secureInput": false,
           "secureOutput": false
         },
@@ -165,8 +165,8 @@
         },
         "policy": {
           "timeout": "0.02:00:00",
-          "retry": 1,
-          "retryIntervalInSeconds": 300,
+          "retry": 2,
+          "retryIntervalInSeconds": 180,
           "secureInput": false,
           "secureOutput": false
         },
@@ -216,8 +216,8 @@
         },
         "policy": {
           "timeout": "0.02:00:00",
-          "retry": 1,
-          "retryIntervalInSeconds": 300,
+          "retry": 2,
+          "retryIntervalInSeconds": 180,
           "secureInput": false,
           "secureOutput": false
         },
@@ -255,8 +255,8 @@
         },
         "policy": {
           "timeout": "0.02:00:00",
-          "retry": 1,
-          "retryIntervalInSeconds": 300,
+          "retry": 2,
+          "retryIntervalInSeconds": 180,
           "secureInput": false,
           "secureOutput": false
         },
@@ -307,8 +307,8 @@
         },
         "policy": {
           "timeout": "0.02:00:00",
-          "retry": 1,
-          "retryIntervalInSeconds": 300,
+          "retry": 2,
+          "retryIntervalInSeconds": 180,
           "secureInput": false,
           "secureOutput": false
         },
