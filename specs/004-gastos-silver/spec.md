@@ -101,8 +101,8 @@ encontrado ou não encontrado.
 
 ### User Story 4 - Atualização diária encadeada (Priority: P4)
 
-Todas as noites, sem intervenção manual, uma única rotina atualiza a Bronze das duas fontes e, em
-seguida, a Silver das duas fontes. A Bronze de despesas passa a recarregar só os arquivos anuais
+Todas as madrugadas, sem intervenção manual, uma única rotina atualiza a Bronze das duas fontes e,
+em seguida, a Silver das duas fontes, depois do horário em que a Câmara regera os arquivos anuais. A Bronze de despesas passa a recarregar só os arquivos anuais
 que a Câmara alterou desde a última carga, e deixa de coletar despesas pela consulta mês a mês. A
 Silver só roda depois que a Bronze terminou.
 
@@ -110,7 +110,7 @@ Silver só roda depois que a Bronze terminou.
 das cargas das histórias anteriores.
 
 **Independent Test**: depois da publicação em produção, conferir na manhã seguinte que a rotina
-rodou uma vez, na ordem Bronze do Portal, Bronze da Câmara e Silver, que só os arquivos anuais
+rodou uma vez, na ordem Bronze da Câmara, Bronze do Portal e Silver, que só os arquivos anuais
 alterados foram recarregados e que a Silver reflete a Bronze daquela noite.
 
 **Acceptance Scenarios**:
@@ -214,8 +214,9 @@ falha no registro e a tabela não é publicada com a duplicidade.
   a verificação mesmo quando nenhum arquivo mudou.
 - **FR-016**: A rotina diária MUST deixar de coletar despesas pela consulta mês a mês; essa
   coleta MUST continuar disponível para disparo manual.
-- **FR-017**: Uma única rotina diária MUST rodar, apenas em produção, a Bronze do Portal, a Bronze
-  da Câmara e a Silver das duas fontes, em sequência, cada etapa só depois do sucesso da etapa
+- **FR-017**: Uma única rotina diária MUST rodar, apenas em produção e depois da regeneração diária
+  dos arquivos anuais pela Câmara, a Bronze da Câmara, a Bronze do Portal e a Silver das duas
+  fontes, em sequência, cada etapa só depois do sucesso da etapa
   de que depende; as agendas atuais por fonte MUST ser removidas.
 - **FR-018**: Os itens novos MUST seguir o padrão de nomes da constituição v3.0.0 e passar no
   validador de nomes do pull request (Princípios III e IV).
@@ -254,7 +255,7 @@ falha no registro e a tabela não é publicada com a duplicidade.
 - **SC-003**: 100% das execuções da Silver registram, para cada tabela, unicidade, obrigatórias e
   contagem de linhas; uma duplicidade provocada em desenvolvimento interrompe a rotina.
 - **SC-004**: Reexecutar a Silver sem lotes novos na Bronze não altera nenhuma linha.
-- **SC-005**: A rotina noturna termina, Bronze e Silver das duas fontes, antes das 06:00 de
+- **SC-005**: A rotina noturna termina, Bronze e Silver das duas fontes, antes das 07:00 de
   Brasília, e numa noite sem arquivo alterado a Bronze da Câmara leva menos tempo do que hoje
   (cerca de 30 minutos).
 - **SC-006**: A Silver está publicada e carregada em produção até 2026-11-24, com a primeira
