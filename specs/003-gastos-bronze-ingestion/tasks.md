@@ -169,7 +169,7 @@ validados pelo quickstart no Fabric.
 - [X] T039 [P] Em `.claude/settings.json`, trocar as permissões `WebFetch` dos domínios `*.balldontlie.io` por `dadosabertos.camara.leg.br`, `www.camara.leg.br` e `api.portaldatransparencia.gov.br`
 - [X] T040 Rodar `pytest tests/unit -q` e `python ci/validate_names.py workspace` (zero violações) e a busca do §8 do `quickstart.md` (SC-008); conferir também a saída das células dos notebooks executados
 - [X] T041 Remover o comentário "Sync Impact Report" do topo de `.specify/memory/constitution.md` e fazer os commits da branch `003-gastos-bronze-ingestion` (constituição v3.0.0, specs, `ci/`, `docs/`, `tests/`, `.github/`); abrir o PR para `dev`
-- [ ] T042 Quando o fluxo de publicação da feature 002 estiver ativo: enviar a chave para `bronze_transparencia/Files/_secrets/transparencia_api_key` do `ws-prd-dpacademy` à mão, abrir o PR de `dev` para `main` e conferir em produção as duas agendas de `ci/schedules.json` e a primeira execução de cada pipeline (FR-009, SC-005)
+- [X] T042 Quando o fluxo de publicação da feature 002 estiver ativo: enviar a chave para `bronze_transparencia/Files/_secrets/transparencia_api_key` do `ws-prd-dpacademy` à mão, abrir o PR de `dev` para `main` e conferir em produção as duas agendas de `ci/schedules.json` e a primeira execução de cada pipeline (FR-009, SC-005) — **feito em 2026-11-16 e 2026-11-17**: PR #4, carga histórica e primeira execução agendada dos dois pipelines, registradas no `quickstart.md`
 
 ---
 

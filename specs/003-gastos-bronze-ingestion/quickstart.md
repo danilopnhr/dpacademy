@@ -219,4 +219,17 @@ coluna `message` de `ctl_ingestion_runs`.
   servidor (pendência abaixo).
 - **Pendência**: avaliar se o cliente do Portal deve tentar de novo um 400 com "Erro ao executar
   a consulta".
-- **A conferir**: a primeira execução agendada de cada pipeline (01:00 e 05:00 de 2026-11-17).
+- **Primeira execução agendada** (2026-11-17, conferida no histórico de jobs e em
+  `ctl_ingestion_runs`): os dois pipelines rodaram por agenda e terminaram `Completed`, todos os
+  lotes com `environment = 'prd'`, `succeeded` e `records_written = records_collected`. Em dev não
+  houve nenhuma execução nova.
+  - Portal (01:00 a 02:20): emendas de 2025 e 2026, com 12.246 registros em 819 páginas; 30 lotes
+    de `pessoa_juridica` com 15.000 CNPJs distintos (9.964 `encontrado`, 5.036
+    `nao_encontrado`), 15.000 requisições, nenhuma retentativa. A fila de produção começou do zero,
+    então a fila de ~68 mil CNPJs leva cerca de 5 noites.
+  - Câmara (05:00 a 05:30): cadastros (57 legislaturas, 38 partidos, 929 deputados) e despesas pela
+    API de 09, 10 e 11/2026, com 16.518 registros (7.370, 7.792 e 1.356), cada mês com
+    `records_collected = expected_total`; 7 retentativas HTTP em 1.952 requisições; 1 despesa sem
+    `codDocumento` em 09/2026, registrada no aviso.
+  - Total em prd: Câmara com 17 lotes `succeeded`; Portal com 40 `succeeded` e 1 `failed` (o lote
+    de emendas de 2024 da carga histórica, já recarregado).
