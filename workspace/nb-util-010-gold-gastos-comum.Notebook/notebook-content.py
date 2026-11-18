@@ -311,11 +311,42 @@ def registrar(run_id, resultados):
 def gravar(df, tabela):
     """Overwrite da tabela inteira (uma versão Delta nova, atômica por tabela) com V-Order (R1)."""
     df.write.format("delta").mode("overwrite").option("overwriteSchema", "true").saveAsTable(tabela)
-    spark.sql(f"ALTER TABLE {tabela} SET TBLPROPERTIES ('delta.parquet.vorder.enabled' = 'true')")
+    # Propriedade só na primeira vez: cada ALTER cria outra versão Delta (e outro reenquadramento do Direct Lake)
+    props = {r["key"]: r["value"] for r in spark.sql(f"SHOW TBLPROPERTIES {tabela}").collect()}
+    if props.get("delta.parquet.vorder.enabled") != "true":
+        spark.sql(f"ALTER TABLE {tabela} SET TBLPROPERTIES ('delta.parquet.vorder.enabled' = 'true')")
 
 
 def contagem(tabela):
     return _resultado(tabela, "contagem", 0, spark.table(tabela).count(), informativa=True)
+
+
+def reenquadrar_modelo(nome="sm-gastos", timeout_s=300):
+    """Refresh (reenquadramento Direct Lake) do modelo do case depois de gravar a Gold (research R9).
+
+    Explícito em vez de depender da atualização automática do Direct Lake, que não é configurável pelo
+    repositório. Devolve um resultado `reenquadramento` para ctl_quality_checks; modelo ausente no
+    workspace (ex.: antes da primeira publicação) não é falha.
+    """
+    import time
+    import sempy.fabric as fabric
+
+    if nome not in set(fabric.list_datasets()["Dataset Name"]):
+        return _resultado(nome, "reenquadramento", 0, 0, "modelo ausente no workspace; nada a fazer", informativa=True)
+    try:
+        req = fabric.refresh_dataset(dataset=nome, refresh_type="full")
+        inicio = time.time()
+        while time.time() - inicio < timeout_s:
+            time.sleep(10)
+            r = fabric.list_refresh_requests(dataset=nome, top_n=5)
+            linha = r[r["Request Id"] == req]
+            status = linha["Status"].iloc[0] if len(linha) else "Unknown"
+            if status not in ("Unknown", "NotStarted", "InProgress"):
+                break
+        ok = status == "Completed"
+        return _resultado(nome, "reenquadramento", 0 if ok else 1, 0, f"request={req}; status={status}")
+    except Exception as exc:  # noqa: BLE001 - o motivo vai para o registro
+        return _resultado(nome, "reenquadramento", 1, 0, f"erro: {exc}"[:1000])
 
 
 def falhas(resultados):
