@@ -1,0 +1,11 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Notebook",
+    "displayName": "nb-full-020-gold-gastos-modelo"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "a52d34f3-dbd5-b7a2-460f-d076c5593a5e"
+  }
+}
