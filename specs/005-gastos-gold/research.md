@@ -193,12 +193,25 @@ substitui os dois por `find_replace` em `ci/parameter.yml`, com os atributos din
 repositório (contrato da 002). Sem `semantic_model_binding`: o modelo usa o SSO padrão do Direct
 Lake.
 
+**Reenquadramento explícito (revisto na implementação, 2026-11-18)**: em dev, depois de criar o
+modelo e regravar a Gold, nenhum reenquadramento automático apareceu no histórico em mais de 8
+minutos, e a opção "manter os dados do Direct Lake atualizados" não é exposta pela API nem pelo
+TMDL, então não pode ser versionada. **Decisão**: o `nb-full-020-gold-gastos-modelo`, depois de
+gravar com sucesso, pede o refresh do `sm-gastos` pelo semantic link
+(`sempy.fabric.refresh_dataset`), que num modelo Direct Lake é um reenquadramento de segundos, não
+uma importação (FR-017 continua atendido). O resultado vai para `ctl_quality_checks` como
+`reenquadramento`; se falhar, a execução falha (os dados já gravados ficam, e a retentativa é
+idempotente). Modelo ausente no workspace (antes da primeira publicação) não é falha.
+**Alternativas rejeitadas**: depender da atualização automática (invisível e não versionável);
+atividade de refresh de modelo semântico no pipeline (exige uma conexão do Fabric com credencial
+própria em cada ambiente).
+
 **Primeira publicação**: o `gold_gastos` de produção nasce vazio no deploy; o modelo só enquadra
-(framing) depois da carga inicial manual da Gold. O quickstart prevê um refresh manual único do
-modelo pela API depois dessa carga; daí em diante, a atualização automática do Direct Lake
-("manter os dados atualizados", ativa por padrão) acompanha cada nova versão Delta. Se o
-enquadramento falhar com o modelo de propriedade da service principal, o plano B é assumir o
-modelo (take over) com a conta do engenheiro, uma vez; registrar no quickstart.
+depois da carga inicial manual da Gold, que já termina pedindo o refresh. O SQL endpoint precisa
+ter sincronizado as tabelas novas antes (em dev, a sincronização demorou; a API `refreshMetadata`
+do SQL endpoint resolve). Se o enquadramento falhar com o modelo de propriedade da service
+principal, o plano B é assumir o modelo (take over) com a conta do engenheiro, uma vez; registrar
+no quickstart.
 
 **Conteúdo**: as dez dimensões e os dois fatos (sem `ctl_quality_checks`); relacionamentos muitos
 para um, filtro de uma direção, da dimensão para o fato; `dim_data` marcada como tabela de datas

@@ -29,7 +29,12 @@ exceção se houver `failed`).
 Passos: lê `silver_camara.{deputados,partidos,despesas}` e
 `silver_transparencia.{emendas,pessoa_juridica}`; monta as dimensões e os fatos
 ([gold-tables.md](./gold-tables.md)); roda as verificações; se todas passarem, grava as dimensões e
-depois os fatos e registra a `contagem`; senão, registra e falha sem gravar.
+depois os fatos, registra a `contagem` e pede o refresh do `sm-gastos` (`reenquadramento`, research
+R9); senão, registra e falha sem gravar.
+
+Proteções de privacidade na montagem (research R5): CPF completo dentro de nome de fornecedor,
+razão social ou nome fantasia é trocado pela máscara (`mascarar_cpf_em_texto`, testada em `pytest`);
+fornecedor sem nome publicado recebe a razão social do Portal ou o documento exibido.
 
 Saída do notebook (`notebookutils.notebook.exit`): JSON com `run_id`, `status` e as contagens por
 tabela, para leitura no monitor do pipeline.

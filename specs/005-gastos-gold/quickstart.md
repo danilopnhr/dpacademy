@@ -66,22 +66,22 @@ dependência: com uma Silver forçada a falhar, `gold_gastos` não roda.
      totais por ano da Gold em T-SQL;
    - `[% pago ligado a deputado]` igual ao `ligacao_autor` da última execução;
    - filtro por partido respeitando o partido da despesa.
-3. Rodar a Gold de novo e conferir que o modelo mostra a nova versão sem refresh manual (atualização
-   automática do Direct Lake).
+3. Rodar a Gold de novo e conferir que ela termina com `reenquadramento` `passed` e que o histórico
+   de refresh do modelo mostra o reenquadramento pedido pelo notebook (research R9).
 
 ## 7. Produção (SC-005, SC-006, SC-009, SC-010)
 
 1. PR `dev` → `main`, `deploy-prd` verde: `gold_gastos`, os dois notebooks, o orquestrador com a
    atividade nova e o `sm-gastos` publicados; `expressions.tmdl` de prd apontando para o SQL
    endpoint do `gold_gastos` de prd (conferir pela API `getDefinition`).
-2. Carga inicial manual da Gold em prd, fora da rotina; conferir os §1 a §4 com os números de
-   produção.
-3. Refresh manual único do `sm-gastos` pela API; se o enquadramento falhar com o modelo de
+2. `refreshMetadata` do SQL endpoint do `gold_gastos` de prd depois da carga; carga inicial manual
+   da Gold em prd, fora da rotina; conferir os §1 a §4 com os números de produção.
+3. Conferir `reenquadramento` `passed` na carga inicial; se o enquadramento falhar com o modelo de
    propriedade da service principal, assumir o modelo com a conta do engenheiro e repetir
    (research R9). Conferir o §6.2 em prd.
 4. Na manhã seguinte: a rotina rodou a Gold depois da Silver, terminou antes das 07:00,
-   `ctl_quality_checks` do `gold_gastos` tem a noite com `environment = 'prd'`, e o modelo mostra os
-   dados da noite sem refresh manual.
+   `ctl_quality_checks` do `gold_gastos` tem a noite com `environment = 'prd'` (inclusive
+   `reenquadramento`), e o modelo mostra os dados da noite sem refresh manual.
 
 ## Registro da validação
 
