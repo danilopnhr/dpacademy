@@ -1,0 +1,50 @@
+table 'Tipo de emenda'
+	lineageTag: 65b4ecbe-b891-5f64-acea-a954e5a2e1c7
+	sourceLineageTag: [dbo].[dim_tipo_emenda]
+
+	column sk_tipo_emenda
+		dataType: int64
+		isHidden
+		lineageTag: 66f4c5a6-7347-53ff-9e4b-7b092b731b1c
+		sourceLineageTag: sk_tipo_emenda
+		summarizeBy: none
+		sourceColumn: sk_tipo_emenda
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo emenda'
+		dataType: string
+		lineageTag: 886ccb3d-e2f7-5c03-bf12-ef9800f0b7ec
+		sourceLineageTag: tipo_emenda
+		summarizeBy: none
+		sourceColumn: tipo_emenda
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grupo emenda'
+		dataType: string
+		lineageTag: e2d6dab6-2b79-5207-918b-81354e776fdd
+		sourceLineageTag: grupo_emenda
+		summarizeBy: none
+		sourceColumn: grupo_emenda
+
+		annotation SummarizationSetBy = Automatic
+
+	column _carregado_em
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		lineageTag: 147a8a3d-6f92-55b0-bf1a-23eca05e9923
+		sourceLineageTag: _carregado_em
+		summarizeBy: none
+		sourceColumn: _carregado_em
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Tipo de emenda' = entity
+		mode: directLake
+		source
+			entityName: dim_tipo_emenda
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

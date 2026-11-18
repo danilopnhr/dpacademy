@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "SemanticModel",
+    "displayName": "sm-gastos",
+    "description": "Modelo semântico Direct Lake do case gastos (feature 005)"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "9d7420da-21c4-b856-41da-6f2e3339942b"
+  }
+}

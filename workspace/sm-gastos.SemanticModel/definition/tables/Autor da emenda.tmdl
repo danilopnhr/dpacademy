@@ -1,0 +1,88 @@
+/// Autor publicado da emenda; nas individuais, ligação ao deputado por nome normalizado com candidato único.
+table 'Autor da emenda'
+	lineageTag: abffd0ac-8ec8-5749-bf16-52b2b77d6c84
+	sourceLineageTag: [dbo].[dim_autor_emenda]
+
+	column sk_autor_emenda
+		dataType: int64
+		isHidden
+		lineageTag: 4a99cac8-5acc-5b8f-a70c-e86c9887069e
+		sourceLineageTag: sk_autor_emenda
+		summarizeBy: none
+		sourceColumn: sk_autor_emenda
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome autor'
+		dataType: string
+		lineageTag: 7ef6acda-b6e0-511f-b5c3-bc62760d7d3c
+		sourceLineageTag: nome_autor
+		summarizeBy: none
+		sourceColumn: nome_autor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Grupo emenda'
+		dataType: string
+		lineageTag: e075a806-4967-5eca-963a-b559adbdf8e4
+		sourceLineageTag: grupo_emenda
+		summarizeBy: none
+		sourceColumn: grupo_emenda
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo autor'
+		dataType: string
+		lineageTag: 90189b4e-99c9-55d8-85c9-06689166040b
+		sourceLineageTag: tipo_autor
+		summarizeBy: none
+		sourceColumn: tipo_autor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Ligado a deputado'
+		dataType: boolean
+		lineageTag: fcd02e73-10a4-5332-a77f-a974a3b70c7b
+		sourceLineageTag: ligado_a_deputado
+		summarizeBy: none
+		sourceColumn: ligado_a_deputado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Motivo sem ligacao'
+		dataType: string
+		lineageTag: 3efed799-467a-549b-8188-3c4cede10f65
+		sourceLineageTag: motivo_sem_ligacao
+		summarizeBy: none
+		sourceColumn: motivo_sem_ligacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column chave_natural
+		dataType: string
+		isHidden
+		lineageTag: db63be24-c6e8-53ee-be18-d6e8d78f5b76
+		sourceLineageTag: chave_natural
+		summarizeBy: none
+		sourceColumn: chave_natural
+
+		annotation SummarizationSetBy = Automatic
+
+	column _carregado_em
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		lineageTag: 9527cfe5-594d-5163-b6aa-8abc890ebaf7
+		sourceLineageTag: _carregado_em
+		summarizeBy: none
+		sourceColumn: _carregado_em
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Autor da emenda' = entity
+		mode: directLake
+		source
+			entityName: dim_autor_emenda
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

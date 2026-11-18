@@ -1,0 +1,196 @@
+/// Fornecedores da cota. CPF de pessoa física mascarado; situação de consulta ao Portal da Transparência.
+table Fornecedor
+	lineageTag: 6144c8bb-e6b0-5501-9f12-c7eafdeba70d
+	sourceLineageTag: [dbo].[dim_fornecedor]
+
+	column sk_fornecedor
+		dataType: int64
+		isHidden
+		lineageTag: c0ee7223-66a9-5d53-a441-75b2db335ee7
+		sourceLineageTag: sk_fornecedor
+		summarizeBy: none
+		sourceColumn: sk_fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo documento'
+		dataType: string
+		lineageTag: 646028cb-8730-585e-8b05-8950ef24a947
+		sourceLineageTag: tipo_documento
+		summarizeBy: none
+		sourceColumn: tipo_documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Documento exibição'
+		dataType: string
+		lineageTag: b1fbd843-e92e-599c-b8ce-9a0769307c65
+		sourceLineageTag: documento_exibicao
+		summarizeBy: none
+		sourceColumn: documento_exibicao
+
+		annotation SummarizationSetBy = Automatic
+
+	column CNPJ
+		dataType: string
+		lineageTag: de256f7a-9b5f-55a7-9daf-c8eb7c273370
+		sourceLineageTag: cnpj
+		summarizeBy: none
+		sourceColumn: cnpj
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome fornecedor'
+		dataType: string
+		lineageTag: 94307fd6-86e5-531b-849c-a780326da742
+		sourceLineageTag: nome_fornecedor
+		summarizeBy: none
+		sourceColumn: nome_fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Situação portal'
+		dataType: string
+		lineageTag: c7235382-18a2-5446-a0b0-e23924969a32
+		sourceLineageTag: situacao_portal
+		summarizeBy: none
+		sourceColumn: situacao_portal
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Razão social'
+		dataType: string
+		lineageTag: bcccb0a2-bd3e-56c2-8d12-58a1aecba552
+		sourceLineageTag: razao_social
+		summarizeBy: none
+		sourceColumn: razao_social
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome fantasia'
+		dataType: string
+		lineageTag: 4c40523b-c9ab-5b56-84eb-1fa80f92f7ea
+		sourceLineageTag: nome_fantasia
+		summarizeBy: none
+		sourceColumn: nome_fantasia
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Possui sanção'
+		dataType: boolean
+		lineageTag: 86a44ec9-0196-562f-8a26-f4ade2c0f962
+		sourceLineageTag: possui_sancao
+		summarizeBy: none
+		sourceColumn: possui_sancao
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sancionado CEIS'
+		dataType: boolean
+		lineageTag: 9126fa7c-bc5a-5edb-a2d1-8915a0398f8f
+		sourceLineageTag: sancionado_ceis
+		summarizeBy: none
+		sourceColumn: sancionado_ceis
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sancionado CNEP'
+		dataType: boolean
+		lineageTag: baebf202-413c-5ccd-a519-6f77224f2928
+		sourceLineageTag: sancionado_cnep
+		summarizeBy: none
+		sourceColumn: sancionado_cnep
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sancionado CEPIM'
+		dataType: boolean
+		lineageTag: fbc24913-1332-5f39-87fd-debd038675dc
+		sourceLineageTag: sancionado_cepim
+		summarizeBy: none
+		sourceColumn: sancionado_cepim
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sancionado CEAF'
+		dataType: boolean
+		lineageTag: 7153166e-b03c-51d9-9e48-b082d084b9ea
+		sourceLineageTag: sancionado_ceaf
+		summarizeBy: none
+		sourceColumn: sancionado_ceaf
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Possui contratação'
+		dataType: boolean
+		lineageTag: eeed1a87-7ccc-52c1-945d-9fba4927d66b
+		sourceLineageTag: possui_contratacao
+		summarizeBy: none
+		sourceColumn: possui_contratacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Possui convênios'
+		dataType: boolean
+		lineageTag: 2bd40a43-0396-5bf5-a21f-31120809f765
+		sourceLineageTag: possui_convenios
+		summarizeBy: none
+		sourceColumn: possui_convenios
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Participante licitação'
+		dataType: boolean
+		lineageTag: f0800aa6-5069-569e-bd45-c71804c64c82
+		sourceLineageTag: participante_licitacao
+		summarizeBy: none
+		sourceColumn: participante_licitacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Favorecido transferências'
+		dataType: boolean
+		lineageTag: 910383d4-1d40-5db3-9dc8-20e071ed7cad
+		sourceLineageTag: favorecido_transferencias
+		summarizeBy: none
+		sourceColumn: favorecido_transferencias
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Beneficiado renúncia fiscal'
+		dataType: boolean
+		lineageTag: 481a81b1-4506-51e9-93d6-e7cc2460a1dd
+		sourceLineageTag: beneficiado_renuncia_fiscal
+		summarizeBy: none
+		sourceColumn: beneficiado_renuncia_fiscal
+
+		annotation SummarizationSetBy = Automatic
+
+	column chave_natural
+		dataType: string
+		isHidden
+		lineageTag: b49bb589-f6be-5ab9-af9f-96f3cb301ea7
+		sourceLineageTag: chave_natural
+		summarizeBy: none
+		sourceColumn: chave_natural
+
+		annotation SummarizationSetBy = Automatic
+
+	column _carregado_em
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		lineageTag: fc0bf503-6580-5634-9b0b-1d25f3e3b1cd
+		sourceLineageTag: _carregado_em
+		summarizeBy: none
+		sourceColumn: _carregado_em
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Fornecedor = entity
+		mode: directLake
+		source
+			entityName: dim_fornecedor
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

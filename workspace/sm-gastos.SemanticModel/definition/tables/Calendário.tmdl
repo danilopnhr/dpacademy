@@ -1,0 +1,161 @@
+table Calendário
+	lineageTag: db9261ad-1d96-5086-959d-6e982b97b862
+	sourceLineageTag: [dbo].[dim_data]
+	dataCategory: Time
+
+	column sk_data
+		dataType: int64
+		isHidden
+		lineageTag: d4443678-934b-510e-be37-feb410332aab
+		sourceLineageTag: sk_data
+		summarizeBy: none
+		sourceColumn: sk_data
+
+		annotation SummarizationSetBy = Automatic
+
+	column Data
+		dataType: dateTime
+		isKey
+		formatString: dd/MM/yyyy
+		lineageTag: bc4932b1-e873-51f0-93bc-8aade4b5d138
+		sourceLineageTag: data
+		summarizeBy: none
+		sourceColumn: data
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ano
+		dataType: int64
+		lineageTag: 7f5ed187-6543-5247-a5df-aed330b0b6cb
+		sourceLineageTag: ano
+		summarizeBy: none
+		sourceColumn: ano
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº do trimestre'
+		dataType: int64
+		lineageTag: 5090649d-1d12-547b-8c8e-8d5d642351ed
+		sourceLineageTag: trimestre
+		summarizeBy: none
+		sourceColumn: trimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trimestre
+		dataType: string
+		lineageTag: bd1f6ac3-40a8-51b4-8c31-027d84687b42
+		sourceLineageTag: nome_trimestre
+		summarizeBy: none
+		sourceColumn: nome_trimestre
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº do mês'
+		dataType: int64
+		lineageTag: 4be395d3-58e8-5787-8885-683b3e5ace3d
+		sourceLineageTag: mes
+		summarizeBy: none
+		sourceColumn: mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mês
+		dataType: string
+		lineageTag: 1218b7a3-a25d-5ec8-afa4-5e455d7b0870
+		sourceLineageTag: nome_mes
+		summarizeBy: none
+		sourceColumn: nome_mes
+		sortByColumn: 'Nº do mês'
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Mês abreviado'
+		dataType: string
+		lineageTag: 6257f070-7b7d-5199-b57d-7a5f0e8dd12e
+		sourceLineageTag: mes_abreviado
+		summarizeBy: none
+		sourceColumn: mes_abreviado
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mês/ano
+		dataType: string
+		lineageTag: 53657cd2-0d03-5209-a48b-0baf2fb9de68
+		sourceLineageTag: mes_ano
+		summarizeBy: none
+		sourceColumn: mes_ano
+		sortByColumn: ordem_mes_ano
+
+		annotation SummarizationSetBy = Automatic
+
+	column ordem_mes_ano
+		dataType: int64
+		isHidden
+		lineageTag: c953e0d3-8ed1-5e5f-a9d7-5adea83a3ba2
+		sourceLineageTag: ordem_mes_ano
+		summarizeBy: none
+		sourceColumn: ordem_mes_ano
+
+		annotation SummarizationSetBy = Automatic
+
+	column Dia
+		dataType: int64
+		lineageTag: c9031a60-5894-525c-8ccd-b87d01651937
+		sourceLineageTag: dia
+		summarizeBy: none
+		sourceColumn: dia
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nº do dia da semana'
+		dataType: int64
+		lineageTag: 2ccecabb-3dc1-5882-949c-54b3fdf8e614
+		sourceLineageTag: dia_semana
+		summarizeBy: none
+		sourceColumn: dia_semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Dia da semana'
+		dataType: string
+		lineageTag: c805b1e6-6426-5645-8ddc-572beab33e02
+		sourceLineageTag: nome_dia_semana
+		summarizeBy: none
+		sourceColumn: nome_dia_semana
+
+		annotation SummarizationSetBy = Automatic
+
+	column _carregado_em
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		lineageTag: 049c3c11-561f-560d-9252-5f7032ac61ab
+		sourceLineageTag: _carregado_em
+		summarizeBy: none
+		sourceColumn: _carregado_em
+
+		annotation SummarizationSetBy = Automatic
+
+	hierarchy Período
+		lineageTag: deea7391-467c-5ba5-9031-c98e17bb8bea
+
+		level Ano
+			lineageTag: 5f71aef8-7f45-5c08-86d4-7f5116ab1b5b
+			column: Ano
+
+		level Trimestre
+			lineageTag: ef054254-ffa4-5ea3-9a10-70b5216d587b
+			column: Trimestre
+
+		level Mês
+			lineageTag: ba569f8e-2516-5b6f-8a0e-09c07db60c90
+			column: Mês/ano
+
+	partition Calendário = entity
+		mode: directLake
+		source
+			entityName: dim_data
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

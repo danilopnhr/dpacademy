@@ -1,0 +1,48 @@
+relationship 72d18bf7-5d44-5dce-9f17-58efb923cfca
+	fromColumn: Despesas.sk_data_competencia
+	toColumn: Calendário.sk_data
+
+relationship 8a2229e5-4599-57a0-93bf-b1c13e113ef2
+	fromColumn: Despesas.sk_deputado
+	toColumn: Deputado.sk_deputado
+
+relationship ecdb3e85-5c6f-595d-b2f0-7004a4908c86
+	fromColumn: Despesas.sk_partido
+	toColumn: Partido.sk_partido
+
+relationship 90c651ae-052a-5423-be63-0aed3a5e3b79
+	fromColumn: Despesas.sk_uf
+	toColumn: UF.sk_uf
+
+relationship 16d67a3e-e63b-578a-acdb-994d2b7e7af2
+	fromColumn: Despesas.sk_tipo_despesa
+	toColumn: 'Tipo de despesa'.sk_tipo_despesa
+
+relationship 52ed3c53-ba30-5afa-8680-5dc97e5fbdf8
+	fromColumn: Despesas.sk_fornecedor
+	toColumn: Fornecedor.sk_fornecedor
+
+relationship fe38501f-98e2-5159-8ea1-47dcdd9192ea
+	fromColumn: Emendas.sk_data_ano
+	toColumn: Calendário.sk_data
+
+relationship 0b22f078-081c-585e-888e-79f20c2fa834
+	fromColumn: Emendas.sk_deputado
+	toColumn: Deputado.sk_deputado
+
+relationship 7fc6c0ca-e024-582f-b4ef-6d59928319f9
+	fromColumn: Emendas.sk_autor_emenda
+	toColumn: 'Autor da emenda'.sk_autor_emenda
+
+relationship e9e0e19a-71ab-5337-8577-868963bcd365
+	fromColumn: Emendas.sk_tipo_emenda
+	toColumn: 'Tipo de emenda'.sk_tipo_emenda
+
+relationship 56c0b069-d074-5b87-b0e3-672eecb22870
+	fromColumn: Emendas.sk_funcao
+	toColumn: Função.sk_funcao
+
+relationship f89d8d6f-5388-57e0-8127-460a5d62d520
+	fromColumn: Emendas.sk_localidade
+	toColumn: Localidade.sk_localidade
+

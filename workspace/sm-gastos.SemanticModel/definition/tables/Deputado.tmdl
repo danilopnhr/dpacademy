@@ -1,0 +1,160 @@
+table Deputado
+	lineageTag: 69536715-f267-5b22-8b29-3987e2d60c7d
+	sourceLineageTag: [dbo].[dim_deputado]
+
+	column sk_deputado
+		dataType: int64
+		isHidden
+		lineageTag: b0f11d3d-44be-5d6d-9a9d-df319b32df74
+		sourceLineageTag: sk_deputado
+		summarizeBy: none
+		sourceColumn: sk_deputado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Código deputado'
+		dataType: int64
+		lineageTag: 6ba3eff8-611c-5d5a-95d9-79a50ea939d4
+		sourceLineageTag: codigo_deputado
+		summarizeBy: none
+		sourceColumn: codigo_deputado
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome parlamentar'
+		dataType: string
+		lineageTag: 67b7e47d-f3a9-5037-98b0-534050532740
+		sourceLineageTag: nome_parlamentar
+		summarizeBy: none
+		sourceColumn: nome_parlamentar
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome civil'
+		dataType: string
+		lineageTag: cf464dc0-4348-54a6-b31b-d3131879e4ff
+		sourceLineageTag: nome_civil
+		summarizeBy: none
+		sourceColumn: nome_civil
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sigla partido atual'
+		dataType: string
+		lineageTag: b87faa03-69dd-59a2-9541-885063ade726
+		sourceLineageTag: sigla_partido_atual
+		summarizeBy: none
+		sourceColumn: sigla_partido_atual
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sigla UF atual'
+		dataType: string
+		lineageTag: 5162d1f9-c01b-57da-b6cc-c0da633c9225
+		sourceLineageTag: sigla_uf_atual
+		summarizeBy: none
+		sourceColumn: sigla_uf_atual
+
+		annotation SummarizationSetBy = Automatic
+
+	column Sexo
+		dataType: string
+		lineageTag: 14524723-8156-517f-a2ba-55a0db04f6d4
+		sourceLineageTag: sexo
+		summarizeBy: none
+		sourceColumn: sexo
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data nascimento'
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: 4ecb12e4-8879-52e3-957d-a8c2a96c1953
+		sourceLineageTag: data_nascimento
+		summarizeBy: none
+		sourceColumn: data_nascimento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Escolaridade
+		dataType: string
+		lineageTag: ee85e983-13b8-530b-b562-6e58f94c65be
+		sourceLineageTag: escolaridade
+		summarizeBy: none
+		sourceColumn: escolaridade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Situação
+		dataType: string
+		lineageTag: f5827309-b188-52f3-9bd6-eb73b2da5f95
+		sourceLineageTag: situacao
+		summarizeBy: none
+		sourceColumn: situacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'URL foto'
+		dataType: string
+		lineageTag: b9fdd9ea-674e-549f-9faa-341e6556d606
+		sourceLineageTag: url_foto
+		summarizeBy: none
+		sourceColumn: url_foto
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'É liderança'
+		dataType: boolean
+		lineageTag: 98559d16-b0a3-5646-9c2c-f8be171a8edf
+		sourceLineageTag: e_lideranca
+		summarizeBy: none
+		sourceColumn: e_lideranca
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'No cadastro'
+		dataType: boolean
+		lineageTag: 4b1f7c03-062c-50f0-b088-2442eb574011
+		sourceLineageTag: no_cadastro
+		summarizeBy: none
+		sourceColumn: no_cadastro
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo membro'
+		dataType: string
+		lineageTag: d274ff64-031b-51ec-b902-40d331526c72
+		sourceLineageTag: tipo_membro
+		summarizeBy: none
+		sourceColumn: tipo_membro
+
+		annotation SummarizationSetBy = Automatic
+
+	column chave_natural
+		dataType: string
+		isHidden
+		lineageTag: 81431d56-c296-55f3-a7cf-3bb188815387
+		sourceLineageTag: chave_natural
+		summarizeBy: none
+		sourceColumn: chave_natural
+
+		annotation SummarizationSetBy = Automatic
+
+	column _carregado_em
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		lineageTag: 8449d7fd-7cc6-541b-ac29-f11f023f14d0
+		sourceLineageTag: _carregado_em
+		summarizeBy: none
+		sourceColumn: _carregado_em
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Deputado = entity
+		mode: directLake
+		source
+			entityName: dim_deputado
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

@@ -1,0 +1,59 @@
+table Localidade
+	lineageTag: 1606965e-9b66-5f7e-a25a-7bc8dd495749
+	sourceLineageTag: [dbo].[dim_localidade]
+
+	column sk_localidade
+		dataType: int64
+		isHidden
+		lineageTag: fd1e2966-18bd-5f0d-9281-9528c70659b7
+		sourceLineageTag: sk_localidade
+		summarizeBy: none
+		sourceColumn: sk_localidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Localidade gasto'
+		dataType: string
+		lineageTag: 384abb4e-5d29-598a-bfd8-69f7ac62d4d3
+		sourceLineageTag: localidade_gasto
+		summarizeBy: none
+		sourceColumn: localidade_gasto
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nível localidade'
+		dataType: string
+		lineageTag: 44c83ead-4c01-514c-95bc-94a7b0cf5879
+		sourceLineageTag: nivel_localidade
+		summarizeBy: none
+		sourceColumn: nivel_localidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Sigla UF localidade'
+		dataType: string
+		lineageTag: e20c0b54-d6ec-5aa2-b3ca-f4cf884e3fc9
+		sourceLineageTag: sigla_uf_localidade
+		summarizeBy: none
+		sourceColumn: sigla_uf_localidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column _carregado_em
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		lineageTag: 85bda439-aada-5835-a54c-5dda32f6a98a
+		sourceLineageTag: _carregado_em
+		summarizeBy: none
+		sourceColumn: _carregado_em
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Localidade = entity
+		mode: directLake
+		source
+			entityName: dim_localidade
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

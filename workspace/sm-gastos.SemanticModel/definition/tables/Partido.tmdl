@@ -1,0 +1,59 @@
+table Partido
+	lineageTag: fb0d1de1-f867-5311-bebf-df5e2f141a01
+	sourceLineageTag: [dbo].[dim_partido]
+
+	column sk_partido
+		dataType: int64
+		isHidden
+		lineageTag: 9f7adbc0-6145-5626-9b18-b43c2637f8a3
+		sourceLineageTag: sk_partido
+		summarizeBy: none
+		sourceColumn: sk_partido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Código partido'
+		dataType: int64
+		lineageTag: 4b447573-b4a6-5444-95c0-9829e1b71c64
+		sourceLineageTag: codigo_partido
+		summarizeBy: none
+		sourceColumn: codigo_partido
+
+		annotation SummarizationSetBy = Automatic
+
+	column Partido
+		dataType: string
+		lineageTag: 04cbb634-0eb9-5026-8924-0502e59a2f1b
+		sourceLineageTag: sigla_partido
+		summarizeBy: none
+		sourceColumn: sigla_partido
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome partido'
+		dataType: string
+		lineageTag: 288aab0b-5e4e-51ac-9ffa-ae28d9c32f36
+		sourceLineageTag: nome_partido
+		summarizeBy: none
+		sourceColumn: nome_partido
+
+		annotation SummarizationSetBy = Automatic
+
+	column _carregado_em
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		lineageTag: 8dace1e8-ca0d-5735-8d23-c808c53b8d81
+		sourceLineageTag: _carregado_em
+		summarizeBy: none
+		sourceColumn: _carregado_em
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Partido = entity
+		mode: directLake
+		source
+			entityName: dim_partido
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
