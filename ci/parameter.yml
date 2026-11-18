@@ -28,3 +28,8 @@ find_replace:
   - find_value: "ec55a601-16e2-4af1-a923-5d0430d1c576" # silver_transparencia em dev
     replace_value:
       prd: "$items.Lakehouse.silver_transparencia.$id"
+
+  # Lakehouse padrão do notebook da Gold (feature 005)
+  - find_value: "466bbb20-4164-40b5-8210-8df07d586791" # gold_gastos em dev
+    replace_value:
+      prd: "$items.Lakehouse.gold_gastos.$id"

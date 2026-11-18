@@ -41,10 +41,10 @@ validador de nomes, como define o plano. Tabelas e modelo são validados pelo qu
 
 **Purpose**: lakehouse, configuração de publicação e validador
 
-- [ ] T001 Conferir que a Silver de dev está atualizada (última execução dos quatro notebooks da Silver; rodar de novo se for anterior a 2026-11-17) e registrar as contagens de referência de dev (despesas por ano, emendas por ano e tipo, fornecedores) para o quickstart
-- [ ] T002 Criar o lakehouse `gold_gastos` em `ws-dev-dpacademy` (sem schemas, como os demais) e fazer commit pela Git integration em `dev` (resulta em `workspace/gold_gastos.Lakehouse/`); anotar o GUID do lakehouse, o servidor SQL e o GUID do SQL endpoint de dev
-- [ ] T003 Acrescentar a `ci/parameter.yml` a entrada do GUID de dev do `gold_gastos` com `replace_value.prd` = `$items.Lakehouse.gold_gastos.$id` (contrato notebooks-e-orquestracao)
-- [ ] T004 [P] Acrescentar a `tests/unit/test_validate_names.py` casos para `gold_gastos.ctl_quality_checks` (aceito), `gold_gastos.dim_deputado` (aceito) e `gold_gastos.despesas` (recusado); depois ajustar `validate_table_name` em `ci/validate_names.py` para aceitar `ctl_<assunto>` em lakehouses `gold_` (research R7); `pytest tests/unit -q` verde
+- [X] T001 Conferir que a Silver de dev está atualizada (última execução dos quatro notebooks da Silver; rodar de novo se for anterior a 2026-11-17) e registrar as contagens de referência de dev (despesas por ano, emendas por ano e tipo, fornecedores) para o quickstart
+- [X] T002 Criar o lakehouse `gold_gastos` em `ws-dev-dpacademy` (sem schemas, como os demais) e fazer commit pela Git integration em `dev` (resulta em `workspace/gold_gastos.Lakehouse/`); anotar o GUID do lakehouse, o servidor SQL e o GUID do SQL endpoint de dev
+- [X] T003 Acrescentar a `ci/parameter.yml` a entrada do GUID de dev do `gold_gastos` com `replace_value.prd` = `$items.Lakehouse.gold_gastos.$id` (contrato notebooks-e-orquestracao)
+- [X] T004 [P] Acrescentar a `tests/unit/test_validate_names.py` casos para `gold_gastos.ctl_quality_checks` (aceito), `gold_gastos.dim_deputado` (aceito) e `gold_gastos.despesas` (recusado); depois ajustar `validate_table_name` em `ci/validate_names.py` para aceitar `ctl_<assunto>` em lakehouses `gold_` (research R7); `pytest tests/unit -q` verde
 
 ---
 
