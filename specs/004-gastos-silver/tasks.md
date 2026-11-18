@@ -134,8 +134,8 @@ lote de arquivo da Bronze; zero chave repetida; sem CPF.
 - [X] T025 [P] Em `docs/adr-002-cicd-fabric-cicd.md`, registrar o ruleset `dev-protegida` (sem exclusão e sem force push na `dev`) e o motivo (exclusão automática da `dev` no merge do PR #4)
 - [X] T026 [P] Atualizar `README.md` e `docs/padrao-nomenclatura.md` com os lakehouses, tabelas, notebooks e o orquestrador da Silver; em `specs/003-gastos-bronze-ingestion/contracts/bronze-tables.md` e `data-model.md`, nota apontando para a coluna `source_hash` e para a regra de versão revista nesta feature
 - [X] T027 [P] Reescrever `backlog/backlog.csv` trocando os épicos da NBA pelos do case `gastos` (Bronze, Silver, Gold e Consumo) com as issues de cada um (FR-020)
-- [ ] T028 Rodar `pytest tests/unit -q` e `python ci/validate_names.py workspace` (zero violações); trazer `dev` para `004-gastos-silver`; abrir o PR para `dev`, concluir e abrir o PR `dev` → `main`
-- [ ] T029 Depois do `deploy-prd` verde, executar quickstart §7 em produção: itens publicados, agenda do orquestrador às 04:00 e agendas por fonte desativadas; carga inicial manual (Bronze de despesas com `anos` vazio, depois os quatro notebooks da Silver) fora do horário da rotina; na manhã seguinte, conferir a primeira execução agendada (SC-005, SC-006); registrar no quickstart
+- [x] T028 Rodar `pytest tests/unit -q` e `python ci/validate_names.py workspace` (zero violações); trazer `dev` para `004-gastos-silver`; abrir o PR para `dev`, concluir e abrir o PR `dev` → `main`
+- [x] T029 Depois do `deploy-prd` verde, executar quickstart §7 em produção: itens publicados, agenda do orquestrador às 04:00 e agendas por fonte desativadas; carga inicial manual (Bronze de despesas com `anos` vazio, depois os quatro notebooks da Silver) fora do horário da rotina; na manhã seguinte, conferir a primeira execução agendada (SC-005, SC-006); registrar no quickstart
 
 ---
 

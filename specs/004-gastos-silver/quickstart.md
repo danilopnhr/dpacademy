@@ -120,3 +120,22 @@ uma falha provocada na Bronze do Portal impedindo a Silver do Portal.
   em ~20 s, com `TooManyRequestsForCapacity` (sessão da atividade anterior ainda não liberada) e
   passaram na retentativa de 5 min. Ajuste: duas retentativas com 180 s de intervalo. Sem as
   esperas, a rotina leva ~32 min com a fila de fornecedores vazia.
+
+### 2026-11-17 e 2026-11-18: `ws-prd-dpacademy`
+
+- **§7.1 Publicação**: `deploy-prd` verde em 2026-11-17 17:01 UTC. Lakehouses `silver_camara` e
+  `silver_transparencia`, os seis notebooks e `pl-010-orq-gastos-diario` publicados; agenda do
+  orquestrador às 04:00 (Brasília) ativa; agendas dos dois pipelines por fonte desativadas.
+- **§7.2 Carga inicial manual** (2026-11-17, 29,5 min): Silver de despesas igual à Bronze nos oito
+  anos; 57 legislaturas, 38 partidos e 929 deputados; 55.044 emendas; 15.000 CNPJs (a fila de
+  fornecedores de produção começou do zero em 2026-11-17 e avança 15.000 por noite). Todas as
+  verificações `passed`, com `environment = 'prd'`.
+- **§7.3 Primeira execução agendada** (2026-11-18): `Completed`, 07:00–08:42 UTC (04:00–05:42 em
+  Brasília, antes das 07:00). Bronze da Câmara: cadastros gravados, despesas de 2019 a 2025
+  `skipped` (`arquivo sem mudança`) e só 2026 gravado (126.967 linhas). Bronze do Portal: emendas
+  de 2025 e 2026 (12.259 registros) e mais 15.000 CNPJs (30 lotes, 69 min, a maior parte da
+  rotina). Silver: despesas só de 2026 (total 1.687.037), emendas de 2025 e 2026 (total 55.057),
+  `pessoa_juridica` com 30.000 CNPJs. `ctl_quality_checks` com 18 verificações da noite, todas
+  `passed`, com `environment = 'prd'`. Quatro atividades (`camara_despesas` e três notebooks da
+  Silver) falharam na primeira tentativa com `TooManyRequestsForCapacity` (HTTP 430) e passaram
+  na retentativa de 180 s, como previsto no §6. Nenhuma execução dos pipelines por fonte.
