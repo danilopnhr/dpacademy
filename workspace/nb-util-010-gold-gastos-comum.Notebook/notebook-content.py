@@ -321,32 +321,51 @@ def contagem(tabela):
     return _resultado(tabela, "contagem", 0, spark.table(tabela).count(), informativa=True)
 
 
-def reenquadrar_modelo(nome="sm-gastos", timeout_s=300):
+def reenquadrar_modelo(nome="sm-gastos", desde=None, timeout_s=900):
     """Refresh (reenquadramento Direct Lake) do modelo do case depois de gravar a Gold (research R9).
 
-    Explícito em vez de depender da atualização automática do Direct Lake, que não é configurável pelo
-    repositório. Devolve um resultado `reenquadramento` para ctl_quality_checks; modelo ausente no
-    workspace (ex.: antes da primeira publicação) não é falha.
+    A atualização automática do Direct Lake também pode disparar logo depois da gravação, e as duas
+    operações disputam o mesmo bloqueio (visto em dev em 2026-11-18: a automática falhou por
+    "locking conflicts" e a pedida aqui levou 5,5 min). Por isso conta como sucesso qualquer
+    reenquadramento `Completed` iniciado depois de `desde` (UTC), pedido aqui ou automático.
+    Modelo ausente no workspace (ex.: antes da primeira publicação) não é falha.
     """
     import time
+
+    import pandas as pd
     import sempy.fabric as fabric
 
     if nome not in set(fabric.list_datasets()["Dataset Name"]):
         return _resultado(nome, "reenquadramento", 0, 0, "modelo ausente no workspace; nada a fazer", informativa=True)
+    desde = pd.Timestamp(desde or agora()).tz_localize(None)
+
+    def concluidos_depois():
+        r = fabric.list_refresh_requests(dataset=nome, top_n=10)
+        inicio_col = pd.to_datetime(r["Start Time"], utc=True).dt.tz_localize(None)
+        return r[(r["Status"] == "Completed") & (inicio_col >= desde)]
+
+    req, status = None, "Unknown"
     try:
         req = fabric.refresh_dataset(dataset=nome, refresh_type="full")
-        inicio = time.time()
-        while time.time() - inicio < timeout_s:
-            time.sleep(10)
-            r = fabric.list_refresh_requests(dataset=nome, top_n=5)
-            linha = r[r["Request Id"] == req]
-            status = linha["Status"].iloc[0] if len(linha) else "Unknown"
-            if status not in ("Unknown", "NotStarted", "InProgress"):
-                break
-        ok = status == "Completed"
-        return _resultado(nome, "reenquadramento", 0 if ok else 1, 0, f"request={req}; status={status}")
-    except Exception as exc:  # noqa: BLE001 - o motivo vai para o registro
-        return _resultado(nome, "reenquadramento", 1, 0, f"erro: {exc}"[:1000])
+    except Exception as exc:  # noqa: BLE001 - ex.: conflito com o reenquadramento automático em curso
+        status = f"pedido recusado: {exc}"[:300]
+    inicio = time.time()
+    while time.time() - inicio < timeout_s:
+        time.sleep(15)
+        try:
+            r = fabric.list_refresh_requests(dataset=nome, top_n=10)
+            if req is not None:
+                linha = r[r["Request Id"] == req]
+                status = linha["Status"].iloc[0] if len(linha) else "Unknown"
+            ok = concluidos_depois()
+        except Exception as exc:  # noqa: BLE001
+            status, ok = f"consulta falhou: {exc}"[:300], []
+        if len(ok):
+            tipos = ",".join(sorted(set(ok["Refresh Type"].astype(str))))
+            return _resultado(nome, "reenquadramento", 0, 0, f"request={req}; status={status}; concluido_por={tipos}")
+        if req is not None and status == "Failed":
+            req = None  # o pedido daqui perdeu o bloqueio; espera o automático ou o tempo esgotar
+    return _resultado(nome, "reenquadramento", 1, 0, f"request={req}; status={status}; sem reenquadramento concluído em {timeout_s} s")
 
 
 def falhas(resultados):
@@ -363,6 +382,9 @@ def encerrar(run_id, resultados, contagens=None):
     f = falhas(resultados)
     if f:
         resumo = ", ".join(sorted({f"{r['tabela']}.{r['verificacao']}" for r in f}))
+        if contagens:  # a falha veio depois da gravação (ex.: reenquadramento do modelo)
+            raise RuntimeError(f"{resumo} falhou depois da gravação: a Gold foi atualizada, o modelo pode estar "
+                               f"com a versão anterior; veja ctl_quality_checks (run_id {run_id})")
         raise RuntimeError(f"verificação de qualidade falhou em: {resumo}; nada foi gravado na Gold (run_id {run_id})")
     notebookutils.notebook.exit(json.dumps({"run_id": run_id, "status": "succeeded", "contagens": contagens or {}}))
 

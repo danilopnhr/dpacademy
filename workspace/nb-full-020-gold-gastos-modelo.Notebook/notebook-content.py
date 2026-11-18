@@ -552,12 +552,13 @@ registrar(run_id, resultados)
 contagens = {}
 if not falhas(resultados):
     ordem = sorted(tabelas, key=lambda nome: nome.startswith("fat_"))  # dimensões antes dos fatos
+    inicio_gravacao = agora()
     for nome in ordem:
         gravar(tabelas[nome], nome)
     finais = [contagem(nome) for nome in ordem]
     contagens = {r["tabela"]: r["linhas_tabela"] for r in finais}
     # O modelo semântico passa a ler a versão nova (Direct Lake); falha aqui deixa a execução vermelha
-    reenquadramento = reenquadrar_modelo("sm-gastos")
+    reenquadramento = reenquadrar_modelo("sm-gastos", desde=inicio_gravacao)
     finais.append(reenquadramento)
     resultados.append(reenquadramento)
     registrar(run_id, finais)
