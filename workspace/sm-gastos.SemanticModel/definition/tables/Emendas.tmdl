@@ -1,0 +1,220 @@
+/// Uma linha por emenda, tipo e localidade (Portal da Transparência). Emendas só têm ano: leia no nível de Ano do calendário.
+table Emendas
+	lineageTag: 4063262d-be0c-5654-9cce-92ebeed53ff8
+	sourceLineageTag: [dbo].[fat_emendas]
+
+	measure 'Emendas empenhado' = SUM(Emendas[valor_empenhado])
+		formatString: R$ #,##0.00
+		lineageTag: ccf55fb2-22cd-56ef-9ba9-50f3ad599e2a
+
+	measure 'Emendas liquidado' = SUM(Emendas[valor_liquidado])
+		formatString: R$ #,##0.00
+		lineageTag: 05415b85-3823-5e17-94fe-efe6ff4fd5ad
+
+	measure 'Emendas pago' = SUM(Emendas[valor_pago])
+		formatString: R$ #,##0.00
+		lineageTag: 1948a4e0-486a-58a2-86a9-6358f5f670bd
+
+	measure 'Quantidade de emendas' = COUNTROWS(Emendas)
+		formatString: #,##0
+		lineageTag: a4e697f0-db10-5953-b6da-62b231000373
+
+	measure 'Emendas individuais pago' = CALCULATE([Emendas pago], 'Tipo de emenda'[Grupo emenda] = "Individual")
+		formatString: R$ #,##0.00
+		lineageTag: b7bca7ef-8515-58cc-8f10-c7d60b08f940
+
+	measure '% pago ligado a deputado' = DIVIDE(CALCULATE([Emendas individuais pago], 'Autor da emenda'[Ligado a deputado] = TRUE()), [Emendas individuais pago])
+		formatString: 0.0%
+		lineageTag: ccfe58ca-cc60-5a25-ab4c-81dddbdbbaf4
+
+	column chave_emenda
+		dataType: string
+		isHidden
+		lineageTag: 3c50ab31-82d5-5a9a-a187-36003c4f3b05
+		sourceLineageTag: chave_emenda
+		summarizeBy: none
+		sourceColumn: chave_emenda
+
+		annotation SummarizationSetBy = Automatic
+
+	column sk_data_ano
+		dataType: int64
+		isHidden
+		lineageTag: 1353c884-2ed6-51e2-a45e-6042bb24c7ec
+		sourceLineageTag: sk_data_ano
+		summarizeBy: none
+		sourceColumn: sk_data_ano
+
+		annotation SummarizationSetBy = Automatic
+
+	column sk_deputado
+		dataType: int64
+		isHidden
+		lineageTag: 2b62de37-b3c2-57e0-ba11-196eb0ff5b60
+		sourceLineageTag: sk_deputado
+		summarizeBy: none
+		sourceColumn: sk_deputado
+
+		annotation SummarizationSetBy = Automatic
+
+	column sk_autor_emenda
+		dataType: int64
+		isHidden
+		lineageTag: ebf40eb7-8370-5c02-b9df-1af2c20a191b
+		sourceLineageTag: sk_autor_emenda
+		summarizeBy: none
+		sourceColumn: sk_autor_emenda
+
+		annotation SummarizationSetBy = Automatic
+
+	column sk_tipo_emenda
+		dataType: int64
+		isHidden
+		lineageTag: 227ec896-fb70-5d08-ac4a-1d87f622e2c6
+		sourceLineageTag: sk_tipo_emenda
+		summarizeBy: none
+		sourceColumn: sk_tipo_emenda
+
+		annotation SummarizationSetBy = Automatic
+
+	column sk_funcao
+		dataType: int64
+		isHidden
+		lineageTag: 8f320773-06d9-5d5f-a4a5-7a3685ae42a3
+		sourceLineageTag: sk_funcao
+		summarizeBy: none
+		sourceColumn: sk_funcao
+
+		annotation SummarizationSetBy = Automatic
+
+	column sk_localidade
+		dataType: int64
+		isHidden
+		lineageTag: 6038904d-f88c-5525-94f0-4b1986363687
+		sourceLineageTag: sk_localidade
+		summarizeBy: none
+		sourceColumn: sk_localidade
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ano
+		dataType: int64
+		lineageTag: d09baddb-5995-5169-9f03-1de9455ca35a
+		sourceLineageTag: ano
+		summarizeBy: none
+		sourceColumn: ano
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Código emenda'
+		dataType: string
+		lineageTag: 11782644-0a71-5b72-ac99-710dbdd9b7cc
+		sourceLineageTag: codigo_emenda
+		summarizeBy: none
+		sourceColumn: codigo_emenda
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número emenda'
+		dataType: string
+		lineageTag: 2fb273d3-643e-5d72-be81-a88850fe170c
+		sourceLineageTag: numero_emenda
+		summarizeBy: none
+		sourceColumn: numero_emenda
+
+		annotation SummarizationSetBy = Automatic
+
+	column valor_empenhado
+		dataType: decimal
+		isHidden
+		formatString: #,##0.00
+		lineageTag: 909dbbac-41b1-57b4-abd5-e9cbf82cb091
+		sourceLineageTag: valor_empenhado
+		summarizeBy: none
+		sourceColumn: valor_empenhado
+
+		annotation SummarizationSetBy = Automatic
+
+	column valor_liquidado
+		dataType: decimal
+		isHidden
+		formatString: #,##0.00
+		lineageTag: 5d987734-ffbb-5cfd-8617-ddce69c9e67b
+		sourceLineageTag: valor_liquidado
+		summarizeBy: none
+		sourceColumn: valor_liquidado
+
+		annotation SummarizationSetBy = Automatic
+
+	column valor_pago
+		dataType: decimal
+		isHidden
+		formatString: #,##0.00
+		lineageTag: fbc82bd8-bfc9-5993-8100-dd9c24a721a0
+		sourceLineageTag: valor_pago
+		summarizeBy: none
+		sourceColumn: valor_pago
+
+		annotation SummarizationSetBy = Automatic
+
+	column valor_resto_inscrito
+		dataType: decimal
+		isHidden
+		formatString: #,##0.00
+		lineageTag: 77c2c176-461a-58ca-afff-05d516438e6c
+		sourceLineageTag: valor_resto_inscrito
+		summarizeBy: none
+		sourceColumn: valor_resto_inscrito
+
+		annotation SummarizationSetBy = Automatic
+
+	column valor_resto_cancelado
+		dataType: decimal
+		isHidden
+		formatString: #,##0.00
+		lineageTag: f0a48e04-0b4b-572a-8912-8555b59be5d0
+		sourceLineageTag: valor_resto_cancelado
+		summarizeBy: none
+		sourceColumn: valor_resto_cancelado
+
+		annotation SummarizationSetBy = Automatic
+
+	column valor_resto_pago
+		dataType: decimal
+		isHidden
+		formatString: #,##0.00
+		lineageTag: 5e77a36b-7c6c-5ced-815b-2536661fbb58
+		sourceLineageTag: valor_resto_pago
+		summarizeBy: none
+		sourceColumn: valor_resto_pago
+
+		annotation SummarizationSetBy = Automatic
+
+	column _batch_id
+		dataType: string
+		isHidden
+		lineageTag: 71e2ceb8-a192-5a3a-ab29-e158ab7b4138
+		sourceLineageTag: _batch_id
+		summarizeBy: none
+		sourceColumn: _batch_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column _carregado_em
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		lineageTag: e013341c-ee6b-5e50-802f-5aef8bdfc2a0
+		sourceLineageTag: _carregado_em
+		summarizeBy: none
+		sourceColumn: _carregado_em
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Emendas = entity
+		mode: directLake
+		source
+			entityName: fat_emendas
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

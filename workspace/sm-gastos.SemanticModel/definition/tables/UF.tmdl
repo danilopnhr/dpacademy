@@ -1,0 +1,59 @@
+table UF
+	lineageTag: 784a07f5-a8ce-55c5-86c0-b70e05ddafb0
+	sourceLineageTag: [dbo].[dim_uf]
+
+	column sk_uf
+		dataType: int64
+		isHidden
+		lineageTag: a0d1cd0b-d1ec-5a13-9e47-b812dbfb85a6
+		sourceLineageTag: sk_uf
+		summarizeBy: none
+		sourceColumn: sk_uf
+
+		annotation SummarizationSetBy = Automatic
+
+	column UF
+		dataType: string
+		lineageTag: aba01ddc-81d7-5919-97da-57509662aa6b
+		sourceLineageTag: sigla_uf
+		summarizeBy: none
+		sourceColumn: sigla_uf
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Nome UF'
+		dataType: string
+		lineageTag: 363a5d36-94d1-566f-aaa2-c0df5118f1a1
+		sourceLineageTag: nome_uf
+		summarizeBy: none
+		sourceColumn: nome_uf
+
+		annotation SummarizationSetBy = Automatic
+
+	column Região
+		dataType: string
+		lineageTag: eb5a9099-b94e-5395-96cd-6424a31a0581
+		sourceLineageTag: regiao
+		summarizeBy: none
+		sourceColumn: regiao
+
+		annotation SummarizationSetBy = Automatic
+
+	column _carregado_em
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		lineageTag: 9876c5ba-86b3-5b76-a09c-f5ab5bf1bf86
+		sourceLineageTag: _carregado_em
+		summarizeBy: none
+		sourceColumn: _carregado_em
+
+		annotation SummarizationSetBy = Automatic
+
+	partition UF = entity
+		mode: directLake
+		source
+			entityName: dim_uf
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

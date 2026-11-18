@@ -1,0 +1,78 @@
+table 'Tipo de despesa'
+	lineageTag: ed24569b-4550-5728-9174-9286ceb464b4
+	sourceLineageTag: [dbo].[dim_tipo_despesa]
+
+	column sk_tipo_despesa
+		dataType: int64
+		isHidden
+		lineageTag: b5eb2735-7960-515b-a9bc-8fdc8bf543ab
+		sourceLineageTag: sk_tipo_despesa
+		summarizeBy: none
+		sourceColumn: sk_tipo_despesa
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Código subcota'
+		dataType: int64
+		lineageTag: 63b60ce6-f527-542e-9f57-03d7418261e7
+		sourceLineageTag: codigo_subcota
+		summarizeBy: none
+		sourceColumn: codigo_subcota
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Tipo despesa'
+		dataType: string
+		lineageTag: a7726fa2-98ad-5d77-8df7-a19bd604caf2
+		sourceLineageTag: tipo_despesa
+		summarizeBy: none
+		sourceColumn: tipo_despesa
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Código especificação subcota'
+		dataType: int64
+		lineageTag: c2aaae7d-ed74-5d21-8dcc-5408c0da11dd
+		sourceLineageTag: codigo_especificacao_subcota
+		summarizeBy: none
+		sourceColumn: codigo_especificacao_subcota
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Especificação despesa'
+		dataType: string
+		lineageTag: bbcf9be2-f07a-5cdb-ba6f-67dc24f65c13
+		sourceLineageTag: especificacao_despesa
+		summarizeBy: none
+		sourceColumn: especificacao_despesa
+
+		annotation SummarizationSetBy = Automatic
+
+	column chave_natural
+		dataType: string
+		isHidden
+		lineageTag: 6a6b461b-b393-59fa-bfcb-bd54da412f32
+		sourceLineageTag: chave_natural
+		summarizeBy: none
+		sourceColumn: chave_natural
+
+		annotation SummarizationSetBy = Automatic
+
+	column _carregado_em
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		lineageTag: fae3ba2e-37dd-50bd-8c1d-ad2f224f3f16
+		sourceLineageTag: _carregado_em
+		summarizeBy: none
+		sourceColumn: _carregado_em
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Tipo de despesa' = entity
+		mode: directLake
+		source
+			entityName: dim_tipo_despesa
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

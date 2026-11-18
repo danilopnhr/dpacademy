@@ -1,0 +1,244 @@
+/// Uma linha por despesa da cota parlamentar (arquivo anual da Câmara). Partido e UF são os publicados na linha da despesa.
+table Despesas
+	lineageTag: 897ddc84-d0db-535a-abc9-e779172e0335
+	sourceLineageTag: [dbo].[fat_despesas]
+
+	measure 'Gasto líquido' = SUM(Despesas[valor_liquido])
+		formatString: R$ #,##0.00
+		lineageTag: 1979e973-cc77-5f7b-9213-2b39740e7efc
+
+	measure 'Valor do documento' = SUM(Despesas[valor_documento])
+		formatString: R$ #,##0.00
+		lineageTag: 70bce8dc-d22b-5a5e-9b48-0bad2745c332
+
+	measure Glosa = SUM(Despesas[valor_glosa])
+		formatString: R$ #,##0.00
+		lineageTag: ba13073f-c0ae-56b4-a9e6-2d1722ad4d48
+
+	measure 'Quantidade de despesas' = COUNTROWS(Despesas)
+		formatString: #,##0
+		lineageTag: 2dc9765e-677f-5ccc-9c12-52fcfc83c495
+
+	measure 'Deputados com despesa' = CALCULATE(DISTINCTCOUNT(Despesas[sk_deputado]), Deputado[Tipo membro] = "Deputado")
+		formatString: #,##0
+		lineageTag: 014756fa-293d-5ee4-a8b4-6598fcad9f2f
+
+	measure 'Gasto médio por deputado' = DIVIDE(CALCULATE([Gasto líquido], Deputado[Tipo membro] = "Deputado"), [Deputados com despesa])
+		formatString: R$ #,##0.00
+		lineageTag: f9b18a73-3dfe-5bcc-8e70-2f5228f30e3b
+
+	column chave_despesa
+		dataType: string
+		isHidden
+		lineageTag: bf5a8349-11a2-5d32-a90b-90d59c075acd
+		sourceLineageTag: chave_despesa
+		summarizeBy: none
+		sourceColumn: chave_despesa
+
+		annotation SummarizationSetBy = Automatic
+
+	column sk_data_competencia
+		dataType: int64
+		isHidden
+		lineageTag: 05fada10-5696-5a75-8773-38b55765d404
+		sourceLineageTag: sk_data_competencia
+		summarizeBy: none
+		sourceColumn: sk_data_competencia
+
+		annotation SummarizationSetBy = Automatic
+
+	column sk_deputado
+		dataType: int64
+		isHidden
+		lineageTag: 51804c2b-fce9-57bc-9b13-0bb89cbf291e
+		sourceLineageTag: sk_deputado
+		summarizeBy: none
+		sourceColumn: sk_deputado
+
+		annotation SummarizationSetBy = Automatic
+
+	column sk_partido
+		dataType: int64
+		isHidden
+		lineageTag: 5ac0e182-2e6f-5b5b-84e6-8fc0655e61fd
+		sourceLineageTag: sk_partido
+		summarizeBy: none
+		sourceColumn: sk_partido
+
+		annotation SummarizationSetBy = Automatic
+
+	column sk_uf
+		dataType: int64
+		isHidden
+		lineageTag: 27cc78f5-5eb7-5fab-92dd-1c37d56e83f6
+		sourceLineageTag: sk_uf
+		summarizeBy: none
+		sourceColumn: sk_uf
+
+		annotation SummarizationSetBy = Automatic
+
+	column sk_tipo_despesa
+		dataType: int64
+		isHidden
+		lineageTag: 1080cea2-8497-5e7e-a16f-e13f5019a2cb
+		sourceLineageTag: sk_tipo_despesa
+		summarizeBy: none
+		sourceColumn: sk_tipo_despesa
+
+		annotation SummarizationSetBy = Automatic
+
+	column sk_fornecedor
+		dataType: int64
+		isHidden
+		lineageTag: e443abaa-c576-5295-a296-734295aebad9
+		sourceLineageTag: sk_fornecedor
+		summarizeBy: none
+		sourceColumn: sk_fornecedor
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ano
+		dataType: int64
+		lineageTag: 06f97ac0-6f11-5289-8864-20a33c015874
+		sourceLineageTag: ano
+		summarizeBy: none
+		sourceColumn: ano
+
+		annotation SummarizationSetBy = Automatic
+
+	column Mês
+		dataType: int64
+		lineageTag: 0faaf9e2-31b2-5f04-80d7-8d5b6f0d1e7c
+		sourceLineageTag: mes
+		summarizeBy: none
+		sourceColumn: mes
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Data emissão'
+		dataType: dateTime
+		formatString: dd/MM/yyyy
+		lineageTag: d5c4fceb-2b57-513e-a363-2ba945a03bc2
+		sourceLineageTag: data_emissao
+		summarizeBy: none
+		sourceColumn: data_emissao
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Número documento'
+		dataType: string
+		lineageTag: f83a52b5-d143-562b-ba6b-bc5eb7f2708d
+		sourceLineageTag: numero_documento
+		summarizeBy: none
+		sourceColumn: numero_documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Código documento'
+		dataType: int64
+		lineageTag: cd5b4c06-a9be-534c-ad7e-369e1dfb5bda
+		sourceLineageTag: codigo_documento
+		summarizeBy: none
+		sourceColumn: codigo_documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'URL documento'
+		dataType: string
+		lineageTag: 2351a4bf-59a0-548a-afcb-e787ec3b1a57
+		sourceLineageTag: url_documento
+		summarizeBy: none
+		sourceColumn: url_documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column Passageiro
+		dataType: string
+		lineageTag: 9cec14e2-eff1-5d6e-9d84-122f9b1eabba
+		sourceLineageTag: passageiro
+		summarizeBy: none
+		sourceColumn: passageiro
+
+		annotation SummarizationSetBy = Automatic
+
+	column Trecho
+		dataType: string
+		lineageTag: 436b7943-d253-5c85-a70a-1f29197939a7
+		sourceLineageTag: trecho
+		summarizeBy: none
+		sourceColumn: trecho
+
+		annotation SummarizationSetBy = Automatic
+
+	column valor_documento
+		dataType: decimal
+		isHidden
+		formatString: #,##0.00
+		lineageTag: 8d2696a6-1c54-5e59-b474-b037c5970688
+		sourceLineageTag: valor_documento
+		summarizeBy: none
+		sourceColumn: valor_documento
+
+		annotation SummarizationSetBy = Automatic
+
+	column valor_glosa
+		dataType: decimal
+		isHidden
+		formatString: #,##0.00
+		lineageTag: 52443a0b-ec2d-5e37-bc10-4d51978ef136
+		sourceLineageTag: valor_glosa
+		summarizeBy: none
+		sourceColumn: valor_glosa
+
+		annotation SummarizationSetBy = Automatic
+
+	column valor_liquido
+		dataType: decimal
+		isHidden
+		formatString: #,##0.00
+		lineageTag: 99799671-1c37-5c5b-afdd-26bbba80c3f5
+		sourceLineageTag: valor_liquido
+		summarizeBy: none
+		sourceColumn: valor_liquido
+
+		annotation SummarizationSetBy = Automatic
+
+	column valor_restituicao
+		dataType: decimal
+		isHidden
+		formatString: #,##0.00
+		lineageTag: 62522488-a64f-56c2-9571-3fb6712a97dc
+		sourceLineageTag: valor_restituicao
+		summarizeBy: none
+		sourceColumn: valor_restituicao
+
+		annotation SummarizationSetBy = Automatic
+
+	column _batch_id
+		dataType: string
+		isHidden
+		lineageTag: 5a21eb71-f294-55e1-8fff-8361b177c67e
+		sourceLineageTag: _batch_id
+		summarizeBy: none
+		sourceColumn: _batch_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column _carregado_em
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		lineageTag: ef075aea-1808-532f-bbce-aa522618c9b0
+		sourceLineageTag: _carregado_em
+		summarizeBy: none
+		sourceColumn: _carregado_em
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Despesas = entity
+		mode: directLake
+		source
+			entityName: fat_despesas
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
