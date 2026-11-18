@@ -555,8 +555,12 @@ if not falhas(resultados):
     for nome in ordem:
         gravar(tabelas[nome], nome)
     finais = [contagem(nome) for nome in ordem]
-    registrar(run_id, finais)
     contagens = {r["tabela"]: r["linhas_tabela"] for r in finais}
+    # O modelo semântico passa a ler a versão nova (Direct Lake); falha aqui deixa a execução vermelha
+    reenquadramento = reenquadrar_modelo("sm-gastos")
+    finais.append(reenquadramento)
+    resultados.append(reenquadramento)
+    registrar(run_id, finais)
 encerrar(run_id, resultados, contagens)
 
 # METADATA ********************
