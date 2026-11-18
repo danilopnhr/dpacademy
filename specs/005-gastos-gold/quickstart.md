@@ -85,4 +85,41 @@ dependência: com uma Silver forçada a falhar, `gold_gastos` não roda.
 
 ## Registro da validação
 
-_(preencher durante a implementação)_
+### 2026-11-18: `ws-dev-dpacademy`
+
+Base: Silver de dev de 2026-11-17 (1.686.374 despesas; 55.044 emendas; 68.057 CNPJs, fila completa).
+
+- **Primeira execução**: falhou de propósito pelo portão de qualidade, sem gravar nenhuma tabela:
+  `dim_fornecedor` com 3 fornecedores sem nome publicado (`obrigatorias`) e 32 razões sociais de
+  MEI com CPF completo (`privacidade`). Correção: nome cai para a razão social ou o documento
+  exibido; CPF dentro de nome, razão social e nome fantasia passa a ser mascarado
+  (`mascarar_cpf_em_texto`, research R5). As outras 46 verificações já passavam.
+- **§1 Despesas**: execução seguinte `Completed` em 7,0 min, 61 verificações `passed`. Os 8 anos
+  iguais à Silver em linhas e valor líquido (ex.: 2024 com 232.926 linhas e R$ 250.384.236,66).
+  `dim_deputado`: 929 do cadastro, 234 só das despesas, 21 lideranças (6.064 linhas), reservados
+  `-1` e `-2`. 54.501 despesas sem data de emissão, todas com competência. 196 deputados com mais
+  de um partido nas despesas (ex.: Alan Rick em DEM e UNIÃO), cada despesa no partido da linha.
+- **§2 Fornecedores**: 33.977 CNPJs `Encontrado` (1.250.740 linhas), 34.126 `Não encontrado`
+  (421.111) e 795 CPFs `Não se aplica` (14.523), somando o total; nenhum `Não consultado` porque a
+  fila de dev está completa. Todos os CPFs no formato `***.ddd.ddd-**`; 32 razões sociais
+  mascaradas; 95 fornecedores com sanção; 5 sem nome publicado.
+- **§3 Emendas**: iguais à Silver por ano e tipo. Relator, bancada e comissão com `sk_deputado =
+  -2`. 82,0% do valor pago das emendas individuais ligado a deputado (1.026 autores; SC-004 ≥ 60%);
+  3 nomes ambíguos (MARIANA CARVALHO, ATILA LIRA, BEBETO); os maiores não ligados são senadores
+  (Davi Alcolumbre, Eduardo Braga, Otto Alencar…). Localidades: 27 estados, 3.406 municípios,
+  6 `Outro`.
+- **§4 Qualidade**: com `injetar_orfao_para_teste=true`, `Failed` em 3,7 min com `integridade`
+  (`fat_despesas.sk_fornecedor`, chave 123) e `conciliacao` (ano 2019) `failed`; nenhuma das 12
+  tabelas ganhou versão Delta. A reexecução normal (6,7 min) reproduziu as mesmas contagens e a
+  mesma soma de `sk` em todas as tabelas. V-Order ligado. Ajuste: a propriedade de V-Order só é
+  aplicada na primeira gravação (antes, cada execução criava duas versões Delta por tabela).
+- **§6 Modelo**: `sm-gastos` criado pela API com o TMDL gerado do esquema real (12 tabelas, 12
+  relacionamentos, 12 medidas); o SQL endpoint precisou de `refreshMetadata` para enxergar as
+  tabelas novas. Refresh `Completed`; por DAX, gasto líquido por ano idêntico à Gold nos 8 anos;
+  `[% pago ligado a deputado]` = 82,04%, igual ao `ligacao_autor`; `[Deputados com despesa]` =
+  1.161; filtro por partido respeitando o partido da linha; consulta cota × emendas por deputado
+  funcionando. Atualização automática: depois de regravar a Gold, nenhum reenquadramento apareceu no
+  histórico em mais de 8 min; o notebook passou a pedir o refresh (research R9), e a execução
+  seguinte (7,3 min) registrou o `ViaEnhancedApi` no histórico do modelo.
+- **`parameter.yml`**: validado com `validate_parameter_file` do `fabric-cicd` 1.4.0 para `prd`; o
+  servidor SQL e o SQL endpoint de dev só aparecem no `expressions.tmdl` do `sm-gastos`.

@@ -52,9 +52,9 @@ validador de nomes, como define o plano. Tabelas e modelo são validados pelo qu
 
 **Purpose**: biblioteca comum da Gold, usada por todas as histórias
 
-- [ ] T005 [P] Escrever `tests/unit/test_gold_comum.py` com os casos do contrato para `normalizar_nome`, `mascarar_cpf`, `formatar_cnpj`, `grupo_emenda`, `ler_localidade` e `UFS` (27 siglas únicas, 5 regiões), carregando o rascunho por `DPACADEMY_NOTEBOOKS_DIR` pelo `conftest.py` existente; confirmar que falham antes da biblioteca existir
-- [ ] T006 Criar o rascunho de `nb-util-010-gold-gastos-comum` com as funções puras do contrato (T005 verde) e as funções Spark: `sk()` (`xxhash64` da chave natural), `membros_reservados()`, `garantir_ctl()` (mesmo esquema da Silver), `verificar_unicidade`, `verificar_obrigatorias`, `verificar_integridade(fato, coluna, dim, coluna_dim)`, `verificar_conciliacao(...)`, `verificar_privacidade(df, colunas)`, `gravar(df, tabela)` (`overwrite`, `overwriteSchema`, `delta.parquet.vorder.enabled = true`), `registrar(resultados)` e `encerrar(run_id, resultados)` (exit JSON e exceção se houver `failed`); publicar com `Publish-FabNotebook` e commit pela Git integration
-- [ ] T007 Criar o rascunho de `nb-full-020-gold-gastos-modelo` com o esqueleto: parâmetro `injetar_orfao_para_teste`, `%run nb-util-010-gold-gastos-comum`, leitura das cinco tabelas da Silver pelo nome qualificado, `run_id`, `_carregado_em`, lista de resultados e a seção final que só grava se tudo passou; e a `dim_data` (research R3, contrato gold-tables) com as verificações dela
+- [X] T005 [P] Escrever `tests/unit/test_gold_comum.py` com os casos do contrato para `normalizar_nome`, `mascarar_cpf`, `formatar_cnpj`, `grupo_emenda`, `ler_localidade` e `UFS` (27 siglas únicas, 5 regiões), carregando o rascunho por `DPACADEMY_NOTEBOOKS_DIR` pelo `conftest.py` existente; confirmar que falham antes da biblioteca existir
+- [X] T006 Criar o rascunho de `nb-util-010-gold-gastos-comum` com as funções puras do contrato (T005 verde) e as funções Spark: `sk()` (`xxhash64` da chave natural), `membros_reservados()`, `garantir_ctl()` (mesmo esquema da Silver), `verificar_unicidade`, `verificar_obrigatorias`, `verificar_integridade(fato, coluna, dim, coluna_dim)`, `verificar_conciliacao(...)`, `verificar_privacidade(df, colunas)`, `gravar(df, tabela)` (`overwrite`, `overwriteSchema`, `delta.parquet.vorder.enabled = true`), `registrar(resultados)` e `encerrar(run_id, resultados)` (exit JSON e exceção se houver `failed`); publicar com `Publish-FabNotebook` e commit pela Git integration
+- [X] T007 Criar o rascunho de `nb-full-020-gold-gastos-modelo` com o esqueleto: parâmetro `injetar_orfao_para_teste`, `%run nb-util-010-gold-gastos-comum`, leitura das cinco tabelas da Silver pelo nome qualificado, `run_id`, `_carregado_em`, lista de resultados e a seção final que só grava se tudo passou; e a `dim_data` (research R3, contrato gold-tables) com as verificações dela
 
 **Checkpoint**: biblioteca e esqueleto prontos; `dim_data` gravada em dev com 2019-01-01 a 2026-12-31.
 
@@ -66,9 +66,9 @@ validador de nomes, como define o plano. Tabelas e modelo são validados pelo qu
 
 **Independent Test**: quickstart §1.
 
-- [ ] T008 [US1] Acrescentar ao `nb-full-020-gold-gastos-modelo` a `dim_deputado` (cadastro ∪ despesas, lideranças, atributos do cadastro ou da linha mais recente, `tipo_membro`, `no_cadastro`, reservados `-1`/`-2`; research R4), a `dim_partido` (siglas de despesas, deputados e partidos; nome do cadastro ou a sigla), a `dim_uf` (de `UFS`) e a `dim_tipo_despesa` (descrição mais recente por subcota e especificação), com unicidade e obrigatórias de cada uma
-- [ ] T009 [US1] Acrescentar a `fat_despesas` (contrato gold-tables), com `sk_fornecedor` provisório `-1` até o T011, as verificações de unicidade, obrigatórias, integridade com cada dimensão e conciliação por ano (linhas e valor líquido) contra `silver_camara.despesas`; publicar e commit pela Git integration
-- [ ] T010 [US1] Rodar o notebook em dev e executar o quickstart §1 (totais por ano, lideranças, 234-equivalente de dev fora do cadastro, partido da linha, despesas sem data de emissão); registrar no quickstart
+- [X] T008 [US1] Acrescentar ao `nb-full-020-gold-gastos-modelo` a `dim_deputado` (cadastro ∪ despesas, lideranças, atributos do cadastro ou da linha mais recente, `tipo_membro`, `no_cadastro`, reservados `-1`/`-2`; research R4), a `dim_partido` (siglas de despesas, deputados e partidos; nome do cadastro ou a sigla), a `dim_uf` (de `UFS`) e a `dim_tipo_despesa` (descrição mais recente por subcota e especificação), com unicidade e obrigatórias de cada uma
+- [X] T009 [US1] Acrescentar a `fat_despesas` (contrato gold-tables), com `sk_fornecedor` provisório `-1` até o T011, as verificações de unicidade, obrigatórias, integridade com cada dimensão e conciliação por ano (linhas e valor líquido) contra `silver_camara.despesas`; publicar e commit pela Git integration
+- [X] T010 [US1] Rodar o notebook em dev e executar o quickstart §1 (totais por ano, lideranças, 234-equivalente de dev fora do cadastro, partido da linha, despesas sem data de emissão); registrar no quickstart
 
 **Checkpoint**: MVP: cota parlamentar analisável por deputado, partido, UF, tipo e mês.
 
@@ -80,8 +80,8 @@ validador de nomes, como define o plano. Tabelas e modelo são validados pelo qu
 
 **Independent Test**: quickstart §2.
 
-- [ ] T011 [US2] Acrescentar a `dim_fornecedor` (chaves `J:`/`F:`/`S:`, nome mais frequente com desempate pelo mais recente, `documento_exibicao`, `situacao_portal`, indicadores e `possui_sancao` de `pessoa_juridica`; research R5) e trocar o `sk_fornecedor` provisório da `fat_despesas` pelo real; acrescentar a integridade `fat_despesas.sk_fornecedor` e a verificação `privacidade`; publicar e commit pela Git integration
-- [ ] T012 [US2] Rodar em dev e executar o quickstart §2 (soma por situação, formato do CPF, CNPJ com várias grafias uma vez, `privacidade` `passed`); registrar no quickstart
+- [X] T011 [US2] Acrescentar a `dim_fornecedor` (chaves `J:`/`F:`/`S:`, nome mais frequente com desempate pelo mais recente, `documento_exibicao`, `situacao_portal`, indicadores e `possui_sancao` de `pessoa_juridica`; research R5) e trocar o `sk_fornecedor` provisório da `fat_despesas` pelo real; acrescentar a integridade `fat_despesas.sk_fornecedor` e a verificação `privacidade`; publicar e commit pela Git integration
+- [X] T012 [US2] Rodar em dev e executar o quickstart §2 (soma por situação, formato do CPF, CNPJ com várias grafias uma vez, `privacidade` `passed`); registrar no quickstart
 
 **Checkpoint**: primeiro cruzamento Câmara × Portal pronto.
 
@@ -93,9 +93,9 @@ validador de nomes, como define o plano. Tabelas e modelo são validados pelo qu
 
 **Independent Test**: quickstart §3.
 
-- [ ] T013 [US3] Acrescentar `dim_tipo_emenda` (com `grupo_emenda`), `dim_funcao`, `dim_localidade` (`ler_localidade`) e `dim_autor_emenda` (ligação por nome normalizado com candidato único entre os membros `Deputado`, `ambíguo` sem ligação, `tipo_autor`, `motivo_sem_ligacao`; research R6), com unicidade e obrigatórias
-- [ ] T014 [US3] Acrescentar a `fat_emendas` (contrato gold-tables, `sk_deputado = -2` sem ligação), integridade com cada dimensão, conciliação por ano e tipo (linhas, empenhado, liquidado, pago) contra `silver_transparencia.emendas` e a verificação informativa `ligacao_autor` com o percentual do valor pago individual ligado; publicar e commit pela Git integration
-- [ ] T015 [US3] Rodar em dev e executar o quickstart §3 (totais por ano e tipo, relator/bancada/comissão com `-2`, percentual ligado ≥ 60%, ambíguos contados); registrar no quickstart
+- [X] T013 [US3] Acrescentar `dim_tipo_emenda` (com `grupo_emenda`), `dim_funcao`, `dim_localidade` (`ler_localidade`) e `dim_autor_emenda` (ligação por nome normalizado com candidato único entre os membros `Deputado`, `ambíguo` sem ligação, `tipo_autor`, `motivo_sem_ligacao`; research R6), com unicidade e obrigatórias
+- [X] T014 [US3] Acrescentar a `fat_emendas` (contrato gold-tables, `sk_deputado = -2` sem ligação), integridade com cada dimensão, conciliação por ano e tipo (linhas, empenhado, liquidado, pago) contra `silver_transparencia.emendas` e a verificação informativa `ligacao_autor` com o percentual do valor pago individual ligado; publicar e commit pela Git integration
+- [X] T015 [US3] Rodar em dev e executar o quickstart §3 (totais por ano e tipo, relator/bancada/comissão com `-2`, percentual ligado ≥ 60%, ambíguos contados); registrar no quickstart
 
 **Checkpoint**: Gold completa em dev.
 
@@ -109,8 +109,8 @@ validador de nomes, como define o plano. Tabelas e modelo são validados pelo qu
 
 > Antes da US4 porque o orquestrador só deve chamar a Gold depois de o comportamento de falha estar provado.
 
-- [ ] T016 [US5] Implementar `injetar_orfao_para_teste` no `nb-full-020-gold-gastos-modelo` (uma linha com `sk_fornecedor` inexistente no fato de despesas preparado); publicar e commit pela Git integration
-- [ ] T017 [US5] Executar o quickstart §4: execução normal com todas as verificações `passed`; execução com `injetar_orfao_para_teste=true` falhando em `integridade` e sem versão Delta nova em nenhuma tabela (`DESCRIBE HISTORY`); reexecução normal com as mesmas contagens e os mesmos `sk`; registrar no quickstart
+- [X] T016 [US5] Implementar `injetar_orfao_para_teste` no `nb-full-020-gold-gastos-modelo` (uma linha com `sk_fornecedor` inexistente no fato de despesas preparado); publicar e commit pela Git integration
+- [X] T017 [US5] Executar o quickstart §4: execução normal com todas as verificações `passed`; execução com `injetar_orfao_para_teste=true` falhando em `integridade` e sem versão Delta nova em nenhuma tabela (`DESCRIBE HISTORY`); reexecução normal com as mesmas contagens e os mesmos `sk`; registrar no quickstart
 
 **Checkpoint**: Princípio V comprovado na Gold.
 
@@ -122,7 +122,7 @@ validador de nomes, como define o plano. Tabelas e modelo são validados pelo qu
 
 **Independent Test**: quickstart §5 (dev) e §7.4 (prd).
 
-- [ ] T018 [US4] Acrescentar ao `pl-010-orq-gastos-diario` no ws-dev a atividade `gold_gastos` (notebook `nb-full-020-gold-gastos-modelo`, depende de `silver_camara_despesas` e `silver_transparencia_fornecedores` com `Succeeded`, timeout 1 h, 2 retentativas de 180 s) e `falha_gold_gastos` (Fail); commit pela Git integration
+- [X] T018 [US4] Acrescentar ao `pl-010-orq-gastos-diario` no ws-dev a atividade `gold_gastos` (notebook `nb-full-020-gold-gastos-modelo`, depende de `silver_camara_despesas` e `silver_transparencia_fornecedores` com `Succeeded`, timeout 1 h, 2 retentativas de 180 s) e `falha_gold_gastos` (Fail); commit pela Git integration
 - [ ] T019 [US4] Disparar o orquestrador à mão em dev (com `limite` pequeno nos fornecedores, se necessário) e executar o quickstart §5, inclusive o teste de dependência com uma Silver forçada a falhar; registrar no quickstart. Marco: Gold validada em dev até 2026-11-22
 
 **Checkpoint**: Gold pronta para o PR.
@@ -135,10 +135,10 @@ validador de nomes, como define o plano. Tabelas e modelo são validados pelo qu
 
 **Independent Test**: quickstart §6 (dev) e §7.3 (prd).
 
-- [ ] T020 [US6] Escrever o TMDL de rascunho de `sm-gastos` conforme `contracts/sm-gastos.md`: `database.tmdl`, `model.tmdl` (cultura pt-BR), `expressions.tmdl` com `DatabaseQuery` = `Sql.Database("<servidor SQL de dev>", "<SQL endpoint de dev>")`, uma `tables/<tabela>.tmdl` por dimensão e fato com partição Direct Lake (`mode: directLake`, `entityName`, `schemaName: dbo`, `expressionSource: DatabaseQuery`), colunas com tipo, nome de exibição e `isHidden`, `dim_data` com `dataCategory: Time` e hierarquia Período, medidas nos fatos e `relationships.tmdl` com os 12 relacionamentos
-- [ ] T021 [US6] Criar o `sm-gastos` no ws-dev pela API (`POST /workspaces/{ws}/semanticModels` com a definição TMDL em base64, token do contexto dpacademy), conferir que o enquadramento funciona (refresh pela API) e fazer commit pela Git integration (resulta em `workspace/sm-gastos.SemanticModel/`)
-- [ ] T022 [US6] Acrescentar a `ci/parameter.yml` as duas entradas do `sm-gastos` (servidor SQL → `$items.Lakehouse.gold_gastos.$sqlendpoint` e SQL endpoint → `$items.Lakehouse.gold_gastos.$sqlendpointid`, `item_type: SemanticModel`, `file_path: **/expressions.tmdl`) com os valores reais de dev; conferir com uma execução local do parâmetro do `fabric-cicd` (sem publicar) que a troca acontece só no `expressions.tmdl`
-- [ ] T023 [US6] Executar o quickstart §6 pela API `executeQueries`: totais por ano iguais aos da Gold em T-SQL, `% pago ligado a deputado` igual ao `ligacao_autor`, filtro por partido da despesa, e atualização automática depois de uma nova execução da Gold; registrar no quickstart
+- [X] T020 [US6] Escrever o TMDL de rascunho de `sm-gastos` conforme `contracts/sm-gastos.md`: `database.tmdl`, `model.tmdl` (cultura pt-BR), `expressions.tmdl` com `DatabaseQuery` = `Sql.Database("<servidor SQL de dev>", "<SQL endpoint de dev>")`, uma `tables/<tabela>.tmdl` por dimensão e fato com partição Direct Lake (`mode: directLake`, `entityName`, `schemaName: dbo`, `expressionSource: DatabaseQuery`), colunas com tipo, nome de exibição e `isHidden`, `dim_data` com `dataCategory: Time` e hierarquia Período, medidas nos fatos e `relationships.tmdl` com os 12 relacionamentos
+- [X] T021 [US6] Criar o `sm-gastos` no ws-dev pela API (`POST /workspaces/{ws}/semanticModels` com a definição TMDL em base64, token do contexto dpacademy), conferir que o enquadramento funciona (refresh pela API) e fazer commit pela Git integration (resulta em `workspace/sm-gastos.SemanticModel/`)
+- [X] T022 [US6] Acrescentar a `ci/parameter.yml` as duas entradas do `sm-gastos` (servidor SQL → `$items.Lakehouse.gold_gastos.$sqlendpoint` e SQL endpoint → `$items.Lakehouse.gold_gastos.$sqlendpointid`, `item_type: SemanticModel`, `file_path: **/expressions.tmdl`) com os valores reais de dev; conferir com uma execução local do parâmetro do `fabric-cicd` (sem publicar) que a troca acontece só no `expressions.tmdl`
+- [X] T023 [US6] Executar o quickstart §6 pela API `executeQueries`: totais por ano iguais aos da Gold em T-SQL, `% pago ligado a deputado` igual ao `ligacao_autor`, filtro por partido da despesa, e atualização automática depois de uma nova execução da Gold; registrar no quickstart
 
 **Checkpoint**: modelo pronto para o PR.
 
@@ -146,8 +146,8 @@ validador de nomes, como define o plano. Tabelas e modelo são validados pelo qu
 
 ## Phase 9: Polish & Cross-Cutting Concerns
 
-- [ ] T024 [P] Escrever `docs/adr-005-gold-reconstruida-e-direct-lake.md` (reconstrução total com verificação antes de gravar, chaves por hash, CPF mascarado sem hash, ligação de autor por nome exato, Direct Lake sobre SQL endpoint e reapontamento pelo `fabric-cicd`)
-- [ ] T025 [P] Atualizar `README.md`: camada Gold (tabelas e grãos) e consumo (`sm-gastos`), estado do case
+- [X] T024 [P] Escrever `docs/adr-005-gold-reconstruida-e-direct-lake.md` (reconstrução total com verificação antes de gravar, chaves por hash, CPF mascarado sem hash, ligação de autor por nome exato, Direct Lake sobre SQL endpoint e reapontamento pelo `fabric-cicd`)
+- [X] T025 [P] Atualizar `README.md`: camada Gold (tabelas e grãos) e consumo (`sm-gastos`), estado do case
 - [ ] T026 Rodar `pytest tests/unit -q` e `python ci/validate_names.py workspace` (zero violações); trazer `dev` para `005-gastos-gold`; abrir o PR para `dev`, concluir e abrir o PR `dev` → `main` descrevendo o que muda em cada camada (constituição, Fluxo de Desenvolvimento)
 - [ ] T027 Depois do `deploy-prd` verde, executar o quickstart §7.1 e §7.2 em produção: itens publicados, `expressions.tmdl` de prd apontando para o SQL endpoint do `gold_gastos` de prd, carga inicial manual da Gold fora da rotina e conferência dos §1 a §4 com os números de prd (SC-006, até 2026-11-26)
 - [ ] T028 Executar o quickstart §7.3 em produção: refresh manual único do `sm-gastos` pela API (plano B: assumir o modelo com a conta do engenheiro) e conferência do §6.2 (SC-009, SC-010, até 2026-11-30)
