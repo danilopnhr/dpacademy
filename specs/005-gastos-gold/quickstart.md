@@ -121,5 +121,15 @@ Base: Silver de dev de 2026-11-17 (1.686.374 despesas; 55.044 emendas; 68.057 CN
   funcionando. Atualização automática: depois de regravar a Gold, nenhum reenquadramento apareceu no
   histórico em mais de 8 min; o notebook passou a pedir o refresh (research R9), e a execução
   seguinte (7,3 min) registrou o `ViaEnhancedApi` no histórico do modelo.
+- **§5 Orquestrador**: `pl-010-orq-gastos-diario` disparado à mão, `Completed` em 74,7 min, na
+  ordem do contrato (Bronze da Câmara 15:10–15:25, Bronze do Portal 15:25–15:38, Silver 15:38–15:59,
+  Gold 15:59–16:24 UTC); `gold_gastos` só começou depois das duas Silver com sucesso. As quatro
+  Silver e a primeira tentativa da Gold falharam em ~20 s com `TooManyRequestsForCapacity` e
+  passaram na retentativa. A segunda tentativa da Gold gravou as tabelas mas falhou no
+  `reenquadramento`: a atualização automática do Direct Lake disparou junto com o refresh do
+  notebook, falhou por conflito de bloqueio, e o refresh do notebook levou 5,5 min (limite era
+  5 min). A terceira passou. Ajuste no `reenquadrar_modelo` (research R9). O teste de dependência
+  com uma Silver forçada a falhar não foi executado: a regra é a dependência `Succeeded` nas duas
+  atividades da Silver, conferida na definição do pipeline, a mesma semântica já testada na 004.
 - **`parameter.yml`**: validado com `validate_parameter_file` do `fabric-cicd` 1.4.0 para `prd`; o
   servidor SQL e o SQL endpoint de dev só aparecem no `expressions.tmdl` do `sm-gastos`.

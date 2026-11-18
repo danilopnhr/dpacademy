@@ -53,9 +53,12 @@ Quatro pontos pediam decisão:
   pago das emendas individuais fica ligado. O restante são, em boa parte, senadores e 3 nomes
   ambíguos. Casamento aproximado ficou fora do escopo.
 - O reenquadramento explícito torna a atualização do modelo visível e versionada. Na implementação,
-  a atualização automática do Direct Lake não reenquadrou o modelo em mais de 8 minutos, e a opção
-  não é exposta pela API nem pelo TMDL. Em troca, se o refresh falhar, a execução da Gold fica
-  vermelha, mesmo com os dados já gravados (a retentativa é idempotente).
+  a atualização automática do Direct Lake às vezes não disparou (mais de 8 minutos sem
+  reenquadrar) e às vezes disparou junto com o refresh do notebook, disputando o bloqueio do modelo;
+  a opção não é exposta pela API nem pelo TMDL. Por isso o notebook espera até 15 minutos e aceita
+  como sucesso qualquer reenquadramento concluído depois da gravação, seja o dele ou o automático.
+  Se nenhum concluir, a execução da Gold fica vermelha, com a mensagem de que os dados já foram
+  gravados (a retentativa é idempotente).
 - O modelo de produção pertence à service principal do deploy. Se o enquadramento falhar por isso, o
   plano B é assumir o modelo com a conta do engenheiro, uma vez.
 

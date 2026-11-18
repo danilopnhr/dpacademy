@@ -202,7 +202,16 @@ gravar com sucesso, pede o refresh do `sm-gastos` pelo semantic link
 uma importação (FR-017 continua atendido). O resultado vai para `ctl_quality_checks` como
 `reenquadramento`; se falhar, a execução falha (os dados já gravados ficam, e a retentativa é
 idempotente). Modelo ausente no workspace (antes da primeira publicação) não é falha.
-**Alternativas rejeitadas**: depender da atualização automática (invisível e não versionável);
+**Concorrência com a atualização automática (orquestrador em dev, 2026-11-18)**: a atualização
+automática existe, mas dispara de forma irregular: às 16:09:12 ela começou sozinha logo depois da
+gravação, o refresh do notebook começou 15 s depois, a automática falhou por "locking conflicts" e
+o pedido do notebook só concluiu em 5,5 min, acima do limite de espera então usado (5 min), e a
+Gold falhou na segunda tentativa (passou na terceira). Ajuste: espera de até 15 min, e conta como
+sucesso qualquer reenquadramento `Completed` iniciado depois do começo da gravação, pedido pelo
+notebook ou automático; a mensagem de falha distingue falha depois da gravação ("a Gold foi
+atualizada, o modelo pode estar com a versão anterior").
+**Alternativas rejeitadas**: depender só da atualização automática (irregular, invisível e não
+versionável);
 atividade de refresh de modelo semântico no pipeline (exige uma conexão do Fabric com credencial
 própria em cada ambiente).
 

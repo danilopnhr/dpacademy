@@ -123,7 +123,7 @@ validador de nomes, como define o plano. Tabelas e modelo são validados pelo qu
 **Independent Test**: quickstart §5 (dev) e §7.4 (prd).
 
 - [X] T018 [US4] Acrescentar ao `pl-010-orq-gastos-diario` no ws-dev a atividade `gold_gastos` (notebook `nb-full-020-gold-gastos-modelo`, depende de `silver_camara_despesas` e `silver_transparencia_fornecedores` com `Succeeded`, timeout 1 h, 2 retentativas de 180 s) e `falha_gold_gastos` (Fail); commit pela Git integration
-- [ ] T019 [US4] Disparar o orquestrador à mão em dev (com `limite` pequeno nos fornecedores, se necessário) e executar o quickstart §5, inclusive o teste de dependência com uma Silver forçada a falhar; registrar no quickstart. Marco: Gold validada em dev até 2026-11-22
+- [X] T019 [US4] Disparar o orquestrador à mão em dev (com `limite` pequeno nos fornecedores, se necessário) e executar o quickstart §5, inclusive o teste de dependência com uma Silver forçada a falhar; registrar no quickstart. Marco: Gold validada em dev até 2026-11-22
 
 **Checkpoint**: Gold pronta para o PR.
 
