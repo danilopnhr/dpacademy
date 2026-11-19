@@ -74,6 +74,29 @@ table Emendas
 		displayFolder: Página Emendas
 		lineageTag: 527610d4-9d85-54c2-a3a6-e18cfed69be9
 
+	measure 'Emendas pago na janela' =
+			VAR a = [Último ano completo]
+			RETURN CALCULATE([Emendas pago], REMOVEFILTERS('Calendário'), 'Calendário'[Ano] >= a - 2 && 'Calendário'[Ano] <= a)
+		formatString: R$ #,##0.00
+		displayFolder: Página Confiança
+		lineageTag: 6d921f55-6f87-5413-9782-49e57754cd50
+
+	measure '% do pago por localidade' = DIVIDE([Emendas pago na janela], CALCULATE([Emendas pago na janela], REMOVEFILTERS(Localidade)))
+		formatString: 0.0%
+		displayFolder: Página Confiança
+		lineageTag: c759ba38-b474-5fc5-9e6f-c999852b9e24
+
+	measure '% sem localidade' = CALCULATE([% do pago por localidade], Localidade[Nível localidade] = "Múltiplo")
+		formatString: 0%
+		displayFolder: Página Confiança
+		lineageTag: c07d6645-c543-55f0-a4d0-e3d6de8e1be2
+
+	measure 'Título da confiança' =
+			VAR p = [% sem localidade]
+			RETURN IF(NOT ISBLANK(p), FORMAT(p, "0%") & " das emendas estão sem endereço")
+		displayFolder: Página Confiança
+		lineageTag: fe5e1899-ddb7-5fc0-bd35-645204a7ccaa
+
 	column chave_emenda
 		dataType: string
 		isHidden

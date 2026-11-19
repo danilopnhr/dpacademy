@@ -157,6 +157,51 @@ table Despesas
 		displayFolder: Página Calendário
 		lineageTag: 4bc1a374-2159-5f00-828c-e29128e36c4f
 
+	measure '% do gasto por situação' = DIVIDE([Gasto líquido], CALCULATE([Gasto líquido], REMOVEFILTERS(Fornecedor)))
+		formatString: 0.0%
+		displayFolder: Página Confiança
+		lineageTag: 39572908-112b-5f66-953a-d512df26b970
+
+	measure 'Gasto com fornecedor sancionado' = CALCULATE([Gasto líquido], Fornecedor[Possui sanção] = TRUE())
+		formatString: R$ #,##0.00
+		displayFolder: Página Confiança
+		lineageTag: 57cfac4e-d6d3-54bd-8324-8fe333642132
+
+	measure '% do gasto com fornecedor sancionado' = DIVIDE([Gasto com fornecedor sancionado], CALCULATE([Gasto líquido], REMOVEFILTERS(Fornecedor)))
+		formatString: 0.0%
+		displayFolder: Página Confiança
+		lineageTag: cdf1f5c5-cfc3-552e-a622-d0a01f08407b
+
+	measure 'Fornecedores com sanção' = CALCULATE(DISTINCTCOUNT(Despesas[sk_fornecedor]), Fornecedor[Possui sanção] = TRUE())
+		formatString: #,##0
+		displayFolder: Página Confiança
+		lineageTag: af97e237-da33-5783-8c99-184288c3f0f4
+
+	measure 'Maior fornecedor sancionado' =
+			VAR total = [Gasto com fornecedor sancionado]
+			VAR maior = MAXX(CALCULATETABLE(VALUES(Fornecedor[sk_fornecedor]), Fornecedor[Possui sanção] = TRUE()), [Gasto com fornecedor sancionado])
+			RETURN DIVIDE(maior, total)
+		formatString: 0%
+		displayFolder: Página Confiança
+		lineageTag: 29089024-bf0e-53c4-94d2-6a83a3cbc50a
+
+	measure 'Texto das sanções' =
+			VAR n = [Fornecedores com sanção]
+			RETURN IF(NOT ISBLANK(n), FORMAT(n, "#,##0") & " fornecedores. Um único fornecedor responde por " & FORMAT([Maior fornecedor sancionado], "0%") & " do valor. A sanção é a registrada hoje no Portal, não necessariamente na data da despesa.")
+		displayFolder: Página Confiança
+		lineageTag: e166215a-caf6-5fad-b14f-1f1adba950fb
+
+	measure 'Fornecedores não consultados' = COALESCE(CALCULATE(DISTINCTCOUNT(Despesas[sk_fornecedor]), Fornecedor[Situação portal] = "Não consultado"), 0)
+		formatString: #,##0
+		displayFolder: Página Confiança
+		lineageTag: 6f1fe050-33bf-515e-89ad-f19e99c739de
+
+	measure 'Texto da fila de fornecedores' =
+			VAR n = [Fornecedores não consultados]
+			RETURN IF(n > 0, "A consulta de fornecedores ao Portal ainda tem " & FORMAT(n, "#,##0") & " CNPJs na fila.", "A consulta de fornecedores ao Portal está concluída.")
+		displayFolder: Página Confiança
+		lineageTag: e4caccbd-0880-5d1d-8e4f-0faeb1e0b64d
+
 	column chave_despesa
 		dataType: string
 		isHidden
