@@ -1,0 +1,60 @@
+table Função
+	lineageTag: 4bc49c73-6041-5b5d-a286-3861dbc9b6dc
+	sourceLineageTag: [dbo].[dim_funcao]
+
+	column sk_funcao
+		dataType: int64
+		isHidden
+		lineageTag: ed6aa554-8790-5ec1-ac06-0abd1b2ffb66
+		sourceLineageTag: sk_funcao
+		summarizeBy: none
+		sourceColumn: sk_funcao
+
+		annotation SummarizationSetBy = Automatic
+
+	column Função
+		dataType: string
+		lineageTag: 325dbb38-ebb3-5bfa-9201-f57f1946dfb8
+		sourceLineageTag: funcao
+		summarizeBy: none
+		sourceColumn: funcao
+
+		annotation SummarizationSetBy = Automatic
+
+	column Subfunção
+		dataType: string
+		lineageTag: 777a3c6a-cc4c-5dd8-905e-d578f8d98c89
+		sourceLineageTag: subfuncao
+		summarizeBy: none
+		sourceColumn: subfuncao
+
+		annotation SummarizationSetBy = Automatic
+
+	column chave_natural
+		dataType: string
+		isHidden
+		lineageTag: ce690f81-6264-5169-81ed-fda836c29b5d
+		sourceLineageTag: chave_natural
+		summarizeBy: none
+		sourceColumn: chave_natural
+
+		annotation SummarizationSetBy = Automatic
+
+	column _carregado_em
+		dataType: dateTime
+		isHidden
+		formatString: General Date
+		lineageTag: 5074243e-bdee-53d8-94d7-9aae98c99760
+		sourceLineageTag: _carregado_em
+		summarizeBy: none
+		sourceColumn: _carregado_em
+
+		annotation SummarizationSetBy = Automatic
+
+	partition Função = entity
+		mode: directLake
+		source
+			entityName: dim_funcao
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+

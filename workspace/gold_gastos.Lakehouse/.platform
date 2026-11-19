@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Lakehouse",
+    "displayName": "gold_gastos",
+    "description": "Gold do case gastos: star schema (feature 005)"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "7d586791-8df0-8210-40b5-4164466bbb20"
+  }
+}

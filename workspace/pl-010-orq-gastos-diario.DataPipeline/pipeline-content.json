@@ -337,6 +337,51 @@
             ]
           }
         ]
+      },
+      {
+        "type": "TridentNotebook",
+        "typeProperties": {
+          "notebookId": "a52d34f3-dbd5-b7a2-460f-d076c5593a5e",
+          "workspaceId": "00000000-0000-0000-0000-000000000000"
+        },
+        "policy": {
+          "timeout": "0.01:00:00",
+          "retry": 2,
+          "retryIntervalInSeconds": 180,
+          "secureInput": false,
+          "secureOutput": false
+        },
+        "name": "gold_gastos",
+        "dependsOn": [
+          {
+            "activity": "silver_camara_despesas",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          },
+          {
+            "activity": "silver_transparencia_fornecedores",
+            "dependencyConditions": [
+              "Succeeded"
+            ]
+          }
+        ]
+      },
+      {
+        "type": "Fail",
+        "typeProperties": {
+          "message": "nb-full-020-gold-gastos-modelo falhou; veja ctl_quality_checks do gold_gastos",
+          "errorCode": "500"
+        },
+        "name": "falha_gold_gastos",
+        "dependsOn": [
+          {
+            "activity": "gold_gastos",
+            "dependencyConditions": [
+              "Failed"
+            ]
+          }
+        ]
       }
     ]
   }

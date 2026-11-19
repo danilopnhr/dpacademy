@@ -28,3 +28,21 @@ find_replace:
   - find_value: "ec55a601-16e2-4af1-a923-5d0430d1c576" # silver_transparencia em dev
     replace_value:
       prd: "$items.Lakehouse.silver_transparencia.$id"
+
+  # Lakehouse padrão do notebook da Gold (feature 005)
+  - find_value: "466bbb20-4164-40b5-8210-8df07d586791" # gold_gastos em dev
+    replace_value:
+      prd: "$items.Lakehouse.gold_gastos.$id"
+
+  # Direct Lake do sm-gastos: servidor SQL e SQL endpoint do gold_gastos (feature 005, research R9).
+  # Só no expressions.tmdl do modelo; o servidor SQL de dev é o mesmo para todo o ws-dev.
+  - find_value: "niescrm35ewuvmg42hkajxkoem-3c2juvn5rj2uxg647vuisxmtx4.datawarehouse.fabric.microsoft.com" # servidor SQL do ws-dev
+    replace_value:
+      prd: "$items.Lakehouse.gold_gastos.$sqlendpoint"
+    item_type: "SemanticModel"
+    file_path: "sm-gastos.SemanticModel/definition/expressions.tmdl"
+  - find_value: "e2eeebc3-5cd7-4b4a-86e3-a947741f91b3" # SQL endpoint do gold_gastos em dev
+    replace_value:
+      prd: "$items.Lakehouse.gold_gastos.$sqlendpointid"
+    item_type: "SemanticModel"
+    file_path: "sm-gastos.SemanticModel/definition/expressions.tmdl"

@@ -1,0 +1,25 @@
+model Model
+	culture: pt-BR
+	defaultPowerBIDataSourceVersion: powerBI_V3
+	sourceQueryCulture: pt-BR
+	dataAccessOptions
+		legacyRedirects
+		returnErrorValuesAsNull
+
+annotation PBI_ProTooling = ["DirectLakeOnSql"]
+
+ref table Despesas
+ref table Emendas
+ref table Calendário
+ref table Deputado
+ref table Partido
+ref table UF
+ref table 'Tipo de despesa'
+ref table Fornecedor
+ref table 'Autor da emenda'
+ref table 'Tipo de emenda'
+ref table Função
+ref table Localidade
+
+ref cultureInfo pt-BR
+

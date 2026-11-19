@@ -128,6 +128,10 @@ def test_pasta_inexistente_nao_falha(tmp_path, capsys):
         ("gold_gastos", "fat_despesa", True),
         ("gold_gastos", "agg_gasto_mensal", True),
         ("gold_gastos", "despesas", False),
+        ("gold_gastos", "ctl_quality_checks", True),
+        ("gold_gastos", "dim_deputado", True),
+        ("gold_gastos", "ctl_Quality", False),
+        ("gold_gastos", "ctl_", False),
     ],
 )
 def test_nome_de_tabela(lakehouse, table, valida):
