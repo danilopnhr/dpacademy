@@ -55,7 +55,7 @@ table Emendas
 	measure 'Texto do recorte por real de cota' =
 			VAR a = [Último ano completo]
 			VAR n = [Deputados com emenda individual ligada]
-			RETURN IF(NOT ISBLANK(n), "Em " & FORMAT(a, "0") & ", entre os " & FORMAT(n, "#,##0") & " deputados com emenda individual ligada.")
+			RETURN IF(NOT ISBLANK(n), "Em " & FORMAT(a, "0") & ", entre os " & FORMAT(n, "#,##0") & " deputados com emenda ligada.")
 		displayFolder: Página Emendas
 		lineageTag: e6508d6d-27cc-5cbc-a6ba-e5b61c8ccccc
 

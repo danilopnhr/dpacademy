@@ -91,6 +91,54 @@
         ],
         "padding": [
           {
+            "top": 0,
+            "bottom": 0,
+            "left": 0,
+            "right": 0
+          }
+        ]
+      }
+    },
+    "columnChart": {
+      "*": {
+        "padding": [
+          {
+            "top": 12,
+            "bottom": 12,
+            "left": 16,
+            "right": 16
+          }
+        ]
+      }
+    },
+    "clusteredColumnChart": {
+      "*": {
+        "padding": [
+          {
+            "top": 12,
+            "bottom": 12,
+            "left": 16,
+            "right": 16
+          }
+        ]
+      }
+    },
+    "barChart": {
+      "*": {
+        "padding": [
+          {
+            "top": 12,
+            "bottom": 12,
+            "left": 16,
+            "right": 16
+          }
+        ]
+      }
+    },
+    "pivotTable": {
+      "*": {
+        "padding": [
+          {
             "top": 12,
             "bottom": 12,
             "left": 16,
