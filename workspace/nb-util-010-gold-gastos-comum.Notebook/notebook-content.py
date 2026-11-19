@@ -128,6 +128,23 @@ def ler_localidade(texto):
     return ("Outro", None)
 
 
+def resumir_sincronizacao(resposta):
+    """Resumo do resultado do refreshMetadata do SQL endpoint: (ok, texto) (research R9).
+
+    `resposta` é o JSON devolvido pela API, com `value` = [{tableName, status, error?}].
+    `NotRun` quer dizer que a tabela já estava sincronizada; só `Failure` conta como falha.
+    """
+    tabelas = (resposta or {}).get("value") or []
+    por_status = {}
+    for t in tabelas:
+        por_status.setdefault(t.get("status") or "Desconhecido", []).append(t.get("tableName") or "?")
+    contagem = ", ".join(f"{s}={len(n)}" for s, n in sorted(por_status.items()))
+    falhas = sorted(por_status.get("Failure", []))
+    if falhas:
+        return False, f"falha em {', '.join(falhas[:MAX_EXEMPLOS])} ({contagem})"
+    return True, contagem or "nenhuma tabela"
+
+
 # CELL ********************
 
 # --- Execução ---
@@ -321,14 +338,50 @@ def contagem(tabela):
     return _resultado(tabela, "contagem", 0, spark.table(tabela).count(), informativa=True)
 
 
-def reenquadrar_modelo(nome="sm-gastos", desde=None, timeout_s=900):
+def sincronizar_endpoint_sql(timeout_s=300):
+    """refreshMetadata do SQL endpoint do lakehouse padrão; devolve um texto para o detalhe (research R9).
+
+    O modelo Direct Lake lê as tabelas pelo SQL endpoint, que descobre tabelas novas de forma
+    assíncrona. Na primeira carga em prd (2026-11-19) o refresh do modelo, 6 min depois da gravação,
+    falhou com "cannot access the source Delta table fat_despesas". Nunca levanta exceção: a falha
+    aqui só fica registrada, e o refresh do modelo decide o resultado.
+    """
+    import time
+
+    import sempy.fabric as fabric
+
+    try:
+        cliente = fabric.FabricRestClient()
+        ws, lh = fabric.get_workspace_id(), fabric.get_lakehouse_id()
+        props = cliente.get(f"v1/workspaces/{ws}/lakehouses/{lh}").json().get("properties") or {}
+        endpoint = (props.get("sqlEndpointProperties") or {}).get("id")
+        if not endpoint:
+            return "endpoint: sem SQL endpoint no lakehouse padrão"
+        r = cliente.post(f"v1/workspaces/{ws}/sqlEndpoints/{endpoint}/refreshMetadata", json={})
+        if r.status_code == 202:  # operação longa: acompanha pelo Location até terminar
+            local, inicio, estado = r.headers.get("Location"), time.time(), "Running"
+            while estado in ("Running", "NotStarted") and time.time() - inicio < timeout_s:
+                time.sleep(int(r.headers.get("Retry-After") or 5))
+                estado = cliente.get(local).json().get("status")
+            if estado != "Succeeded":
+                return f"endpoint: operação {estado}"
+            r = cliente.get(f"{local}/result")
+        ok, texto = resumir_sincronizacao(r.json())
+        return f"endpoint: {texto}" if ok else f"endpoint com falha: {texto}"
+    except Exception as exc:  # noqa: BLE001 - registrada no detalhe, sem derrubar a execução
+        return f"endpoint não sincronizado: {exc}"[:300]
+
+
+def reenquadrar_modelo(nome="sm-gastos", desde=None, timeout_s=900, pedidos_max=2):
     """Refresh (reenquadramento Direct Lake) do modelo do case depois de gravar a Gold (research R9).
 
-    A atualização automática do Direct Lake também pode disparar logo depois da gravação, e as duas
-    operações disputam o mesmo bloqueio (visto em dev em 2026-11-18: a automática falhou por
-    "locking conflicts" e a pedida aqui levou 5,5 min). Por isso conta como sucesso qualquer
-    reenquadramento `Completed` iniciado depois de `desde` (UTC), pedido aqui ou automático.
-    Modelo ausente no workspace (ex.: antes da primeira publicação) não é falha.
+    Antes de pedir o refresh, sincroniza o SQL endpoint (`sincronizar_endpoint_sql`), para o modelo
+    enxergar tabelas recém-criadas. A atualização automática do Direct Lake também pode disparar
+    logo depois da gravação, e as duas operações disputam o mesmo bloqueio (visto em dev em
+    2026-11-18: a automática falhou por "locking conflicts" e a pedida aqui levou 5,5 min). Por isso
+    conta como sucesso qualquer reenquadramento `Completed` iniciado depois de `desde` (UTC), pedido
+    aqui ou automático. Se o pedido daqui falhar, sincroniza de novo e pede outra vez, até
+    `pedidos_max` pedidos. Modelo ausente no workspace (ex.: antes da primeira publicação) não é falha.
     """
     import time
 
@@ -338,17 +391,21 @@ def reenquadrar_modelo(nome="sm-gastos", desde=None, timeout_s=900):
     if nome not in set(fabric.list_datasets()["Dataset Name"]):
         return _resultado(nome, "reenquadramento", 0, 0, "modelo ausente no workspace; nada a fazer", informativa=True)
     desde = pd.Timestamp(desde or agora()).tz_localize(None)
+    sincronizacao = sincronizar_endpoint_sql()
 
     def concluidos_depois():
         r = fabric.list_refresh_requests(dataset=nome, top_n=10)
         inicio_col = pd.to_datetime(r["Start Time"], utc=True).dt.tz_localize(None)
         return r[(r["Status"] == "Completed") & (inicio_col >= desde)]
 
-    req, status = None, "Unknown"
-    try:
-        req = fabric.refresh_dataset(dataset=nome, refresh_type="full")
-    except Exception as exc:  # noqa: BLE001 - ex.: conflito com o reenquadramento automático em curso
-        status = f"pedido recusado: {exc}"[:300]
+    def pedir():
+        try:
+            return fabric.refresh_dataset(dataset=nome, refresh_type="full"), "Unknown"
+        except Exception as exc:  # noqa: BLE001 - ex.: conflito com o reenquadramento automático em curso
+            return None, f"pedido recusado: {exc}"[:300]
+
+    req, status = pedir()
+    pedidos = 1
     inicio = time.time()
     while time.time() - inicio < timeout_s:
         time.sleep(15)
@@ -362,10 +419,18 @@ def reenquadrar_modelo(nome="sm-gastos", desde=None, timeout_s=900):
             status, ok = f"consulta falhou: {exc}"[:300], []
         if len(ok):
             tipos = ",".join(sorted(set(ok["Refresh Type"].astype(str))))
-            return _resultado(nome, "reenquadramento", 0, 0, f"request={req}; status={status}; concluido_por={tipos}")
+            return _resultado(nome, "reenquadramento", 0, 0, f"request={req}; status={status}; concluido_por={tipos}; "
+                                                             f"pedidos={pedidos}; {sincronizacao}")
         if req is not None and status == "Failed":
-            req = None  # o pedido daqui perdeu o bloqueio; espera o automático ou o tempo esgotar
-    return _resultado(nome, "reenquadramento", 1, 0, f"request={req}; status={status}; sem reenquadramento concluído em {timeout_s} s")
+            # o pedido daqui falhou (bloqueio perdido para o automático ou endpoint ainda sem as
+            # tabelas): sincroniza o endpoint e pede de novo; esgotados os pedidos, espera o automático
+            req = None
+            if pedidos < pedidos_max:
+                sincronizacao = sincronizar_endpoint_sql()
+                req, status = pedir()
+                pedidos += 1
+    return _resultado(nome, "reenquadramento", 1, 0, f"request={req}; status={status}; pedidos={pedidos}; "
+                                                     f"sem reenquadramento concluído em {timeout_s} s; {sincronizacao}")
 
 
 def falhas(resultados):
