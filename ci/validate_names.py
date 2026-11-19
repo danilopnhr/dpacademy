@@ -52,7 +52,8 @@ ITEM_RULES: dict[str, tuple[str, re.Pattern[str]]] = {
 }
 
 _TABELA = re.compile(r"^[a-z][a-z0-9]*(_[a-z0-9]+)*$")
-_TABELA_GOLD = re.compile(r"^(?:dim|fat|agg)_[a-z0-9_]+$")
+# Gold: dim_, fat_ e agg_; ctl_ para tabelas de controle (Princípio IV; feature 005, research R7)
+_TABELA_GOLD = re.compile(r"^(?:dim|fat|agg|ctl)_[a-z0-9]+(_[a-z0-9]+)*$")
 
 
 @dataclass
@@ -137,7 +138,7 @@ def validate_table_name(lakehouse: str, table: str) -> str | None:
         return None
     if lakehouse.startswith("gold_"):
         if not _TABELA_GOLD.match(table):
-            return f"tabela de {lakehouse} precisa começar com dim_, fat_ ou agg_"
+            return f"tabela de {lakehouse} precisa começar com dim_, fat_, agg_ ou ctl_"
         return None
     return f"lakehouse {lakehouse} fora do padrão"
 
