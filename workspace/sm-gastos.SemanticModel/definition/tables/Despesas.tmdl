@@ -62,6 +62,97 @@ table Despesas
 		displayFolder: Relatório
 		lineageTag: 171910d9-24eb-5157-94f3-55a15b41794f
 
+	measure Divulgação = CALCULATE([Gasto líquido], REMOVEFILTERS('Tipo de despesa'), CONTAINSSTRING('Tipo de despesa'[Tipo despesa], "divulgação"))
+		formatString: R$ #,##0.00
+		displayFolder: Página Calendário
+		lineageTag: d9619e1c-d08d-5b48-9085-0304684c4801
+
+	measure 'Divulgação 2021' = CALCULATE([Divulgação], 'Calendário'[Ano] = 2021)
+		formatString: R$ #,##0.00
+		displayFolder: Página Calendário
+		lineageTag: 6bb72083-8722-5c52-af59-9c05c8e03b2b
+
+	measure 'Divulgação 2022' = CALCULATE([Divulgação], 'Calendário'[Ano] = 2022)
+		formatString: R$ #,##0.00
+		displayFolder: Página Calendário
+		lineageTag: 5fa32b81-ace6-5f97-a030-1cdc77a06944
+
+	measure 'Cor da divulgação 2022' =
+			VAR m = MAX('Calendário'[Nº do mês])
+			RETURN IF(HASONEVALUE('Calendário'[Nº do mês]) && NOT ISBLANK([Divulgação 2022]), IF(m >= 6 && m <= 9, "#b84a17", "#1b5c70"))
+		displayFolder: Página Calendário
+		lineageTag: 98c13bc3-3ad3-52b6-9cd7-54336dae7602
+
+	measure 'Faixa do mapa de calor' =
+			VAR v = [Gasto líquido]
+			VAR celulas = CALCULATETABLE(ADDCOLUMNS(SUMMARIZE('Calendário', 'Calendário'[Ano], 'Calendário'[Nº do mês]), "@v", [Gasto líquido]), ALLSELECTED('Calendário'))
+			VAR mn = MINX(FILTER(celulas, NOT ISBLANK([@v])), [@v])
+			VAR mx = MAXX(celulas, [@v])
+			VAR p = DIVIDE(v - mn, mx - mn)
+			RETURN IF(NOT ISBLANK(v), MIN(6, 1 + INT(p * 6)))
+		formatString: 0
+		displayFolder: Página Calendário
+		lineageTag: 57c65f84-a2eb-5504-8137-b9a3fca6cfad
+
+	measure 'Cor de fundo do mapa de calor' =
+			VAR f = [Faixa do mapa de calor]
+			RETURN IF(NOT ISBLANK(f), SWITCH(f, 1, "#e3eef1", 2, "#c3d6dd", 3, "#8fb8c5", 4, "#5f9fb2", 5, "#2f7a90", 6, "#1b5c70"))
+		displayFolder: Página Calendário
+		lineageTag: 72c1ce1b-d61f-5e9f-9788-588627406fe6
+
+	measure 'Cor da fonte do mapa de calor' =
+			VAR f = [Faixa do mapa de calor]
+			RETURN IF(NOT ISBLANK(f), IF(f >= 5, "#ffffff", "#14202b"))
+		displayFolder: Página Calendário
+		lineageTag: 1aabad3f-86f8-55fa-bdb1-c6d36c4ddcfb
+
+	measure 'Marca de período' =
+			VAR a = MAX('Calendário'[Ano])
+			VAR m = MAX('Calendário'[Nº do mês])
+			RETURN IF(HASONEVALUE('Calendário'[Ano]) && HASONEVALUE('Calendário'[Nº do mês]),
+			    SWITCH(TRUE(), a = 2022 && m >= 6 && m <= 9, 1, a = 2020 && m >= 4 && m <= 6, 2))
+		formatString: 0
+		displayFolder: Página Calendário
+		lineageTag: 3936751c-77ab-5c3f-81a3-1121a44ce9a3
+
+	measure 'Dezembro sobre janeiro' =
+			VAR p = [Primeiro ano]
+			VAR a = [Último ano completo]
+			VAR dez = CALCULATE([Gasto líquido], REMOVEFILTERS('Calendário'), 'Calendário'[Ano] >= p && 'Calendário'[Ano] <= a, 'Calendário'[Nº do mês] = 12)
+			VAR jan = CALCULATE([Gasto líquido], REMOVEFILTERS('Calendário'), 'Calendário'[Ano] >= p && 'Calendário'[Ano] <= a, 'Calendário'[Nº do mês] = 1)
+			RETURN IF(NOT ISBLANK(jan), DIVIDE(dez, jan) - 1)
+		formatString: +0%;-0%;0%
+		displayFolder: Página Calendário
+		lineageTag: 773930ae-5528-5c9a-8122-ad607af09ddd
+
+	measure 'Subtítulo do calendário' =
+			VAR x = [Dezembro sobre janeiro]
+			VAR periodo = FORMAT([Primeiro ano], "0") & "–" & FORMAT([Último ano completo], "0")
+			VAR comparacao = "Dezembro gasta " & FORMAT(ABS(x), "0%") & IF(x >= 0, " mais", " menos") & " que janeiro (" & periodo & ")."
+			VAR fatos = IF(NOT ISFILTERED('Tipo de despesa'), " A eleição de 2022 zerou a divulgação por quatro meses, e a pandemia derrubou o gasto no segundo trimestre de 2020.")
+			RETURN IF(NOT ISBLANK(x), comparacao & fatos)
+		displayFolder: Página Calendário
+		lineageTag: 59d4b6d5-aeac-50ca-b802-30a6dd1c2383
+
+	measure 'Crescimento da divulgação' =
+			VAR p = [Primeiro ano]
+			VAR a = [Último ano completo]
+			VAR antes = CALCULATE([Divulgação], REMOVEFILTERS('Calendário'), 'Calendário'[Ano] = p)
+			VAR depois = CALCULATE([Divulgação], REMOVEFILTERS('Calendário'), 'Calendário'[Ano] = a)
+			RETURN IF(NOT ISBLANK(antes), DIVIDE(depois, antes) - 1)
+		formatString: +0%;-0%;0%
+		displayFolder: Página Calendário
+		lineageTag: 76c9c7d3-f8c7-57bc-8baf-8b35510a3380
+
+	measure 'Texto do crescimento da divulgação' =
+			VAR p = [Primeiro ano]
+			VAR a = [Último ano completo]
+			VAR antes = CALCULATE([Divulgação], REMOVEFILTERS('Calendário'), 'Calendário'[Ano] = p)
+			VAR depois = CALCULATE([Divulgação], REMOVEFILTERS('Calendário'), 'Calendário'[Ano] = a)
+			RETURN IF(NOT ISBLANK(antes), "R$ " & FORMAT(antes / 1000000, "#,##0") & " mi em " & FORMAT(p, "0") & " → R$ " & FORMAT(depois / 1000000, "#,##0") & " mi em " & FORMAT(a, "0"))
+		displayFolder: Página Calendário
+		lineageTag: 43d74faa-782e-5b52-b143-e9a4206cb0e2
+
 	column chave_despesa
 		dataType: string
 		isHidden
