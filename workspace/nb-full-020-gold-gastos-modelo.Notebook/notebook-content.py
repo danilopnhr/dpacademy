@@ -25,6 +25,7 @@
 # # nb-full-020-gold-gastos-modelo
 # Star schema do case gastos no `gold_gastos`, reconstruído a partir da Silver: dez dimensões, `fat_despesas` e `fat_emendas` (feature 005).
 # - Monta tudo, roda todas as verificações e só então grava; se alguma falhar, nada é gravado (research R1, R7).
+# - Na falha, pede o reenquadramento do sm-gastos para o relatório mostrar a reprovação (research R7 da 006).
 # - Grãos: `fat_despesas`, uma linha por despesa da Silver; `fat_emendas`, uma linha por emenda × tipo × localidade.
 # - CPF de fornecedor mascarado; CPF completo não entra na Gold, nem como hash (research R5).
 # - Contratos: `specs/005-gastos-gold/contracts/gold-tables.md` e `data-model.md`
@@ -562,6 +563,11 @@ if not falhas(resultados):
     finais.append(reenquadramento)
     resultados.append(reenquadramento)
     registrar(run_id, finais)
+else:
+    # Nada foi gravado. Reenquadra só para o modelo ler as linhas novas de ctl_quality_checks e o relatório
+    # mostrar a reprovação (research R7 da 006); o resultado não entra nas verificações nem muda a execução.
+    aviso = reenquadrar_modelo("sm-gastos", desde=agora())
+    print(f"reenquadramento depois da reprovação: {aviso['status']} ({aviso['detalhe']})")
 encerrar(run_id, resultados, contagens)
 
 # METADATA ********************
