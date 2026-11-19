@@ -221,6 +221,16 @@ ter sincronizado as tabelas novas antes (em dev, a sincronização demorou; a AP
 do SQL endpoint resolve). Se o enquadramento falhar com o modelo de propriedade da service
 principal, o plano B é assumir o modelo (take over) com a conta do engenheiro, uma vez; registrar
 no quickstart.
+**Sincronização do endpoint dentro do notebook (carga inicial em prd, 2026-11-19)**: na primeira
+carga de prd as tabelas foram gravadas e as verificações passaram, mas o refresh pedido pelo notebook
+6 min depois da gravação falhou com "cannot access the source Delta table fat_despesas": o SQL
+endpoint ainda não tinha descoberto as tabelas novas. O `reenquadrar_modelo` não voltava a pedir
+depois de um pedido com falha, esperou 900 s e registrou `reenquadramento` `failed`. Um refresh
+manual às 12:57 concluiu (a propriedade da service principal não atrapalhou; o plano B não foi
+usado). Ajuste: o notebook chama o `refreshMetadata` do SQL endpoint do lakehouse padrão antes de
+pedir o refresh e, se o pedido falhar, sincroniza de novo e pede mais uma vez (até dois pedidos),
+continuando a aceitar o reenquadramento automático. A sincronização nunca derruba a execução; o
+resultado dela vai para o `detalhe` do `reenquadramento`.
 
 **Conteúdo**: as dez dimensões e os dois fatos (sem `ctl_quality_checks`); relacionamentos muitos
 para um, filtro de uma direção, da dimensão para o fato; `dim_data` marcada como tabela de datas

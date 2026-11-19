@@ -148,9 +148,9 @@ validador de nomes, como define o plano. Tabelas e modelo são validados pelo qu
 
 - [X] T024 [P] Escrever `docs/adr-005-gold-reconstruida-e-direct-lake.md` (reconstrução total com verificação antes de gravar, chaves por hash, CPF mascarado sem hash, ligação de autor por nome exato, Direct Lake sobre SQL endpoint e reapontamento pelo `fabric-cicd`)
 - [X] T025 [P] Atualizar `README.md`: camada Gold (tabelas e grãos) e consumo (`sm-gastos`), estado do case
-- [ ] T026 Rodar `pytest tests/unit -q` e `python ci/validate_names.py workspace` (zero violações); trazer `dev` para `005-gastos-gold`; abrir o PR para `dev`, concluir e abrir o PR `dev` → `main` descrevendo o que muda em cada camada (constituição, Fluxo de Desenvolvimento)
-- [ ] T027 Depois do `deploy-prd` verde, executar o quickstart §7.1 e §7.2 em produção: itens publicados, `expressions.tmdl` de prd apontando para o SQL endpoint do `gold_gastos` de prd, carga inicial manual da Gold fora da rotina e conferência dos §1 a §4 com os números de prd (SC-006, até 2026-11-26)
-- [ ] T028 Executar o quickstart §7.3 em produção: refresh manual único do `sm-gastos` pela API (plano B: assumir o modelo com a conta do engenheiro) e conferência do §6.2 (SC-009, SC-010, até 2026-11-30)
+- [X] T026 Rodar `pytest tests/unit -q` e `python ci/validate_names.py workspace` (zero violações); trazer `dev` para `005-gastos-gold`; abrir o PR para `dev`, concluir e abrir o PR `dev` → `main` descrevendo o que muda em cada camada (constituição, Fluxo de Desenvolvimento)
+- [X] T027 Depois do `deploy-prd` verde, executar o quickstart §7.1 e §7.2 em produção: itens publicados, `expressions.tmdl` de prd apontando para o SQL endpoint do `gold_gastos` de prd, carga inicial manual da Gold fora da rotina e conferência dos §1 a §4 com os números de prd (SC-006, até 2026-11-26)
+- [X] T028 Executar o quickstart §7.3 em produção: refresh manual único do `sm-gastos` pela API (plano B: assumir o modelo com a conta do engenheiro) e conferência do §6.2 (SC-009, SC-010, até 2026-11-30)
 - [ ] T029 Na manhã seguinte à publicação, executar o quickstart §7.4 (Gold depois da Silver, fim antes das 07:00, `ctl_quality_checks` com `environment = 'prd'`, modelo atualizado sem refresh manual; SC-005); registrar no quickstart por um PR pequeno de docs
 
 ---

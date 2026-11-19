@@ -133,3 +133,39 @@ Base: Silver de dev de 2026-11-17 (1.686.374 despesas; 55.044 emendas; 68.057 CN
   atividades da Silver, conferida na definição do pipeline, a mesma semântica já testada na 004.
 - **`parameter.yml`**: validado com `validate_parameter_file` do `fabric-cicd` 1.4.0 para `prd`; o
   servidor SQL e o SQL endpoint de dev só aparecem no `expressions.tmdl` do `sm-gastos`.
+
+### 2026-11-19: `ws-prd-dpacademy`
+
+Base: Silver de prd de 2026-11-19 (1.687.037 despesas; 55.044 emendas; fila de fornecedores ainda
+enchendo, término previsto para ~21/11).
+
+- **§7.1 Publicação**: PR #10 (`dev` → `main`) concluído às 12:18 UTC; `deploy-prd` verde em 1m38s.
+  Publicados `gold_gastos` (SQL endpoint `Success`), os dois notebooks, o `sm-gastos` e o
+  orquestrador. Pela API `getDefinition`: o `expressions.tmdl` de prd aponta para o servidor e o SQL
+  endpoint do `gold_gastos` de prd; o notebook da Gold tem o `gold_gastos` de prd como lakehouse
+  padrão, sem nenhum id de dev; a atividade `gold_gastos` do orquestrador chama o notebook de prd e
+  depende das duas Silver com `Succeeded`; só a agenda do orquestrador (04:00) está ligada.
+  Antes do PR, `main` foi trazida para `dev` com `merge -s ours` (sem mudança de conteúdo): o
+  squash do release #7 tinha criado em `main` um commit fora do histórico de `dev`, e o PR #10
+  abriu em conflito. O mesmo foi feito depois do #10 (passo de rotina depois de cada release).
+- **§7.2 Carga inicial**: `nb-full-020-gold-gastos-modelo` disparado à mão, 12:33–12:55 UTC, com
+  as 12 tabelas gravadas e 61 verificações `passed` com `environment = 'prd'`. A execução terminou
+  `Failed` só pelo `reenquadramento` (ver §7.3).
+  - §1: os 8 anos de despesas iguais à Silver em linhas e valor líquido (ex.: 2024 com 232.926
+    linhas e R$ 250.384.236,66, os mesmos números de dev).
+  - §2: 26.063 CNPJs `Encontrado` (1.094.482 linhas), 22.437 `Não encontrado` (337.723), 19.621
+    `Não consultado` (240.304, fila de prd ainda enchendo) e 795 CPFs `Não se aplica` (14.528),
+    somando o total; nenhum CPF fora do formato `***.ddd.ddd-**`.
+  - §3: emendas iguais à Silver por ano em linhas e valor pago; 82,0% do valor pago das
+    individuais ligado a deputado.
+  - §4: `privacidade`, `conciliacao` e `ligacao_autor` `passed`.
+- **§7.3 Modelo**: o refresh pedido pelo notebook às 12:40 falhou com "cannot access the source
+  Delta table fat_despesas": o SQL endpoint ainda não tinha descoberto as tabelas novas. O notebook
+  não voltava a pedir depois de um pedido com falha e registrou `failed` depois de 900 s. O
+  `refreshMetadata` às 12:55 devolveu `NotRun` em todas as tabelas (a sincronização automática já
+  tinha alcançado), e o refresh manual pela API às 12:57 concluiu, seguido de um enquadramento
+  automático. O modelo é da service principal e o refresh com a conta do engenheiro funcionou: o
+  plano B não foi necessário. §6.2 por DAX: gasto líquido, quantidade de despesas e emendas pagas
+  por ano idênticos à Gold nos 8 anos; `[% pago ligado a deputado]` = 82%; `[Deputados com
+  despesa]` = 1.161. Correção no `reenquadrar_modelo` (research R9): sincroniza o SQL endpoint
+  antes de pedir o refresh e, se o pedido falhar, sincroniza de novo e pede mais uma vez.

@@ -144,3 +144,24 @@ def test_mascarar_cpf_em_texto(gold, texto, esperado):
         import re
 
         assert re.search(gold.CPF_SEM_MASCARA, resultado) is None
+
+
+@pytest.mark.parametrize(
+    "resposta,ok,texto",
+    [
+        # primeira carga em prd: tabelas novas descobertas pelo endpoint
+        ({"value": [{"tableName": "fat_despesas", "status": "Success"},
+                    {"tableName": "dim_data", "status": "Success"}]}, True, "Success=2"),
+        # endpoint já sincronizado: NotRun não é falha
+        ({"value": [{"tableName": "fat_despesas", "status": "NotRun"},
+                    {"tableName": "dim_uf", "status": "NotRun"},
+                    {"tableName": "dim_data", "status": "Success"}]}, True, "NotRun=2, Success=1"),
+        ({"value": [{"tableName": "fat_emendas", "status": "Failure", "error": {"errorCode": "X"}},
+                    {"tableName": "dim_data", "status": "Success"}]}, False,
+         "falha em fat_emendas (Failure=1, Success=1)"),
+        ({"value": []}, True, "nenhuma tabela"),
+        (None, True, "nenhuma tabela"),
+    ],
+)
+def test_resumir_sincronizacao(gold, resposta, ok, texto):
+    assert gold.resumir_sincronizacao(resposta) == (ok, texto)
