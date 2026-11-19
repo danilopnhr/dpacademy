@@ -1,0 +1,12 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/fabric/gitIntegration/platformProperties/2.0.0/schema.json",
+  "metadata": {
+    "type": "Report",
+    "displayName": "rpt-gastos-parlamentares",
+    "description": "Relatório do case gastos (feature 006)"
+  },
+  "config": {
+    "version": "2.0",
+    "logicalId": "2e97bcd2-eba4-b064-43ae-ff9f0dcae924"
+  }
+}

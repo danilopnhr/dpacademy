@@ -1,0 +1,145 @@
+{
+  "name": "dpacademy",
+  "dataColors": [
+    "#1b5c70",
+    "#5f9fb2",
+    "#c3d6dd",
+    "#b84a17",
+    "#2f7a90",
+    "#8fb8c5",
+    "#56626f",
+    "#8a6510"
+  ],
+  "background": "#ffffff",
+  "secondaryBackground": "#f4f6f8",
+  "foreground": "#14202b",
+  "foregroundNeutralSecondary": "#56626f",
+  "foregroundNeutralTertiary": "#56626f",
+  "backgroundLight": "#f4f6f8",
+  "backgroundNeutral": "#d3d9e0",
+  "tableAccent": "#1b5c70",
+  "good": "#1b5c70",
+  "neutral": "#56626f",
+  "bad": "#b84a17",
+  "maximum": "#1b5c70",
+  "center": "#8fb8c5",
+  "minimum": "#e3eef1",
+  "hyperlink": "#1b5c70",
+  "visitedHyperlink": "#1b5c70",
+  "textClasses": {
+    "callout": {
+      "fontFace": "DIN",
+      "fontSize": 30,
+      "color": "#14202b"
+    },
+    "title": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 15,
+      "color": "#14202b"
+    },
+    "header": {
+      "fontFace": "Segoe UI Semibold",
+      "fontSize": 12,
+      "color": "#14202b"
+    },
+    "label": {
+      "fontFace": "Segoe UI",
+      "fontSize": 10,
+      "color": "#56626f"
+    }
+  },
+  "visualStyles": {
+    "*": {
+      "*": {
+        "background": [
+          {
+            "show": true,
+            "color": {
+              "solid": {
+                "color": "#ffffff"
+              }
+            },
+            "transparency": 0
+          }
+        ],
+        "border": [
+          {
+            "show": false,
+            "radius": 6
+          }
+        ],
+        "dropShadow": [
+          {
+            "show": false
+          }
+        ],
+        "visualHeader": [
+          {
+            "show": false
+          }
+        ],
+        "title": [
+          {
+            "fontFamily": "Segoe UI Semibold",
+            "fontSize": 15,
+            "fontColor": {
+              "solid": {
+                "color": "#14202b"
+              }
+            }
+          }
+        ],
+        "padding": [
+          {
+            "top": 12,
+            "bottom": 12,
+            "left": 16,
+            "right": 16
+          }
+        ]
+      }
+    },
+    "page": {
+      "*": {
+        "background": [
+          {
+            "color": {
+              "solid": {
+                "color": "#f4f6f8"
+              }
+            },
+            "transparency": 0
+          }
+        ],
+        "outspace": [
+          {
+            "color": {
+              "solid": {
+                "color": "#f4f6f8"
+              }
+            },
+            "transparency": 0
+          }
+        ]
+      }
+    },
+    "textbox": {
+      "*": {
+        "background": [
+          {
+            "show": false
+          }
+        ]
+      }
+    },
+    "basicShape": {
+      "*": {
+        "background": [
+          {
+            "show": false
+          }
+        ]
+      }
+    }
+  }
+}
