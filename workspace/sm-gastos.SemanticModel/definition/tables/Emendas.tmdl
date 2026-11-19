@@ -27,6 +27,53 @@ table Emendas
 		formatString: 0.0%
 		lineageTag: ccfe58ca-cc60-5a25-ab4c-81dddbdbbaf4
 
+	measure 'Individuais 2022 para 2023' =
+			VAR antes = CALCULATE([Emendas individuais pago], REMOVEFILTERS('Calendário'), 'Calendário'[Ano] = 2022)
+			VAR depois = CALCULATE([Emendas individuais pago], REMOVEFILTERS('Calendário'), 'Calendário'[Ano] = 2023)
+			RETURN IF(NOT ISBLANK(antes), DIVIDE(depois, antes) - 1)
+		formatString: +0%;-0%;0%
+		displayFolder: Página Emendas
+		lineageTag: 28fbc20a-aa26-5bc9-bafa-52b4a850ad70
+
+	measure 'Deputados com emenda individual ligada' =
+			VAR a = [Último ano completo]
+			RETURN CALCULATE(DISTINCTCOUNT(Emendas[sk_deputado]), REMOVEFILTERS('Calendário'), 'Calendário'[Ano] = a, 'Tipo de emenda'[Grupo emenda] = "Individual", Emendas[sk_deputado] > 0)
+		formatString: #,##0
+		displayFolder: Página Emendas
+		lineageTag: 78d9cf32-14ca-5ba1-a5f4-799903223b3e
+
+	measure 'Emendas individuais por real de cota' =
+			VAR a = [Último ano completo]
+			VAR deps = CALCULATETABLE(VALUES(Emendas[sk_deputado]), REMOVEFILTERS('Calendário'), 'Calendário'[Ano] = a, 'Tipo de emenda'[Grupo emenda] = "Individual", Emendas[sk_deputado] > 0)
+			VAR em = CALCULATE([Emendas individuais pago], REMOVEFILTERS('Calendário'), 'Calendário'[Ano] = a, TREATAS(deps, Deputado[sk_deputado]))
+			VAR cota = CALCULATE([Gasto líquido], REMOVEFILTERS('Calendário'), 'Calendário'[Ano] = a, TREATAS(deps, Deputado[sk_deputado]))
+			RETURN DIVIDE(em, cota)
+		formatString: R$ #,##0
+		displayFolder: Página Emendas
+		lineageTag: eaed30d3-faeb-53ac-a68c-56ed672a18e5
+
+	measure 'Texto do recorte por real de cota' =
+			VAR a = [Último ano completo]
+			VAR n = [Deputados com emenda individual ligada]
+			RETURN IF(NOT ISBLANK(n), "Em " & FORMAT(a, "0") & ", entre os " & FORMAT(n, "#,##0") & " deputados com emenda individual ligada.")
+		displayFolder: Página Emendas
+		lineageTag: e6508d6d-27cc-5cbc-a6ba-e5b61c8ccccc
+
+	measure 'Participação da Saúde' =
+			VAR a = [Último ano completo]
+			VAR total = CALCULATE([Emendas pago], REMOVEFILTERS('Calendário'), 'Calendário'[Ano] >= a - 2 && 'Calendário'[Ano] <= a, REMOVEFILTERS('Função'))
+			VAR saude = CALCULATE([Emendas pago], REMOVEFILTERS('Calendário'), 'Calendário'[Ano] >= a - 2 && 'Calendário'[Ano] <= a, 'Função'[Função] = "Saúde")
+			RETURN DIVIDE(saude, total)
+		formatString: 0%
+		displayFolder: Página Emendas
+		lineageTag: 1cab36f0-f25f-577a-ab36-d556e41438b6
+
+	measure 'Texto da janela de três anos' =
+			VAR a = [Último ano completo]
+			RETURN IF(NOT ISBLANK(a), FORMAT(a - 2, "0") & "–" & FORMAT(a, "0"))
+		displayFolder: Página Emendas
+		lineageTag: 527610d4-9d85-54c2-a3a6-e18cfed69be9
+
 	column chave_emenda
 		dataType: string
 		isHidden
