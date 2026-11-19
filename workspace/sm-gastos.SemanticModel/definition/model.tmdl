@@ -20,6 +20,7 @@ ref table 'Autor da emenda'
 ref table 'Tipo de emenda'
 ref table Função
 ref table Localidade
+ref table 'Verificações de qualidade'
 
 ref cultureInfo pt-BR
 

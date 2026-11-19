@@ -27,6 +27,41 @@ table Despesas
 		formatString: R$ #,##0.00
 		lineageTag: f9b18a73-3dfe-5bcc-8e70-2f5228f30e3b
 
+	measure 'Data dos dados' = CALCULATE(MAX(Despesas[_carregado_em]), REMOVEFILTERS())
+		formatString: dd/mm/yyyy
+		displayFolder: Relatório
+		lineageTag: 38cb1843-4ac2-5d62-9258-1c23f94cb1e1
+
+	measure 'Texto da data dos dados' =
+			VAR d = [Data dos dados]
+			RETURN IF(NOT ISBLANK(d), "Dados de " & FORMAT(d, "dd/mm/yyyy"))
+		displayFolder: Relatório
+		lineageTag: 6b33cab0-685d-5cbe-9f99-33dd685bb708
+
+	measure 'Ano corrente' = YEAR([Data dos dados])
+		formatString: 0
+		displayFolder: Relatório
+		lineageTag: 26231edf-4573-5b61-86d9-36b7ebb568fc
+
+	measure 'Último ano completo' =
+			VAR a = [Ano corrente]
+			RETURN IF(NOT ISBLANK(a), a - 1)
+		formatString: 0
+		displayFolder: Relatório
+		lineageTag: 31cfc098-bf74-5f15-a00c-77051398bef9
+
+	measure 'Primeiro ano' = CALCULATE(MIN(Despesas[Ano]), REMOVEFILTERS())
+		formatString: 0
+		displayFolder: Relatório
+		lineageTag: d27e0fb6-3063-5884-83da-2962811df8b1
+
+	measure 'Nota do ano parcial' =
+			VAR a = [Ano corrente]
+			VAR m = CALCULATE(MAX(Despesas[Mês]), REMOVEFILTERS(), Despesas[Ano] = a)
+			RETURN IF(NOT ISBLANK(m), FORMAT(a, "0") & " parcial, dados até " & FORMAT(DATE(a, m, 1), "mmm"))
+		displayFolder: Relatório
+		lineageTag: 171910d9-24eb-5157-94f3-55a15b41794f
+
 	column chave_despesa
 		dataType: string
 		isHidden

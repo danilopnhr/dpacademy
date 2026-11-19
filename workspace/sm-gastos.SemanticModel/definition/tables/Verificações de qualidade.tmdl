@@ -1,0 +1,131 @@
+/// Verificações de qualidade de cada execução da Gold (gold_gastos.ctl_quality_checks). Sem relacionamento.
+table 'Verificações de qualidade'
+	lineageTag: 5b8c2d04-d84e-5510-9844-41f11cc61c45
+	sourceLineageTag: [dbo].[ctl_quality_checks]
+
+	measure 'Última execução' =
+			VAR t = CALCULATE(MAX('Verificações de qualidade'[Verificado em]), REMOVEFILTERS('Verificações de qualidade'))
+			RETURN CALCULATE(MAX('Verificações de qualidade'[Execução]), REMOVEFILTERS('Verificações de qualidade'), 'Verificações de qualidade'[Verificado em] = t)
+		displayFolder: Qualidade
+		lineageTag: c2db7765-900a-561d-ae9e-de1693f0d1a2
+
+	measure 'Verificações na última execução' =
+			VAR r = [Última execução]
+			RETURN CALCULATE(COUNTROWS('Verificações de qualidade'), REMOVEFILTERS('Verificações de qualidade'), 'Verificações de qualidade'[Execução] = r, NOT 'Verificações de qualidade'[Verificação] IN {"contagem", "ligacao_autor"})
+		formatString: #,##0
+		displayFolder: Qualidade
+		lineageTag: ddbd4220-d010-54b3-9327-e02195459cf1
+
+	measure 'Verificações aprovadas' =
+			VAR r = [Última execução]
+			VAR n = CALCULATE(COUNTROWS('Verificações de qualidade'), REMOVEFILTERS('Verificações de qualidade'), 'Verificações de qualidade'[Execução] = r, NOT 'Verificações de qualidade'[Verificação] IN {"contagem", "ligacao_autor"}, 'Verificações de qualidade'[Status] = "passed")
+			RETURN IF(NOT ISBLANK(r), COALESCE(n, 0))
+		formatString: #,##0
+		displayFolder: Qualidade
+		lineageTag: cdd49bae-3e03-5e38-942d-972512275646
+
+	measure 'Texto da qualidade' =
+			VAR t = [Verificações na última execução]
+			RETURN IF(NOT ISBLANK(t), FORMAT([Verificações aprovadas], "0") & " de " & FORMAT(t, "0"))
+		displayFolder: Qualidade
+		lineageTag: 7c2ad9a0-9f0f-51fe-9271-9504023704eb
+
+	measure 'Data da última verificação' = CALCULATE(MAX('Verificações de qualidade'[Verificado em]), REMOVEFILTERS('Verificações de qualidade'))
+		formatString: dd/mm/yyyy hh:nn
+		displayFolder: Qualidade
+		lineageTag: 56ad08d7-0594-5d0c-bc0d-96739fb2232c
+
+	column Execução
+		dataType: string
+		isHidden
+		lineageTag: c3de21a8-6e85-51d6-ae37-ad9d93f691aa
+		sourceLineageTag: run_id
+		summarizeBy: none
+		sourceColumn: run_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Verificado em'
+		dataType: dateTime
+		formatString: dd/mm/yyyy hh:nn
+		lineageTag: c14de9e0-6bd4-53ec-9701-6e4877f02666
+		sourceLineageTag: checked_at
+		summarizeBy: none
+		sourceColumn: checked_at
+
+		annotation SummarizationSetBy = Automatic
+
+	column Tabela
+		dataType: string
+		lineageTag: 8451cc06-a1e1-51ba-b927-921da0f81994
+		sourceLineageTag: tabela
+		summarizeBy: none
+		sourceColumn: tabela
+
+		annotation SummarizationSetBy = Automatic
+
+	column Verificação
+		dataType: string
+		lineageTag: 8ce6abbb-e622-5f05-8bee-0c43adfcfd78
+		sourceLineageTag: verificacao
+		summarizeBy: none
+		sourceColumn: verificacao
+
+		annotation SummarizationSetBy = Automatic
+
+	column Status
+		dataType: string
+		lineageTag: 2750b66b-b4c5-50b9-b8e4-6fe0bf7a076d
+		sourceLineageTag: status
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Linhas com problema'
+		dataType: int64
+		formatString: #,##0
+		lineageTag: 67c27bb6-8297-5e33-9942-d072c037cf82
+		sourceLineageTag: linhas_com_problema
+		summarizeBy: none
+		sourceColumn: linhas_com_problema
+
+		annotation SummarizationSetBy = Automatic
+
+	column 'Linhas da tabela'
+		dataType: int64
+		isHidden
+		formatString: #,##0
+		lineageTag: 660412de-17fd-5769-96d0-9d91a56545b0
+		sourceLineageTag: linhas_tabela
+		summarizeBy: none
+		sourceColumn: linhas_tabela
+
+		annotation SummarizationSetBy = Automatic
+
+	column Detalhe
+		dataType: string
+		lineageTag: 1bc121b4-0c1e-5e45-aef4-91085a1fd271
+		sourceLineageTag: detalhe
+		summarizeBy: none
+		sourceColumn: detalhe
+
+		annotation SummarizationSetBy = Automatic
+
+	column Ambiente
+		dataType: string
+		isHidden
+		lineageTag: c6ca0923-2e9a-51e5-a24d-e5150914f408
+		sourceLineageTag: environment
+		summarizeBy: none
+		sourceColumn: environment
+
+		annotation SummarizationSetBy = Automatic
+
+	partition 'Verificações de qualidade' = entity
+		mode: directLake
+		source
+			entityName: ctl_quality_checks
+			schemaName: dbo
+			expressionSource: DatabaseQuery
+
