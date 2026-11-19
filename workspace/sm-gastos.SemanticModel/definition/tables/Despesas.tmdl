@@ -77,12 +77,6 @@ table Despesas
 		displayFolder: Página Calendário
 		lineageTag: 5fa32b81-ace6-5f97-a030-1cdc77a06944
 
-	measure 'Cor da divulgação 2022' =
-			VAR m = MAX('Calendário'[Nº do mês])
-			RETURN IF(HASONEVALUE('Calendário'[Nº do mês]) && NOT ISBLANK([Divulgação 2022]), IF(m >= 6 && m <= 9, "#b84a17", "#1b5c70"))
-		displayFolder: Página Calendário
-		lineageTag: 98c13bc3-3ad3-52b6-9cd7-54336dae7602
-
 	measure 'Faixa do mapa de calor' =
 			VAR v = [Gasto líquido]
 			VAR celulas = CALCULATETABLE(ADDCOLUMNS(SUMMARIZE('Calendário', 'Calendário'[Ano], 'Calendário'[Nº do mês]), "@v", [Gasto líquido]), ALLSELECTED('Calendário'))
@@ -129,8 +123,7 @@ table Despesas
 			VAR x = [Dezembro sobre janeiro]
 			VAR periodo = FORMAT([Primeiro ano], "0") & "–" & FORMAT([Último ano completo], "0")
 			VAR comparacao = "Dezembro gasta " & FORMAT(ABS(x), "0%") & IF(x >= 0, " mais", " menos") & " que janeiro (" & periodo & ")."
-			VAR fatos = IF(NOT ISFILTERED('Tipo de despesa'), " A eleição de 2022 zerou a divulgação por quatro meses, e a pandemia derrubou o gasto no segundo trimestre de 2020.")
-			RETURN IF(NOT ISBLANK(x), comparacao & fatos)
+			RETURN IF(NOT ISBLANK(x), comparacao)
 		displayFolder: Página Calendário
 		lineageTag: 59d4b6d5-aeac-50ca-b802-30a6dd1c2383
 
@@ -152,6 +145,17 @@ table Despesas
 			RETURN IF(NOT ISBLANK(antes), "R$ " & FORMAT(antes / 1000000, "#,##0") & " mi em " & FORMAT(p, "0") & " → R$ " & FORMAT(depois / 1000000, "#,##0") & " mi em " & FORMAT(a, "0"))
 		displayFolder: Página Calendário
 		lineageTag: 43d74faa-782e-5b52-b143-e9a4206cb0e2
+
+	measure 'Fatos do calendário' = IF(NOT ISFILTERED('Tipo de despesa'), "A eleição de 2022 zerou a divulgação por quatro meses, e a pandemia derrubou o gasto no segundo trimestre de 2020.")
+		displayFolder: Página Calendário
+		lineageTag: 4d5d6502-2d5b-5467-8619-f7bceae69f02
+
+	measure 'Valor da célula do mapa de calor' =
+			VAR v = [Gasto líquido]
+			VAR m = [Marca de período]
+			RETURN IF(NOT ISBLANK(v), FORMAT(v / 1000000, "#,##0.0") & SWITCH(m, 1, " ●", 2, " ■", ""))
+		displayFolder: Página Calendário
+		lineageTag: 4bc1a374-2159-5f00-828c-e29128e36c4f
 
 	column chave_despesa
 		dataType: string
