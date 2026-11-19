@@ -35,6 +35,12 @@ table 'Verificações de qualidade'
 		displayFolder: Qualidade
 		lineageTag: 56ad08d7-0594-5d0c-bc0d-96739fb2232c
 
+	measure 'Cor da qualidade' =
+			VAR total = [Verificações na última execução]
+			RETURN IF(NOT ISBLANK(total), IF([Verificações aprovadas] < total, "#b84a17", "#14202b"))
+		displayFolder: Qualidade
+		lineageTag: 08820a55-acad-5193-9389-67213a4c247a
+
 	column Execução
 		dataType: string
 		isHidden
